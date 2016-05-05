@@ -32,9 +32,19 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'grape-swagger'
+gem 'grape-swagger-rails'
+gem 'grape', '0.14.0'
+gem 'grape-middleware-logger'
+gem 'grape-route-helpers'
+gem 'grape-entity'
+gem 'kramdown'
+gem 'rack-cors'
+gem 'httparty'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem 'pry-byebug'
 end
 
 group :development do
