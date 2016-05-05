@@ -6,16 +6,16 @@ To get started
 
 * Fork/Clone
 
-* `bundle install`
+* bundle install
 
-* `bundle exec rake db:migrate`
+* bundle exec rake db:migrate
 
-* `bundle exec rake fetch:events`
+* bundle exec rake fetch:events
 
-* `rails s`
+* rails s
 
-* Visit http://localhost:3002/docs to see the swagger interface
+* Visit http://localhost:3000/docs to see the swagger interface
   * sidenote: the 'try it now button' is broken, keeps auto directing to https protocol so the call to the db fails, too tired and sick to fuck with it now, so here is a work around
 
-* Visit http://localhost:3002/v1/events to see an example of what the response would be
+* Visit http://localhost:3000/v1/events to see an example of what the response would be
 
