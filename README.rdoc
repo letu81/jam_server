@@ -1,28 +1,21 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+An example of a grape REST-like API for theDistrict.in.
 
-Things you may want to cover:
+To get started
 
-* Ruby version
+* Fork/Clone
 
-* System dependencies
+* `bundle install`
 
-* Configuration
+* `bundle exec rake db:migrate`
 
-* Database creation
+* `bundle exec rake fetch:events`
 
-* Database initialization
+* `rails s`
 
-* How to run the test suite
+* Visit http://localhost:3002/docs to see the swagger interface
+  * sidenote: the 'try it now button' is broken, keeps auto directing to https protocol so the call to the db fails, too tired and sick to fuck with it now, so here is a work around
 
-* Services (job queues, cache servers, search engines, etc.)
+* Visit http://localhost:3002/v1/events to see an example of what the response would be
 
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
