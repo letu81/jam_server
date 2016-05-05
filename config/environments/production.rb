@@ -25,7 +25,7 @@ Rails.application.configure do
   config.serve_static_files = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :uglifier
+  # config.assets.js_compressor = :uglifier
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -76,4 +76,14 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # config.action_mailer.smtp_settings = {
+  #     :address => 'smtp.sendgrid.net',
+  #     :port => '587',
+  #     :authentication => :plain,
+  #     :user_name => Figaro.env.SENDGRID_USERNAME,
+  #     :password => Figaro.env.SENDGRID_PASSWORD,
+  #     :domain => 'patron.gallery',
+  #     :enable_starttls_auto => true
+  # }
 end
