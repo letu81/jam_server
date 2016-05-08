@@ -41,4 +41,31 @@ namespace :fetch do
       )
     end
   end
+
+  task venues: :environment do
+    response = HTTParty.get('http://www.ticketfly.com/api/venues?metroCode=511')
+    venues = response['venues']
+    venues.each do |venue|
+      if Event.all.map(&:venue_id).uniq.include?(venue['id'])
+        new_venue = Venue.create(
+          venue_id:       venue['id'],
+          blurb:          venue['blurb'],
+          name:           venue['name'] || 'Venue Unavailable',
+          city:           venue['city'],
+          state:          venue['stateProvince'],
+          address:        venue['address1'],
+          location:       venue['location'],
+          image:          venue['image'] ? venue['image']["large"]["path"] : 'http://i.imgur.com/amg7RLK.png',
+          lat:            venue['lat'].to_s,
+          lon:            venue['lng'].to_s,
+          score:          venue['score'],
+          slug:           venue['name'].gsub(' ', '-'),
+          twitter:        venue['urlTwitter'],
+          facebook:       venue['urlFacebook'],
+          website:        venue['url'],
+          added_manually: false
+        )
+      end
+    end
+  end
 end

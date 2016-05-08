@@ -43,6 +43,7 @@ module API
 
 
       mount API::V1::Resources::Events
+      mount API::V1::Resources::Venues
 
       desc 'Alive endpoint', hidden: true
       resource :ping do
