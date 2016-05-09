@@ -55,7 +55,7 @@ namespace :fetch do
           state:          venue['stateProvince'],
           address:        venue['address1'],
           location:       venue['location'],
-          image:          venue['image'] ? venue['image']['large']['path'] : 'http://i.imgur.com/amg7RLK.png',
+          image:          venue['image'] ? venue['image']['large']['path'] : 'https://s3.amazonaws.com/districtin/milk-background.png',
           lat:            venue['lat'].to_s,
           lon:            venue['lng'].to_s,
           score:          venue['score'],
