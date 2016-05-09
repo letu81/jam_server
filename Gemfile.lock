@@ -128,6 +128,7 @@ GEM
       mini_portile2 (~> 2.0.0.rc2)
     parser (2.3.1.0)
       ast (~> 2.2)
+    pg (0.18.4)
     powerpack (0.1.1)
     pry (0.10.3)
       coderay (~> 1.1.0)
@@ -250,6 +251,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   kramdown
+  pg
   pry-byebug
   rack-cors
   rails (= 4.2.6)
