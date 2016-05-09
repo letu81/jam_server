@@ -4,7 +4,7 @@ module API
     module Resources
       class Events < API::V1::Root
         resources :events, desc: 'Operation related to Events' do
-          desc 'Get all interests' do
+          desc 'Get all Events' do
             success API::V1::Entities::Event
           end
           get do
