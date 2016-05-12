@@ -43,6 +43,7 @@ module API
 
 
       mount API::V1::Resources::Events
+      mount API::V1::Resources::Venues
       mount API::V1::Resources::TruckEvents
       mount API::V1::Resources::TruckVendors
 
