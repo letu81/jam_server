@@ -6,16 +6,17 @@ ruby '2.3.0'
 gem 'rails', '4.2.6'
 
 # api
+gem 'coffee-rails', '~> 4.1.0'
 gem 'grape', '0.14.0'
 gem 'grape-middleware-logger'
 gem 'grape-route-helpers'
 gem 'grape-entity'
 gem 'kramdown'
+gem 'httparty'
+gem 'pg'
 gem 'rack-cors'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.1.0'
-gem 'httparty'
 
 # documentation
 gem 'grape-swagger'
