@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160505215040) do
+ActiveRecord::Schema.define(version: 20160508201044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,59 @@ ActiveRecord::Schema.define(version: 20160505215040) do
     t.text     "venue_blurb"
     t.string   "dateMD"
     t.text     "web_description"
+  end
+
+  create_table "truck_events", force: :cascade do |t|
+    t.string  "day_of_week"
+    t.string  "end_time"
+    t.string  "latitude"
+    t.string  "longitude"
+    t.integer "neighborhood_id"
+    t.string  "start_time"
+    t.integer "vendor_id"
+    t.string  "metro"
+    t.string  "image"
+    t.string  "location"
+    t.text    "description"
+    t.string  "neighborhood"
+    t.string  "state"
+    t.string  "city"
+    t.string  "date_date"
+    t.string  "start_time_text"
+    t.string  "end_time_text"
+    t.string  "event"
+    t.string  "dateMD"
+    t.string  "hashtag"
+    t.boolean "hasFree"
+    t.boolean "hasEvent"
+    t.boolean "hasSpecial"
+    t.string  "landmark"
+    t.boolean "isFeatured"
+    t.string  "slug"
+    t.string  "truck_name"
+  end
+
+  create_table "truck_vendors", force: :cascade do |t|
+    t.string  "contact_name"
+    t.string  "contact_email"
+    t.string  "contact_phone"
+    t.text    "description"
+    t.string  "facebook"
+    t.string  "hashtag"
+    t.string  "image"
+    t.string  "instagram"
+    t.string  "logo"
+    t.text    "menu"
+    t.string  "name"
+    t.string  "phone_number"
+    t.float   "price_score"
+    t.string  "primary_category"
+    t.float   "score"
+    t.string  "secondary_category"
+    t.string  "slug"
+    t.string  "twitter"
+    t.string  "url"
+    t.boolean "isFeatured"
   end
 
   create_table "venues", force: :cascade do |t|
