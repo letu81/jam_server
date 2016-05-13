@@ -47,6 +47,6 @@ docs
 
 [/events](https://thedistrictin-api.herokuapp.com/v1/events)
 
-[/venues]https://thedistrictin-api.herokuapp.com/v1/venues)
+[/venues](https://thedistrictin-api.herokuapp.com/v1/venues)
 
 ![theDistrictNetwork](http://i.imgur.com/zuo0jYu.png)
