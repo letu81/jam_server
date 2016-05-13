@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
 
-ruby '2.3.0
-'
+ruby '2.3.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 gem 'pg'
@@ -32,6 +31,7 @@ gem 'grape-swagger'
 gem 'grape-swagger-rails'
 
 gem 'usecasing'
+
 # JS
 gem 'jquery-rails'
 gem 'turbolinks'
