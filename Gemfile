@@ -5,24 +5,33 @@ ruby '2.3.0
 '
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
-
 gem 'pg'
+gem 'puma'
+
 # api
 gem 'grape', '0.14.0'
 gem 'grape-middleware-logger'
 gem 'grape-route-helpers'
 gem 'grape-entity'
 gem 'kramdown'
-gem 'rack-cors'
+gem 'rack-cors', require: 'rack/cors'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'httparty'
 
+# Authentication
+gem 'doorkeeper'
+gem 'wine_bouncer'
+gem 'bcrypt'
+gem 'hashie-forbidden_attributes'
+gem 'oauth2'
+
 # documentation
 gem 'grape-swagger'
 gem 'grape-swagger-rails'
 
+gem 'usecasing'
 # JS
 gem 'jquery-rails'
 gem 'turbolinks'
