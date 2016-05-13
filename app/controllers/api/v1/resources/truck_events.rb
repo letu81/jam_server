@@ -8,7 +8,7 @@ module API
             success API::V1::Entities::TruckEvent
           end
           get do
-            present TruckEvent.all, with: API::V1::Entities::TruckEvent
+            present paginate(TruckEvent.all), with: API::V1::Entities::TruckEvent
           end
         end
       end

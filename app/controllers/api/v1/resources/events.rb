@@ -8,7 +8,7 @@ module API
             success API::V1::Entities::Event
           end
           get do
-            present Event.all, with: API::V1::Entities::Event
+            present paginate(Event.all), with: API::V1::Entities::Event
           end
         end
       end

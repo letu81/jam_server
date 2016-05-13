@@ -8,7 +8,7 @@ module API
             success API::V1::Entities::Venue
           end
           get do
-            present Venue.all, with: API::V1::Entities::Venue
+            present paginate(Venue.all), with: API::V1::Entities::Venue
           end
         end
       end

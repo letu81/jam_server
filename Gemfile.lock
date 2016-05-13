@@ -36,6 +36,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    api-pagination (4.3.0)
     arel (6.0.3)
     ast (2.2.0)
     awesome_print (1.6.1)
@@ -119,6 +120,9 @@ GEM
       thor (>= 0.14, < 2.0)
     json (1.8.3)
     jwt (1.5.1)
+    kaminari (0.16.3)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
     kramdown (1.11.1)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -258,6 +262,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  api-pagination
   bcrypt
   coffee-rails (~> 4.1.0)
   doorkeeper
@@ -273,6 +278,7 @@ DEPENDENCIES
   httparty
   jbuilder (~> 2.0)
   jquery-rails
+  kaminari
   kramdown
   oauth2
   pg
