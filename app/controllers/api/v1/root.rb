@@ -4,8 +4,8 @@ module API
     class Root < API::Dispatch
       include API::V1::Defaults
 
-      version 'v1'
-      # use ::WineBouncer::OAuth2
+      version 'v1', using: :path
+      use ::WineBouncer::OAuth2
 
       module JsonErrorFormatter
         def self.call(message, _backtrace, _options, _env)
@@ -45,6 +45,8 @@ module API
       mount API::V1::Resources::Events
       mount API::V1::Resources::TruckEvents
       mount API::V1::Resources::TruckVendors
+      mount API::V1::Resources::Me
+      mount API::V1::Resources::Users
 
       desc 'Alive endpoint', hidden: true
       resource :ping do
@@ -58,7 +60,7 @@ module API
           mount_path: 'doc',
           hide_documentation_path: true,
           hide_format: true,
-          # markdown: GrapeSwagger::Markdown::KramdownAdapter,
+          markdown: GrapeSwagger::Markdown::KramdownAdapter.new,
           info: {
               title: 'theDistrict.in API',
               description: 'The wine-centric API of theDistrict.in'

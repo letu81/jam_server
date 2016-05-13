@@ -6,10 +6,9 @@ module API
 
       included do
         helpers do
-          # will use with auth
-          # def current_user
-          #   resource_owner
-          # end
+          def current_user
+            resource_owner
+          end
 
           def present_model(model, with:)
             if model.valid?
