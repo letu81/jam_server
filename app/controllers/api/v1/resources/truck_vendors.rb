@@ -8,7 +8,7 @@ module API
             success API::V1::Entities::TruckVendor
           end
           get do
-            present TruckVendor.all, with: API::V1::Entities::TruckVendor
+            present paginate(TruckVendor.all), with: API::V1::Entities::TruckVendor
           end
         end
       end
