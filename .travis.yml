@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.3.0
+env:
+  - DB=postgresql
+before_install: cp config/database.travis.yml config/database.yml
+script:
+  - export RAILS_ENV=test
+  - bundle exec rake db:create db:migrate
+  - bundle exec rake db:test:prepare

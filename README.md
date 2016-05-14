@@ -137,4 +137,3 @@ docs
 [/venues](https://thedistrictin-api.herokuapp.com/v1/venues)
 
 ![theDistrictNetwork](http://i.imgur.com/zuo0jYu.png)
->>>>>>> 97cdebca131cd3876a2fea8e129ccf0b6b91178c
