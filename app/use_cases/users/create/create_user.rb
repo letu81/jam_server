@@ -3,14 +3,12 @@ module Users
   module Create
     class CreateUser < UseCase::Base
       def perform
-        binding.pry
         context.user = User.create(create_params)
         stop! unless context.user.valid?
       end
 
 
       def create_params
-        binding.pry
         context
           .to_hash
           .merge(confirmation_token: SecureRandom.uuid.to_s)
