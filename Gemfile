@@ -14,12 +14,8 @@ gem 'grape-route-helpers'
 gem 'grape-entity'
 gem 'kramdown'
 gem 'rack-cors', require: 'rack/cors'
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'httparty'
 gem 'kaminari'
-gem 'api-pagination'
 
 # Authentication
 gem 'doorkeeper'

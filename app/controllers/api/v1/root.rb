@@ -4,7 +4,7 @@ module API
     class Root < API::Dispatch
       include API::V1::Defaults
 
-      version 'v1', using: :path
+      version 'v1'
       use ::WineBouncer::OAuth2
 
       module JsonErrorFormatter
