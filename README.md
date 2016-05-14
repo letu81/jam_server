@@ -1,8 +1,5 @@
-# thedistrict.in REST-like API v2
-
 Rails-Grape REST-like API for theDistrict.in.
-=============================================================
-# thedistrict.in REST-like API v1
+=============================================
 
 ### rails 4.2.6
 ### ruby 2.3.0
