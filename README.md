@@ -133,4 +133,4 @@ docs
 
 [/venues](https://thedistrictin-api.herokuapp.com/v1/venues)
 
-![theDistrictNetwork](http://i.imgur.com/zuo0jYu.png)
+![theDistrictNetwork](http://i.imgur.com/nW1wtXz.png)
