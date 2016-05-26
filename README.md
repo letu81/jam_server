@@ -19,6 +19,8 @@ To get started
 
 * Visit http://localhost:3000/v1/events to see an example of what the response would be
 
+* To get the application secret_key and client_id open the console with `heroku run console` then enter `app = Doorkeeper::Application.create :name => "thedistrictin", :redirect_uri => "https://thedistrictin-api.herokuapp.com/"'
+
 ##Purpose
 The purpose of this document is to ensure all members of the api team follow best practices.
 
