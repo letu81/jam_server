@@ -1,19 +1,20 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
 default: &default
-  username: jam
-  password: llq123@jam
-  host: localhost
-  adapter: postgresql
+  adapter: mysql2
   encoding: utf8
+  reconnect: false
   pool: 5
-  timeout: 5000
-  port: 5432
+  username: root
+  password: 
 
 development:
   <<: *default
-  database: jam_test_v11
+  database: jam_server_dev
 production:
   <<: *default
-  database: jam_test_v11
-test:
-  <<: *default
-  database: jam_test_v11
+  database: jam_server_dev

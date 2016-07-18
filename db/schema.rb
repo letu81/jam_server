@@ -13,18 +13,15 @@
 
 ActiveRecord::Schema.define(version: 20160616232908) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "addresses", force: :cascade do |t|
-    t.integer  "user_id",                    null: false
-    t.string   "name"
-    t.string   "mobile",                     null: false
-    t.string   "region",                     null: false
-    t.string   "address",                    null: false
-    t.boolean  "is_default", default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.integer  "user_id",    limit: 4,                   null: false
+    t.string   "name",       limit: 255
+    t.string   "mobile",     limit: 255,                 null: false
+    t.string   "region",     limit: 255,                 null: false
+    t.string   "address",    limit: 255,                 null: false
+    t.boolean  "is_default",             default: false, null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
   end
 
   add_index "addresses", ["mobile"], name: "index_addresses_on_mobile", using: :btree
@@ -37,23 +34,23 @@ ActiveRecord::Schema.define(version: 20160616232908) do
     t.boolean  "verified",               default: true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "c_type"
+    t.integer  "c_type",     limit: 4
   end
 
   add_index "auth_codes", ["code"], name: "index_auth_codes_on_code", using: :btree
   add_index "auth_codes", ["mobile"], name: "index_auth_codes_on_mobile", using: :btree
 
   create_table "categories", force: :cascade do |t|
-    t.string  "name",     null: false
-    t.integer "position", null: false
+    t.string  "name",     limit: 255, null: false
+    t.integer "position", limit: 4,   null: false
   end
 
   add_index "categories", ["name"], name: "index_categories_on_name", unique: true, using: :btree
   add_index "categories", ["position"], name: "index_categories_on_position", unique: true, using: :btree
 
   create_table "category_products", force: :cascade do |t|
-    t.integer "category_id", null: false
-    t.integer "product_id",  null: false
+    t.integer "category_id", limit: 4, null: false
+    t.integer "product_id",  limit: 4, null: false
   end
 
   add_index "category_products", ["category_id", "product_id"], name: "index_category_products_on_cates_product", unique: true, using: :btree
@@ -61,11 +58,11 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "category_products", ["product_id"], name: "index_category_products_on_product_id", using: :btree
 
   create_table "devices", force: :cascade do |t|
-    t.string   "name",                      null: false
-    t.integer  "product_id",    default: 1, null: false
-    t.string   "uuid",                      null: false
-    t.string   "private_token",             null: false
-    t.string   "amqp_queue"
+    t.string   "name",          limit: 255,             null: false
+    t.integer  "product_id",    limit: 4,   default: 1, null: false
+    t.string   "uuid",          limit: 255,             null: false
+    t.string   "private_token", limit: 255,             null: false
+    t.string   "amqp_queue",    limit: 255
     t.datetime "activited_at"
     t.datetime "last_request"
   end
@@ -78,27 +75,27 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
-    t.integer  "resource_owner_id", null: false
-    t.integer  "application_id",    null: false
-    t.string   "token",             null: false
-    t.integer  "expires_in",        null: false
-    t.text     "redirect_uri",      null: false
-    t.datetime "created_at",        null: false
+    t.integer  "resource_owner_id", limit: 4,     null: false
+    t.integer  "application_id",    limit: 4,     null: false
+    t.string   "token",             limit: 255,   null: false
+    t.integer  "expires_in",        limit: 4,     null: false
+    t.text     "redirect_uri",      limit: 65535, null: false
+    t.datetime "created_at",                      null: false
     t.datetime "revoked_at"
-    t.string   "scopes"
+    t.string   "scopes",            limit: 255
   end
 
   add_index "oauth_access_grants", ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
 
   create_table "oauth_access_tokens", force: :cascade do |t|
-    t.integer  "resource_owner_id"
-    t.integer  "application_id"
-    t.string   "token",             null: false
-    t.string   "refresh_token"
-    t.integer  "expires_in"
+    t.integer  "resource_owner_id", limit: 4
+    t.integer  "application_id",    limit: 4
+    t.string   "token",             limit: 255, null: false
+    t.string   "refresh_token",     limit: 255
+    t.integer  "expires_in",        limit: 4
     t.datetime "revoked_at"
-    t.datetime "created_at",        null: false
-    t.string   "scopes"
+    t.datetime "created_at",                    null: false
+    t.string   "scopes",            limit: 255
   end
 
   add_index "oauth_access_tokens", ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
@@ -106,11 +103,11 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
 
   create_table "oauth_applications", force: :cascade do |t|
-    t.string   "name",                      null: false
-    t.string   "uid",                       null: false
-    t.string   "secret",                    null: false
-    t.text     "redirect_uri",              null: false
-    t.string   "scopes",       default: "", null: false
+    t.string   "name",         limit: 255,                null: false
+    t.string   "uid",          limit: 255,                null: false
+    t.string   "secret",       limit: 255,                null: false
+    t.text     "redirect_uri", limit: 65535,              null: false
+    t.string   "scopes",       limit: 255,   default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -121,20 +118,20 @@ ActiveRecord::Schema.define(version: 20160616232908) do
     t.string   "title",          limit: 255
     t.string   "intro",          limit: 255
     t.string   "image",          limit: 255
-    t.decimal  "low_price",                  precision: 8, scale: 2, default: 0.0
-    t.decimal  "origin_price",               precision: 8, scale: 2, default: 0.0
+    t.decimal  "low_price",                    precision: 8, scale: 2, default: 0.0
+    t.decimal  "origin_price",                 precision: 8, scale: 2, default: 0.0
     t.string   "subtitle",       limit: 255
-    t.boolean  "on_sale",                                            default: true
+    t.boolean  "on_sale",                                              default: true
     t.string   "units",          limit: 255
-    t.text     "note"
-    t.integer  "stock_count",                                        default: 1000
+    t.text     "note",           limit: 65535
+    t.integer  "stock_count",    limit: 4,                             default: 1000
     t.string   "summary_image",  limit: 255
-    t.boolean  "is_discount",                                        default: false
+    t.boolean  "is_discount",                                          default: false
     t.datetime "discounted_at"
-    t.integer  "discount_score",                                     default: 0
-    t.integer  "orders_count",                                       default: 0
-    t.integer  "likes_count",                                        default: 0
-    t.integer  "postion",                                            default: 0
+    t.integer  "discount_score", limit: 4,                             default: 0
+    t.integer  "orders_count",   limit: 4,                             default: 0
+    t.integer  "likes_count",    limit: 4,                             default: 0
+    t.integer  "postion",        limit: 4,                             default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -147,8 +144,8 @@ ActiveRecord::Schema.define(version: 20160616232908) do
 
   create_table "send_sms_logs", force: :cascade do |t|
     t.string   "mobile",            limit: 255
-    t.integer  "send_type"
-    t.integer  "sms_total",                     default: 0
+    t.integer  "send_type",         limit: 4
+    t.integer  "sms_total",         limit: 4,   default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "first_sms_sent_at"
@@ -157,9 +154,9 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "send_sms_logs", ["mobile", "send_type"], name: "index_mobile_type_on_sms_logs", using: :btree
 
   create_table "user_devices", force: :cascade do |t|
-    t.integer "user_id",   null: false
-    t.integer "device_id", null: false
-    t.integer "ownership", null: false
+    t.integer "user_id",   limit: 4, null: false
+    t.integer "device_id", limit: 4, null: false
+    t.integer "ownership", limit: 4, null: false
   end
 
   add_index "user_devices", ["device_id"], name: "index_user_devices_on_device_id", using: :btree
@@ -167,22 +164,22 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "user_devices", ["user_id"], name: "index_user_devices_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                              default: "", null: false
-    t.string   "encrypted_password",                 default: "", null: false
-    t.string   "reset_password_token"
+    t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "encrypted_password",     limit: 255, default: "", null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                      default: 0,  null: false
+    t.integer  "sign_in_count",          limit: 4,   default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.inet     "current_sign_in_ip"
-    t.inet     "last_sign_in_ip"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
     t.string   "mobile",                 limit: 255
     t.string   "username",               limit: 255
-    t.integer  "user_type",                          default: 1,  null: false, comment: "1用户、2锁匠、3商家、4管理员"
+    t.integer  "user_type",              limit: 4,   default: 1,  null: false, comment: "1用户、2锁匠、3商家、4管理员"
     t.string   "avatar",                 limit: 255
     t.string   "private_token",          limit: 255
-    t.integer  "score",                              default: 0,               comment: "积分"
+    t.integer  "score",                  limit: 4,   default: 0,               comment: "积分"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
