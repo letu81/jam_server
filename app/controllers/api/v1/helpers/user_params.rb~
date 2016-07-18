@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+module API
+  module V1
+    module Helpers
+      module UserParams
+        extend Grape::API::Helpers
+
+        USER_TYPE = API::V1::Types::UserType
+
+        params :update do
+          optional :mobile, type: String, desc: 'The users phone number'
+          optional :username, desc: 'User name'
+          optional :address, type: Hash do
+            optional :line1, type: String, desc: 'The address line 1'
+            optional :line2, type: String, desc: 'The address line 2'
+            optional :state, type: String, desc: 'The state'
+            optional :zipcode, type: String, desc: 'The zipcode'
+            optional :city, type: String, desc: 'The city'
+          end
+        end
+      end
+    end
+  end
+end

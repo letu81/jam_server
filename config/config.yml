@@ -1,0 +1,24 @@
+defaults: &defaults
+  app_name: "佳安美智控"
+  domain: "127.0.0.1:3000"
+  mail_domain: "jiaanmei.com"
+  upload_url: ""
+  email_sender: 'noreply@jiaanmei.com'
+  sms_verification: '12107'
+  sms_order: '24351'
+  sms_group: '40569'
+  mq_host: '127.0.0.1'
+  mq_port: '5672'
+  mq_vhost: '/'
+  mq_user: 'guest'
+  mq_password: 'guest'
+
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
