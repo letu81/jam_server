@@ -41,12 +41,11 @@ module API
                                                   'Access-Control-Request-Method' => '*').finish
       end
 
-
-      mount API::V1::Resources::Events
-      mount API::V1::Resources::Venues
-      mount API::V1::Resources::TruckEvents
-      mount API::V1::Resources::TruckVendors
+      mount API::V1::Resources::Categories
+      mount API::V1::Resources::Devices
       mount API::V1::Resources::Me
+      mount API::V1::Resources::Messages
+      mount API::V1::Resources::Products
       mount API::V1::Resources::Users
 
       desc 'Alive endpoint', hidden: true
@@ -63,8 +62,8 @@ module API
           hide_format: true,
           markdown: GrapeSwagger::Markdown::KramdownAdapter.new,
           info: {
-              title: 'theDistrict.in API',
-              description: 'The wine-centric API of theDistrict.in'
+              title: 'jam smarthome API',
+              description: 'The smarthome API of jiaanmei.com'
           }
       )
     end

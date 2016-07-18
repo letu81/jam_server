@@ -1,23 +1,19 @@
+default: &default
+  username: jam
+  password: llq123@jam
+  host: localhost
+  adapter: postgresql
+  encoding: utf8
+  pool: 5
+  timeout: 5000
+  port: 5432
+
 development:
-  adapter: postgresql
-  encoding: utf8
-  database: project_development
-  pool: 5
-  username:
-  password:
-
-test: &TEST
-  adapter: postgresql
-  encoding: utf8
-  database: project_test
-  pool: 5
-  username:
-  password:
-
+  <<: *default
+  database: jam_test_v11
 production:
-  adapter: postgresql
-  encoding: utf8
-  database: project_production
-  pool: 5
-  username:
-  password:
+  <<: *default
+  database: jam_test_v11
+test:
+  <<: *default
+  database: jam_test_v11

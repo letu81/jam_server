@@ -4,18 +4,22 @@ source 'https://rubygems.org'
 ruby '2.3.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
-gem 'pg'
+gem 'pg', '0.18.1'
 gem 'puma'
+
+gem 'devise', '4.1.1'
+gem 'rest-client', '1.8.0'
+gem 'settingslogic', '~> 2.0.9'
 
 # api
 gem 'grape', '0.14.0'
-gem 'grape-middleware-logger'
-gem 'grape-route-helpers'
-gem 'grape-entity'
+gem 'grape-middleware-logger', '1.6.0'
+gem 'grape-route-helpers', '1.2.2'
+gem 'grape-entity', '0.5.1'
 gem 'kramdown'
 gem 'rack-cors', require: 'rack/cors'
 gem 'httparty'
-gem 'kaminari'
+gem 'kaminari', '0.16.3'
 
 # Authentication
 gem 'doorkeeper'
@@ -25,15 +29,26 @@ gem 'hashie-forbidden_attributes'
 gem 'oauth2'
 
 # documentation
-gem 'grape-swagger'
-gem 'grape-swagger-rails'
+gem 'grape-swagger', '0.20.3'
+gem 'grape-swagger-rails', '0.2.0'
 
 gem 'usecasing'
+
+gem 'migration_comments'
 
 # JS
 gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
+
+# Enums
+gem 'enumerate_it', '1.3.0'
+
+# RabbitMQ
+gem 'bunny', '2.4.0'
+
+# Colored logging
+gem 'shog', '0.1.8'
 
 # TODO for later
 # instrumentation

@@ -5,7 +5,7 @@ module API
       class Me < API::V1::Root
         helpers API::V1::Helpers::UserParams
 
-        resource :me, desc: 'Operations related to current user' do
+        resource :me, desc: '个人相关接口' do
           desc 'Get current user' do
             headers API::V1::Defaults.auth_headers
             success API::V1::Entities::User
@@ -15,16 +15,16 @@ module API
             present current_user, with: API::V1::Entities::User
           end
 
-          desc 'Update a user' do
+          desc '反馈意见' do
             headers API::V1::Defaults.auth_headers
             success API::V1::Entities::User
           end
           params do
-            use :update
-            optional :email, type: String, desc: 'User email'
+            optional :title, type: String, desc: 'title'
+            optional :content, type: String, desc: 'content'
           end
           oauth2
-          patch '/' do
+          post '/feedback' do
             context = declared(params, include_missing: false).merge(user: current_user)
             present_model ::Me::Update::Base.perform(context).user, with: API::V1::Entities::User
           end

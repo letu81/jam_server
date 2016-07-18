@@ -86,4 +86,11 @@ Rails.application.configure do
   #     :domain => 'patron.gallery',
   #     :enable_starttls_auto => true
   # }
+  config.action_mailer.default_url_options = { host: Setting.domain }
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.smtp_settings = { 
+    address: Setting.mail_domain, 
+    domain:  Setting.domain, 
+    port:    25 
+  }
 end

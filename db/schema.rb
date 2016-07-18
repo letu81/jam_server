@@ -11,54 +11,71 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512201024) do
+ActiveRecord::Schema.define(version: 20160616232908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "events", force: :cascade do |t|
-    t.integer  "event_id"
-    t.integer  "venue_id"
-    t.text     "image"
-    t.string   "category"
-    t.string   "sub_category"
-    t.float    "score"
-    t.string   "seatgeek_url"
-    t.string   "title"
-    t.string   "short_title"
-    t.boolean  "date_tbd"
-    t.boolean  "time_tbd"
-    t.datetime "datetime_local"
-    t.boolean  "added_manually"
-    t.string   "youtube"
-    t.string   "facebook"
-    t.string   "twitter"
-    t.string   "spotify"
-    t.string   "soundcloud"
-    t.string   "hashtag"
-    t.string   "date"
-    t.boolean  "isFree"
-    t.string   "venue_name"
-    t.string   "city"
-    t.string   "state"
-    t.string   "day"
-    t.date     "announce_date"
-    t.date     "date_date"
-    t.boolean  "isFeatured"
-    t.string   "age_limit"
-    t.string   "price"
-    t.string   "time"
-    t.text     "description"
-    t.text     "slug"
-    t.string   "eventStatus"
-    t.string   "address"
-    t.string   "lat"
-    t.string   "lon"
-    t.text     "event_blurb"
-    t.text     "venue_blurb"
-    t.string   "dateMD"
-    t.text     "web_description"
+  create_table "addresses", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.string   "name"
+    t.string   "mobile",                     null: false
+    t.string   "region",                     null: false
+    t.string   "address",                    null: false
+    t.boolean  "is_default", default: false, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
+
+  add_index "addresses", ["mobile"], name: "index_addresses_on_mobile", using: :btree
+  add_index "addresses", ["user_id", "is_default"], name: "index_default_address_on_user_id", using: :btree
+  add_index "addresses", ["user_id"], name: "index_addresses_on_user_id", using: :btree
+
+  create_table "auth_codes", force: :cascade do |t|
+    t.string   "code",       limit: 255
+    t.string   "mobile",     limit: 255
+    t.boolean  "verified",               default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "c_type"
+  end
+
+  add_index "auth_codes", ["code"], name: "index_auth_codes_on_code", using: :btree
+  add_index "auth_codes", ["mobile"], name: "index_auth_codes_on_mobile", using: :btree
+
+  create_table "categories", force: :cascade do |t|
+    t.string  "name",     null: false
+    t.integer "position", null: false
+  end
+
+  add_index "categories", ["name"], name: "index_categories_on_name", unique: true, using: :btree
+  add_index "categories", ["position"], name: "index_categories_on_position", unique: true, using: :btree
+
+  create_table "category_products", force: :cascade do |t|
+    t.integer "category_id", null: false
+    t.integer "product_id",  null: false
+  end
+
+  add_index "category_products", ["category_id", "product_id"], name: "index_category_products_on_cates_product", unique: true, using: :btree
+  add_index "category_products", ["category_id"], name: "index_category_products_on_category_id", using: :btree
+  add_index "category_products", ["product_id"], name: "index_category_products_on_product_id", using: :btree
+
+  create_table "devices", force: :cascade do |t|
+    t.string   "name",                      null: false
+    t.integer  "product_id",    default: 1, null: false
+    t.string   "uuid",                      null: false
+    t.string   "private_token",             null: false
+    t.string   "amqp_queue"
+    t.datetime "activited_at"
+    t.datetime "last_request"
+  end
+
+  add_index "devices", ["activited_at"], name: "index_devices_on_activited_at", using: :btree
+  add_index "devices", ["amqp_queue"], name: "index_devices_on_amqp_queue", unique: true, using: :btree
+  add_index "devices", ["name"], name: "index_devices_on_name", using: :btree
+  add_index "devices", ["product_id", "activited_at"], name: "index_devices_on_product_activited", using: :btree
+  add_index "devices", ["product_id"], name: "index_devices_on_product_id", using: :btree
+  add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", null: false
@@ -100,99 +117,78 @@ ActiveRecord::Schema.define(version: 20160512201024) do
 
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
-  create_table "truck_events", force: :cascade do |t|
-    t.string  "day_of_week"
-    t.string  "end_time"
-    t.string  "latitude"
-    t.string  "longitude"
-    t.integer "neighborhood_id"
-    t.string  "start_time"
-    t.integer "vendor_id"
-    t.string  "metro"
-    t.string  "image"
-    t.string  "location"
-    t.text    "description"
-    t.string  "neighborhood"
-    t.string  "state"
-    t.string  "city"
-    t.string  "date_date"
-    t.string  "start_time_text"
-    t.string  "end_time_text"
-    t.string  "event"
-    t.string  "dateMD"
-    t.string  "hashtag"
-    t.boolean "hasFree"
-    t.boolean "hasEvent"
-    t.boolean "hasSpecial"
-    t.string  "landmark"
-    t.boolean "isFeatured"
-    t.string  "slug"
-    t.string  "truck_name"
+  create_table "products", force: :cascade do |t|
+    t.string   "title",          limit: 255
+    t.string   "intro",          limit: 255
+    t.string   "image",          limit: 255
+    t.decimal  "low_price",                  precision: 8, scale: 2, default: 0.0
+    t.decimal  "origin_price",               precision: 8, scale: 2, default: 0.0
+    t.string   "subtitle",       limit: 255
+    t.boolean  "on_sale",                                            default: true
+    t.string   "units",          limit: 255
+    t.text     "note"
+    t.integer  "stock_count",                                        default: 1000
+    t.string   "summary_image",  limit: 255
+    t.boolean  "is_discount",                                        default: false
+    t.datetime "discounted_at"
+    t.integer  "discount_score",                                     default: 0
+    t.integer  "orders_count",                                       default: 0
+    t.integer  "likes_count",                                        default: 0
+    t.integer  "postion",                                            default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "truck_vendors", force: :cascade do |t|
-    t.string  "contact_name"
-    t.string  "contact_email"
-    t.string  "contact_phone"
-    t.text    "description"
-    t.string  "facebook"
-    t.string  "hashtag"
-    t.string  "image"
-    t.string  "instagram"
-    t.string  "logo"
-    t.text    "menu"
-    t.string  "name"
-    t.string  "phone_number"
-    t.float   "price_score"
-    t.string  "primary_category"
-    t.float   "score"
-    t.string  "secondary_category"
-    t.string  "slug"
-    t.string  "twitter"
-    t.string  "url"
-    t.boolean "isFeatured"
+  add_index "products", ["is_discount"], name: "index_products_on_is_discount", using: :btree
+  add_index "products", ["on_sale", "is_discount"], name: "index_products_on_on_sale_and_is_discount", using: :btree
+  add_index "products", ["on_sale"], name: "index_products_on_on_sale", using: :btree
+  add_index "products", ["postion"], name: "index_products_on_postion", using: :btree
+  add_index "products", ["title"], name: "index_products_on_title", using: :btree
+
+  create_table "send_sms_logs", force: :cascade do |t|
+    t.string   "mobile",            limit: 255
+    t.integer  "send_type"
+    t.integer  "sms_total",                     default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "first_sms_sent_at"
   end
+
+  add_index "send_sms_logs", ["mobile", "send_type"], name: "index_mobile_type_on_sms_logs", using: :btree
+
+  create_table "user_devices", force: :cascade do |t|
+    t.integer "user_id",   null: false
+    t.integer "device_id", null: false
+    t.integer "ownership", null: false
+  end
+
+  add_index "user_devices", ["device_id"], name: "index_user_devices_on_device_id", using: :btree
+  add_index "user_devices", ["user_id", "device_id", "ownership"], name: "index_user_devices_on_owner", unique: true, using: :btree
+  add_index "user_devices", ["user_id"], name: "index_user_devices_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",          null: false
-    t.string   "password",       null: false
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "address_line_1"
-    t.string   "address_line_2"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zipcode"
-    t.string   "phone_number"
-    t.string   "type"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.string   "email",                              default: "", null: false
+    t.string   "encrypted_password",                 default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                      default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet     "current_sign_in_ip"
+    t.inet     "last_sign_in_ip"
+    t.string   "mobile",                 limit: 255
+    t.string   "username",               limit: 255
+    t.integer  "user_type",                          default: 1,  null: false, comment: "1用户、2锁匠、3商家、4管理员"
+    t.string   "avatar",                 limit: 255
+    t.string   "private_token",          limit: 255
+    t.integer  "score",                              default: 0,               comment: "积分"
   end
 
-  create_table "venues", force: :cascade do |t|
-    t.boolean "added_manually"
-    t.string  "address"
-    t.text    "blurb"
-    t.string  "category"
-    t.string  "city"
-    t.string  "facebook"
-    t.boolean "hasSpecial"
-    t.string  "instagram"
-    t.string  "image"
-    t.boolean "isFeatured"
-    t.string  "lat"
-    t.string  "location"
-    t.string  "lon"
-    t.string  "logo"
-    t.string  "metro"
-    t.string  "name"
-    t.string  "phone"
-    t.string  "score"
-    t.string  "slug"
-    t.string  "state"
-    t.string  "twitter"
-    t.integer "venue_id"
-    t.string  "website"
-  end
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["mobile"], name: "index_users_on_mobile", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["user_type"], name: "index_users_on_user_type", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
 end
