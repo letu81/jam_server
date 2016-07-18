@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Rails-Grape REST-like API for theDistrict.in.
 =============================================
 
@@ -136,3 +137,6 @@ docs
 [/venues](https://thedistrictin-api.herokuapp.com/v1/venues)
 
 ![theDistrictNetwork](http://i.imgur.com/nW1wtXz.png)
+=======
+# jam_server
+>>>>>>> origin/master
