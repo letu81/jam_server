@@ -7,7 +7,7 @@ module API
         helpers API::V1::Helpers::UserParams
         helpers API::V1::Helpers::Application
 
-        resources :users, desc: '注册登录相关接口[ok]' do
+        resources :users, desc: '注册登录相关接口[OK]' do
           desc '获取短信验证码' do
             headers API::V1::Defaults.client_auth_headers
           end
@@ -18,8 +18,8 @@ module API
 
           post '/sms_verification_code' do
             unless check_mobile(params[:mobile])
-	      return Failure.new(100, "手机号错误")
-	    end
+	            return Failure.new(100, "手机号错误")
+	          end
             unless %W(1 2 3).include?(params[:type].to_s)
               return Failure.new(-1, "type参数错误")
             end
@@ -90,11 +90,10 @@ module API
             unless user
               return { code: 102, message: "用户未注册" } 
             end
-        
-            #password = Base64.decode64(params[:password])
-            password = params[:password]
+            password = Base64.decode64(params[:password])
+            #password = params[:password]
             if user.valid_password?(password)
-              { code: 0, message: "ok", data: { token: user.private_token || "" } }
+              { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username } }
             else
               { code: 107, message: "登录密码不正确" }
             end
@@ -131,7 +130,7 @@ module API
             @user = User.new(email: "#{params[:mobile].gsub(/\s+/,"")}@jiananmei.com", mobile: params[:mobile].gsub(/\s+/, ''), password: password, password_confirmation: password, username: "#{params[:mobile].gsub(/\s+/,"")}")
             if @user.save
               warden.set_user(@user)
-              ac.update_attribute('verified', false)
+              ac.update_attribute(:verified, false)
               { code: 0, message: "用户注册成功" }
             else
               return Failure.new(106, "用户注册失败")

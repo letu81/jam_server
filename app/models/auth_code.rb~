@@ -1,2 +1,0 @@
-class AuthCode < ActiveRecord::Base
-end

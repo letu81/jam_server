@@ -3,7 +3,7 @@ class CreateUserDevices < ActiveRecord::Migration
     create_table :user_devices do |t|
       t.integer  :user_id,   null: false
       t.integer  :device_id,    null: false
-      t.integer  :ownership,    null: false, :defaut => 1, :comments => "1 owner, 2 share"
+      t.integer  :ownership,    null: false, :default => 1, :comments => "1 owner, 2 share"
     end
     add_index :user_devices, :user_id, using: :btree
     add_index :user_devices, :device_id, using: :btree

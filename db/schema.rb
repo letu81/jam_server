@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616232908) do
+ActiveRecord::Schema.define(version: 20160823030852) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -40,6 +40,14 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "auth_codes", ["code"], name: "index_auth_codes_on_code", using: :btree
   add_index "auth_codes", ["mobile"], name: "index_auth_codes_on_mobile", using: :btree
 
+  create_table "brands", force: :cascade do |t|
+    t.string "name",       limit: 255, null: false
+    t.string "identifier", limit: 255, null: false
+  end
+
+  add_index "brands", ["identifier"], name: "index_brands_on_identifier", using: :btree
+  add_index "brands", ["name"], name: "index_brands_on_name", using: :btree
+
   create_table "categories", force: :cascade do |t|
     t.string  "name",     limit: 255, null: false
     t.integer "position", limit: 4,   null: false
@@ -57,22 +65,63 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "category_products", ["category_id"], name: "index_category_products_on_category_id", using: :btree
   add_index "category_products", ["product_id"], name: "index_category_products_on_product_id", using: :btree
 
+  create_table "device_categories", force: :cascade do |t|
+    t.string "name", limit: 255
+  end
+
+  add_index "device_categories", ["name"], name: "index_device_categories_on_name", using: :btree
+
+  create_table "device_uuids", force: :cascade do |t|
+    t.string   "uuid",               limit: 255
+    t.string   "password",           limit: 255
+    t.integer  "device_category_id", limit: 4,   default: 1, null: false
+    t.integer  "kind_id",            limit: 4,               null: false
+    t.integer  "status_id",          limit: 4,   default: 1, null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+  end
+
+  add_index "device_uuids", ["device_category_id"], name: "index_device_uuids_on_device_category_id", using: :btree
+  add_index "device_uuids", ["kind_id"], name: "index_device_uuids_on_kind_id", using: :btree
+  add_index "device_uuids", ["status_id"], name: "index_device_uuids_on_status_id", using: :btree
+  add_index "device_uuids", ["uuid", "status_id"], name: "index_device_uuids_on_uuid_and_status_id", using: :btree
+  add_index "device_uuids", ["uuid"], name: "index_device_uuids_on_uuid", using: :btree
+
   create_table "devices", force: :cascade do |t|
-    t.string   "name",          limit: 255,             null: false
-    t.integer  "product_id",    limit: 4,   default: 1, null: false
-    t.string   "uuid",          limit: 255,             null: false
-    t.string   "private_token", limit: 255,             null: false
-    t.string   "amqp_queue",    limit: 255
+    t.string   "name",         limit: 255, default: "门锁",  null: false
+    t.integer  "product_id",   limit: 4,   default: 1,     null: false
+    t.integer  "uuid",         limit: 4,                   null: false
+    t.boolean  "is_online",                default: false, null: false
+    t.integer  "status_id",    limit: 4,   default: 1,     null: false
+    t.string   "mac",          limit: 255, default: ""
     t.datetime "activited_at"
     t.datetime "last_request"
   end
 
   add_index "devices", ["activited_at"], name: "index_devices_on_activited_at", using: :btree
-  add_index "devices", ["amqp_queue"], name: "index_devices_on_amqp_queue", unique: true, using: :btree
   add_index "devices", ["name"], name: "index_devices_on_name", using: :btree
   add_index "devices", ["product_id", "activited_at"], name: "index_devices_on_product_activited", using: :btree
   add_index "devices", ["product_id"], name: "index_devices_on_product_id", using: :btree
+  add_index "devices", ["status_id"], name: "index_devices_on_status_id", unique: true, using: :btree
   add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.text     "content",    limit: 65535
+    t.string   "contact",    limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "kinds", force: :cascade do |t|
+    t.string  "name",      limit: 255,             null: false
+    t.integer "brand_id",  limit: 4,               null: false
+    t.integer "status_id", limit: 4,   default: 1, null: false
+  end
+
+  add_index "kinds", ["brand_id"], name: "index_kinds_on_brand_id", using: :btree
+  add_index "kinds", ["name"], name: "index_kinds_on_name", using: :btree
+  add_index "kinds", ["status_id"], name: "index_kinds_on_status_id", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", limit: 4,     null: false
@@ -154,9 +203,9 @@ ActiveRecord::Schema.define(version: 20160616232908) do
   add_index "send_sms_logs", ["mobile", "send_type"], name: "index_mobile_type_on_sms_logs", using: :btree
 
   create_table "user_devices", force: :cascade do |t|
-    t.integer "user_id",   limit: 4, null: false
-    t.integer "device_id", limit: 4, null: false
-    t.integer "ownership", limit: 4, null: false
+    t.integer "user_id",   limit: 4,             null: false
+    t.integer "device_id", limit: 4,             null: false
+    t.integer "ownership", limit: 4, default: 1, null: false
   end
 
   add_index "user_devices", ["device_id"], name: "index_user_devices_on_device_id", using: :btree
