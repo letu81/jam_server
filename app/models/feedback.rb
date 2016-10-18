@@ -1,4 +1,4 @@
 class Feedback < ActiveRecord::Base
-  validates :content, length: { max: 1000, min: 3 }, presence: true
-  validates :contact, length: { max: 20, min: 3 }, presence: true
+  validates :content, length: { maximum: 1000, minimum: 3 }, presence: true
+  validates :contact, length: { maximum: 20, minimum: 3 }, presence: true
 end

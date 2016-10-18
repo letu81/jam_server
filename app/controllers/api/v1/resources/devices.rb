@@ -64,7 +64,7 @@ module API
           post  '/cmd' do
             user = authenticate!
             p "device cmd"
-            socket = TCPSocket.new '127.0.0.1', 6009
+            socket = TCPSocket.new '183.62.232.142', 6009
             tcp_token = (Digest::MD5.hexdigest "#{SecureRandom.urlsafe_base64(nil, false)}-#{params[:device_id]}-#{params[:cmd]}-#{Time.now.to_i}")
             socket.puts("request: {token:#{tcp_token},device_id:#{params[:device_id]},cmd:#{params[:cmd]}}")
             socket.flush
