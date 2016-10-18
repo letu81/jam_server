@@ -119,19 +119,17 @@ module API
         
             ac = AuthCode.where('mobile = ? and code = ? and verified = ?', params[:mobile], params[:verification_code], true).first
             return Failure.new(104, "验证码无效") if ac.blank?
-
         
-            #password = Base64.decode64(params[:password])
-            password = params[:password]
+            password = Base64.decode64(params[:password])
             if password.length < 6
               return Failure.new(105, "密码太短，至少为6位")
             end
 
-            @user = User.new(email: "#{params[:mobile].gsub(/\s+/,"")}@jiananmei.com", mobile: params[:mobile].gsub(/\s+/, ''), password: password, password_confirmation: password, username: "#{params[:mobile].gsub(/\s+/,"")}")
+            @user = User.new(email: "#{params[:mobile].gsub(/\s+/,"")}@jiaanmei.com", mobile: params[:mobile].gsub(/\s+/, ''), password: password, password_confirmation: password, username: "#{params[:mobile].gsub(/\s+/,"")}")
             if @user.save
               warden.set_user(@user)
               ac.update_attribute(:verified, false)
-              { code: 0, message: "用户注册成功" }
+              { code: 0, message: "ok", data: { token: @user.private_token || "", id: @user.id, username: @user.username } }
             else
               return Failure.new(106, "用户注册失败")
             end
@@ -153,8 +151,7 @@ module API
               return Failure.new(109, "旧密码不正确")
             end
 
-            #new_password = Base64.decode64(params[:password])
-            new_password = params[:password]
+            new_password = Base64.decode64(params[:password])
             if new_password.length < 6
               return Failure.new(105, "密码太短，至少为6位")
             end
@@ -188,8 +185,7 @@ module API
               return Failure.new(104, "验证码无效")
             end
         
-            #password = Base64.decode64(params[:password])
-            password = params[:password]
+            password = Base64.decode64(params[:password])
             if password.length < 6
               return Failure.new(105, "密码太短，至少为6位")
             end

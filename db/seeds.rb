@@ -5,7 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-if false
+if true
 user = User.create!(username: 'tutu', email: 'tutu@123456', mobile: '15712002798', password: '123456', password_confirmation: '123456')
 DeviceCategory.create!(name: '网关')
 DeviceCategory.create!(name: '门锁') 
