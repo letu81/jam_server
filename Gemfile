@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-source 'https://rubygems.org'
+source 'https://ruby.taobao.org'
 
 ruby '2.3.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -51,6 +51,8 @@ gem 'bunny', '2.4.0'
 # Colored logging
 gem 'shog', '0.1.8'
 
+gem 'whenever', :require => false
+
 # TODO for later
 # instrumentation
 # gem 'raygun4ruby'
@@ -61,7 +63,8 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec-its'
   gem 'shoulda-matchers', require: false
-  gem 'factory_girl_rails'
+  gem 'nokogiri', '1.6.8'
+  gem 'factory_girl_rails', '4.7.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'pry-byebug'

@@ -51,6 +51,7 @@ module API
             datas = []
             datas << { id: 1, user_id: 1, user_name: "tutu回家了", oper_time: "3分钟前", content: "动态密码开门" }
             #datas << { id: 2, user_id: 1, user_name: "tutu回家了", oper_time: "2小时前", content: "一号指纹开门" }
+            p datas
             return { code: 0, message: "ok", data: datas } 
           end
 
@@ -65,18 +66,28 @@ module API
             user = authenticate!
             p "device cmd"
             socket = TCPSocket.new '183.62.232.142', 6009
+            #socket = TCPSocket.new '192.168.0.100', 6009
             tcp_token = (Digest::MD5.hexdigest "#{SecureRandom.urlsafe_base64(nil, false)}-#{params[:device_id]}-#{params[:cmd]}-#{Time.now.to_i}")
-            socket.puts("request: {token:#{tcp_token},device_id:#{params[:device_id]},cmd:#{params[:cmd]}}")
+            send_data = '{"mac":"test1", "cmd":"open"}'
+            socket.puts(send_data)
+            #socket.puts("#{params[:cmd].bytes.to_a.map{|x| '0x'+x.to_i.to_s(16)}.join('')}")
             socket.flush
             socket.close
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             case params[:cmd]
-            when '001'
+            when '7E000022A0'
               p 'add'
               device.update_attribute(:status_id, Device::STATUSES[:registered])
-            when '002'
+            when '7E000023A1'
               p 'sub'
+              device.update_attribute(:status_id, Device::STATUSES[:not_register])
+            when '003'
+              p 'lock on'
+              device.update_attribute(:status_id, Device::STATUSES[:lock_on])
+            when '004'
+              p 'lock off'
+              device.update_attribute(:status_id, Device::STATUSES[:lock_off])
             else
               p 'other'
             end

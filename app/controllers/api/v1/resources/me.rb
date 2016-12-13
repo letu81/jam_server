@@ -13,8 +13,10 @@ module API
           params do
             requires :token, type: String, desc: 'User token'
           end
-          get '/' do
+          post '/' do
             user = authenticate!
+            datas = {:name => user.username, :mobile => user.mobile}
+            p datas
             return { code: 0, message: "ok", data: datas } 
           end
 

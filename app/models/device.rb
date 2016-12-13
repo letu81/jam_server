@@ -1,5 +1,5 @@
 class Device < ActiveRecord::Base
-	STATUSES = {:not_register => 1, :registered => 2}
+	STATUSES = {:not_register => 1, :registered => 2, :lock_on => 3, :lock_off => 4}
 
 	has_one :device_uuid, :foreign_key => 'id'
 	belongs_to :user_device, :foreign_key => 'id'
