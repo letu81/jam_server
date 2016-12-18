@@ -67,30 +67,45 @@ module API
             p "device cmd"
             socket = TCPSocket.new '183.62.232.142', 6009
             #socket = TCPSocket.new '192.168.0.100', 6009
-            tcp_token = (Digest::MD5.hexdigest "#{SecureRandom.urlsafe_base64(nil, false)}-#{params[:device_id]}-#{params[:cmd]}-#{Time.now.to_i}")
-            send_data = '{"mac":"test1", "cmd":"open"}'
+            
+            send_data = ' {"req":"down", "mac":"ACCFF23D44940", "device_type":"#{params[:cmd]}", "device_id":"#{device.id}", "cmd":"new_pwd", "data":""}' 
             socket.puts(send_data)
-            #socket.puts("#{params[:cmd].bytes.to_a.map{|x| '0x'+x.to_i.to_s(16)}.join('')}")
+            #begin
+            #  loop {
+            #    msg = socket.gets.chomp
+            #    p msg
+            #    break unless msg.blank?
+            #  }
+            #rescue => e
+            #  p e.messages
+            #end
+            #sleep 5
             socket.flush
             socket.close
+
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             case params[:cmd]
-            when '7E000022A0'
-              p 'add'
+            when 'register'
+              p 'reqister'
               device.update_attribute(:status_id, Device::STATUSES[:registered])
-            when '7E000023A1'
-              p 'sub'
+            when 'logout'
+              p 'logout'
               device.update_attribute(:status_id, Device::STATUSES[:not_register])
-            when '003'
+            when 'lock_on'
               p 'lock on'
               device.update_attribute(:status_id, Device::STATUSES[:lock_on])
-            when '004'
+            when 'lcok_off'
               p 'lock off'
               device.update_attribute(:status_id, Device::STATUSES[:lock_off])
+            when 'app_open'
+              p 'app_open'
+            when 'new_pwd'
+              p 'new_pwd'
             else
               p 'other'
             end
+
             return { code: 0, message: "ok", data: {status: device.status_id} } 
           end
 
