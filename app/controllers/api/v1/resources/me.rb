@@ -28,9 +28,20 @@ module API
           end
           post '/messages' do
             user = authenticate!
+            hash = {"register" => "无线注册成功", "logout" => "删除无线成功",
+                    "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
+                    "finger_open" => "指纹开门", "low_power" => "电量低，请及时更换电池", 
+                    "doorbell" => "有客到，请开门", "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
             datas = []
-            datas << { id: 1, user_id: 1, user_name: "tutu回家了", oper_time: "3分钟前", content: "动态密码开门" }
-            datas << { id: 2, user_id: 1, user_name: "tutu回家了", oper_time: "2小时前", content: "一号指纹开门" }
+            messages = Message.includes([:user, :device]).smart_lock.resent.user(user.id).published
+            messages.each do |msg|
+              data = { id: msg.id, user_id: msg.user_id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: + "#{msg.device.name}---" + hash["#{msg.oper_cmd}"] }
+              if msg.oper_cmd.include?("open")
+                datas << data.merge({user_name: " #{msg.user.username}回家了", })
+              else
+                datas << data.merge({user_name: "【系统消息】", })
+              end
+            end
             return { code: 0, message: "ok", data: datas } 
           end
 

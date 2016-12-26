@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-source 'https://ruby.taobao.org'
+source 'https://gems.ruby-china.org'
 
 ruby '2.3.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

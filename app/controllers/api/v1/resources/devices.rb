@@ -1,5 +1,6 @@
 require 'socket'
 require 'base64'
+require 'json'
 # frozen_string_literal: true
 module API
   module V1
@@ -36,7 +37,8 @@ module API
             user = authenticate!
             device = Device.includes(:device_uuid).where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
-            return { code: 0, message: "ok", data: {name: device.name, type: "门锁", uuid: device.device_uuid.uuid, status: device.status_id, status_name: "在线"} } 
+            online_str = "在线"
+            return { code: 0, message: "ok", data: {name: device.name, type: "门锁", uuid: device.device_uuid.uuid, status: device.status_id, status_name: online_str} } 
           end
 
           desc '设备历史操作详情' do
@@ -47,11 +49,22 @@ module API
             requires :device_id, type: Integer, desc: 'Device id'
           end
           post  '/history' do
-            user = authenticate!
+            hash = {"register" => "无线注册成功", "logout" => "删除无线成功",
+                    "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
+                    "finger_open" => "指纹开门", "low_power" => "电量低，请及时更换电池", 
+                    "doorbell" => "有客到，请开门", "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
             datas = []
-            datas << { id: 1, user_id: 1, user_name: "tutu回家了", oper_time: "3分钟前", content: "动态密码开门" }
-            #datas << { id: 2, user_id: 1, user_name: "tutu回家了", oper_time: "2小时前", content: "一号指纹开门" }
-            p datas
+            user = authenticate!
+            device = Device.where(id: params[:device_id]).first
+            messages = Message.smart_lock.resent.user(user.id).device(device.id).published
+            messages.each do |msg|
+              data = { id: msg.id, user_id: user.id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: hash["#{msg.oper_cmd}"] }
+              if msg.oper_cmd.include?("open")
+                datas << data.merge({user_name: " #{user.username}回家了", })
+              else
+                datas << data.merge({user_name: "【系统消息】", })
+              end
+            end
             return { code: 0, message: "ok", data: datas } 
           end
 
@@ -64,49 +77,30 @@ module API
           end
           post  '/cmd' do
             user = authenticate!
-            p "device cmd"
-            socket = TCPSocket.new '183.62.232.142', 6009
-            #socket = TCPSocket.new '192.168.0.100', 6009
-            
-            send_data = ' {"req":"down", "mac":"ACCFF23D44940", "device_type":"#{params[:cmd]}", "device_id":"#{device.id}", "cmd":"new_pwd", "data":""}' 
-            socket.puts(send_data)
-            #begin
-            #  loop {
-            #    msg = socket.gets.chomp
-            #    p msg
-            #    break unless msg.blank?
-            #  }
-            #rescue => e
-            #  p e.messages
-            #end
-            #sleep 5
-            socket.flush
-            socket.close
-
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
+            
+            msg = Message.new(user_id: user.id, device_id: device.id, oper_cmd: params[:cmd])
+            msg.save if msg.valid?
+
             case params[:cmd]
-            when 'register'
-              p 'reqister'
-              device.update_attribute(:status_id, Device::STATUSES[:registered])
-            when 'logout'
-              p 'logout'
-              device.update_attribute(:status_id, Device::STATUSES[:not_register])
-            when 'lock_on'
-              p 'lock on'
-              device.update_attribute(:status_id, Device::STATUSES[:lock_on])
-            when 'lcok_off'
-              p 'lock off'
-              device.update_attribute(:status_id, Device::STATUSES[:lock_off])
-            when 'app_open'
-              p 'app_open'
-            when 'new_pwd'
-              p 'new_pwd'
-            else
-              p 'other'
+              when 'register'
+                p 'register'
+                device.update_attribute(:status_id, Device::STATUSES[:registered])
+              when 'logout'
+                p 'logout'
+                device.update_attribute(:status_id, Device::STATUSES[:not_register])
+              when 'lock_on'
+                p 'lock on'
+                device.update_attribute(:status_id, Device::STATUSES[:lock_on])
+              when 'lcok_off'
+                p 'lock off'
+                device.update_attribute(:status_id, Device::STATUSES[:lock_off])
+              else
+                p 'other'
             end
 
-            return { code: 0, message: "ok", data: {status: device.status_id} } 
+            return { code: status, message: "ok", data: {status: device.status_id} } 
           end
 
           desc '添加设备' do

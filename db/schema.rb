@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823030852) do
+ActiveRecord::Schema.define(version: 20160923030852) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -122,6 +122,19 @@ ActiveRecord::Schema.define(version: 20160823030852) do
   add_index "kinds", ["brand_id"], name: "index_kinds_on_brand_id", using: :btree
   add_index "kinds", ["name"], name: "index_kinds_on_name", using: :btree
   add_index "kinds", ["status_id"], name: "index_kinds_on_status_id", using: :btree
+
+  create_table "messages", force: :cascade do |t|
+    t.integer  "user_id",     limit: 4,                    null: false
+    t.integer  "device_id",   limit: 4,                    null: false
+    t.string   "device_type", limit: 255, default: "lock", null: false
+    t.string   "oper_cmd",    limit: 255,                  null: false
+    t.boolean  "is_deleted",              default: false,  null: false
+    t.datetime "created_at"
+  end
+
+  add_index "messages", ["user_id", "device_type", "device_id", "is_deleted"], name: "index_messages_on_user_devices", using: :btree
+  add_index "messages", ["user_id", "device_type", "is_deleted"], name: "index_messages_on_user_all_devices", using: :btree
+  add_index "messages", ["user_id", "is_deleted"], name: "index_messages_on_user", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", limit: 4,     null: false
@@ -234,7 +247,7 @@ ActiveRecord::Schema.define(version: 20160823030852) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["mobile"], name: "index_users_on_mobile", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["user_type"], name: "index_users_on_user_type"
+  add_index "users", ["user_type"], name: "index_users_on_user_type", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
 end

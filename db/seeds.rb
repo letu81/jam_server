@@ -7,8 +7,8 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 if true
 user = User.create!(username: 'tutu', email: 'tutu@123456', mobile: '15712002798', password: '123456', password_confirmation: '123456')
-DeviceCategory.create!(name: '网关')
 DeviceCategory.create!(name: '门锁') 
+DeviceCategory.create!(name: '网关')
 DeviceCategory.create!(name: '插座')
 DeviceCategory.create!(name: '门磁')
 DeviceCategory.create!(name: '窗帘')
