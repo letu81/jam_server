@@ -5,7 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-if true
+if false
 user = User.create!(username: 'tutu', email: 'tutu@123456', mobile: '15712002798', password: '123456', password_confirmation: '123456')
 DeviceCategory.create!(name: '门锁') 
 DeviceCategory.create!(name: '网关')
@@ -17,8 +17,9 @@ Brand.create!(name: '深圳佳安美', identifier: 'szjam')
 brand = Brand.first
 kind = Kind.new({name: 'J-10', brand_id: brand.id})
 kind.save if kind.valid?
-DeviceUuid.new_uuid
 end
+DeviceUuid.new_uuid
+
 
 
 #device1 = Device.create!(name: '', mac: '')

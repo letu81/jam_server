@@ -8,7 +8,7 @@ class DeviceUuid < ActiveRecord::Base
 
     def self.new_uuid
     	uuid = (Digest::MD5.hexdigest "#{SecureRandom.urlsafe_base64(nil, false)}-#{Time.now.to_i}").first(8)
-    	pwd = (Digest::MD5.hexdigest "#{SecureRandom.urlsafe_base64(nil, false)}-#{Time.now.to_i}").first(4)
+    	pwd = SecureRandom.urlsafe_base64(nil, false).downcase.first(4)
     	kind = Kind.first
     	if kind
     		device_uuid = self.new(uuid: uuid, password: pwd, kind_id: kind.id)
