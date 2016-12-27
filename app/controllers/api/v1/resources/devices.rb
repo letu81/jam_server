@@ -35,10 +35,10 @@ module API
           end
           post  '/show' do
             user = authenticate!
-            device = Device.includes(:device_uuid).where(id: params[:device_id]).first
+            device = Device.by_device(params[:device_id])
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
-            return { code: 0, message: "ok", data: {name: device.name, type: "门锁", uuid: device.device_uuid.uuid, device_token:device.device_uuid.password, status: device.status_id, status_name: online_str} } 
+            return { code: 0, message: "ok", data: {name: device.name, type: "门锁", uuid: device.uuid, device_token:device.password, status: device.status_id, status_name: online_str} } 
           end
 
           desc '设备历史操作详情' do
