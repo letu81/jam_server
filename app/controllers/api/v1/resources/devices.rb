@@ -21,7 +21,7 @@ module API
             devices = Device.by_user(user.id)
             datas = []
             devices.each do |device|
-              datas << {device_id: device.id, device_token: device.device_uuid.password, device_type: '门锁', name: device.name, status: device.status_id}
+              datas << {device_id: device.id, device_token: device.password, device_type: '门锁', name: device.name, status: device.status_id}
             end
 	          return { code: 0, message: "ok", data: datas } 
           end

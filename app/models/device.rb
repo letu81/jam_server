@@ -5,7 +5,10 @@ class Device < ActiveRecord::Base
 	belongs_to :user_device, :foreign_key => 'id'
 
 	def self.by_user(user_id)
-		self.joins(:user_device).includes(:device_uuid).where(:user_devices => {:user_id => user_id})
+		self.joins("INNER JOIN user_devices ON user_devices.device_id = devices.id 
+			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
+		.where(:user_devices => {:user_id => user_id})
+		.select("devices.id, devices.name, devices.mac, devices.status_id, device_uuids.uuid, device_uuids.password")
 	end
 
 	def self.by_device_mac_pwd(mac, pwd)
