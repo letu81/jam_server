@@ -101,7 +101,7 @@ module API
                 p 'other'
             end
 
-            return { code: status, message: "ok", data: {status: device.status_id} } 
+            return { code: 0, message: "ok", data: {status: device.status_id} } 
           end
 
           desc '添加设备' do
@@ -136,6 +136,22 @@ module API
             else
               return { code: 1, message: "设备码或检验码不存在", data: "" }
             end
+          end
+
+          desc '监听设备' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :device_mac, type: String, desc: 'Device mac'
+            requires :device_token, type: String, desc: 'Device token'
+            requires :device_cmd, type: String, desc: 'Device cmd'
+          end
+          post  '/listen' do
+            device = Device.by_device_mac_pwd(params[:device_mac], params[:device_token])
+            return { code: 1, message: "设备不存在", data: "" } unless device
+            msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd])
+            msg.save if msg.valid?
+            return { code: 0, message: "", data: "ok" } 
           end
 
           desc '删除设备' do
