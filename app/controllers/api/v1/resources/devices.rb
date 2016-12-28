@@ -161,6 +161,22 @@ module API
             return { code: 0, message: "", data: "ok" } 
           end
 
+          desc '更新设备' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :device_id, type: Integer, desc: 'Device id'
+            requires :device_name, type: String, desc: 'Device name'
+          end
+          post  '/update' do
+            user = authenticate!
+            device = Device.where(id:params[:device_id]).first
+            return { code: 1, message: "设备不存在", data: "" } unless device
+            device.update_attribute(:name, params[:device_name])
+            return { code: 0, message: "", data: "ok" } 
+          end
+
           desc '删除设备' do
             headers API::V1::Defaults.client_auth_headers
           end
@@ -169,7 +185,6 @@ module API
             requires :device_id, type: String, desc: 'Device uuid'
           end
           post  '/destroy' do
-            p "destroy ......."
             user = authenticate!
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
