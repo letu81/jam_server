@@ -184,7 +184,7 @@ module API
                   device_uuid.update_attribute(:status_id, DeviceUuid::STATUSES[:not_use]) if device_uuid
                   device.update_attribute(:mac, "")
                 end
-                Mesage.where(user_id:user.id).update_all("is_deleted = true")
+                Message.where(user_id:user.id).update_all("is_deleted = true")
                 owner_device.destroy
               end
             else
