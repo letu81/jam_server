@@ -109,6 +109,7 @@ module API
           end
           params do
             requires :token, type: String, desc: 'User token'
+            requires :device_mac, type: String, desc: 'Device mac'
             requires :device_id, type: String, desc: 'Device uuid'
             requires :password, type: String, desc: 'Device password'
           end
@@ -119,7 +120,7 @@ module API
               case du.status_id
               when DeviceUuid::STATUSES[:not_use]
                 Device.transaction do 
-                  device = Device.new(name: du.device_category.name, uuid: du.id)
+                  device = Device.new(name: du.device_category.name, uuid: du.id, mac: params[:device_mac])
                   if device.valid? && device.save
                     du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
                     UserDevice.find_or_create_by!(user_id: user.id, device_id: device.id)
@@ -127,7 +128,13 @@ module API
                 end
                 return { code: 0, message: "设备添加成功", data: "" }
               when DeviceUuid::STATUSES[:used]
-                return { code: 1, message: "设备码已被使用", data: "" }
+                user_device = UserDevice.where(user_id: user.id, device_id: device.id).first
+                if user_device
+                  return { code: 1, message: "您已添加过设备", data: "" }
+                else
+                  UserDevice.create!(user_id: user.id, device_id: device.id, ownership: false)
+                  return { code: 0, message: "设备添加成功,但其他用户也添加过该设备", data: "" }
+                end
               when DeviceUuid::STATUSES[:discard]
                 return { code: 1, message: "设备码已过期", data: "" }
               else
@@ -161,10 +168,30 @@ module API
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: String, desc: 'Device uuid'
           end
-          delete  '/destroy' do
+          post  '/destroy' do
+            p "destroy ......."
             user = authenticate!
-            p "destroy device"
-            return { code: 0, message: "ok", data: "" } 
+            device = Device.where(id: params[:device_id]).first
+            return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
+            owner_device = UserDevice.where(user_id:user.id, device_id:device.id, ownership:true).first
+            if owner_device
+              Device.transaction do
+                user_device = UserDevice.where(device_id:device.id, ownership:false).first
+                if user_device
+                  user_device.update_attribute(:ownership, true)
+                else
+                  device_uuid = DeviceUuid.where(id:device.uuid).first
+                  device_uuid.update_attribute(:status_id, DeviceUuid::STATUSES[:not_use]) if device_uuid
+                  device.update_attribute(:mac, "")
+                end
+                Mesage.where(user_id:user.id).update_all("is_deleted = true")
+                owner_device.destroy
+              end
+            else
+              user_device = UserDevice.where(user_id:user.id, device_id:device.id, ownership:false).first
+              user_device.destroy if user_device
+            end
+            return { code: 0, message: "ok", data: "ok" } 
           end
         end
       end
