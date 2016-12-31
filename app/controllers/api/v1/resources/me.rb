@@ -15,9 +15,24 @@ module API
           end
           post '/' do
             user = authenticate!
-            datas = {:name => user.username, :mobile => user.mobile}
+            datas = {:id => user.id, :name => user.username, :mobile => user.mobile, :gender => "", :avatar => ""}
             p datas
             return { code: 0, message: "ok", data: datas } 
+          end
+
+          desc '更新个人信息' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :name, type: String, desc: 'User name'
+            #requires :gender, type: String, desc: 'User gender'
+            requires :phone, type: String, desc: 'User phone'
+          end
+          post '/update' do
+            user = authenticate!
+            user.update_attributes({:username => params[:name], :mobile => params[:phone]})
+            return { code: 0, message: "ok", data: "" } 
           end
 
           desc '消息列表' do
