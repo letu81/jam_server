@@ -55,18 +55,18 @@ module API
 	    end
 	    
 	    def send_sms(mobile, text, error_msg)
-	      RestClient.post('http://yunpian.com/v1/sms/send.json', "apikey=ce8239620a67b5f0f696bef5bb0121a9&mobile=#{mobile}&text=#{text}") { |response, request, result, &block|
+	      RestClient.post('https://sms.yunpian.com/v2/sms/single_send.json', "apikey=ce8239620a67b5f0f696bef5bb0121a9&mobile=#{mobile}&text=#{text}") { |response, request, result, &block|
 			# puts response
 			session.delete(:captcha)
 			resp = JSON.parse(response)
 			puts resp
 			if resp['code'] == 0
-			  { code: 0, message: "ok" }
+			  return { code: 0, message: "ok" }
 			else
 			  # if resp['code'] == 9 or resp['code'] == 17
-			  { code: 103, message: resp['msg'] }
+			  return { code: 103, message: resp['msg'] }
 			  # else
-			  #   { code: 103, message: error_msg }
+			  #   return { code: 103, message: error_msg }
 			  # end
 			end
 	      }

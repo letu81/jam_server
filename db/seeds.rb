@@ -17,8 +17,11 @@ Brand.create!(name: '深圳佳安美', identifier: 'szjam')
 brand = Brand.first
 kind = Kind.new({name: 'J-10', brand_id: brand.id})
 kind.save if kind.valid?
-end
 DeviceUuid.new_uuid
+end
+new_password = "123456"
+user = User.where(mobile: '15712002798').first
+user.update_attribute(:password, new_password)
 
 
 

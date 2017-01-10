@@ -90,12 +90,12 @@ module API
             unless user
               return { code: 102, message: "用户未注册" } 
             end
-            password = Base64.decode64(params[:password])
+            password = params[:phone_info].nil? ? Base64.decode64(params[:password]) : params[:password]
             #password = params[:password]
             if user.valid_password?(password)
-              { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username } }
+              return { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username } }
             else
-              { code: 107, message: "登录密码不正确" }
+              return { code: 107, message: "登录密码不正确" }
             end
           end
 
@@ -129,7 +129,7 @@ module API
             if @user.save
               warden.set_user(@user)
               ac.update_attribute(:verified, false)
-              { code: 0, message: "ok", data: { token: @user.private_token || "", id: @user.id, username: @user.username } }
+              return { code: 0, message: "ok", data: { token: @user.private_token || "", id: @user.id, username: @user.username } }
             else
               return Failure.new(106, "用户注册失败")
             end
@@ -139,25 +139,25 @@ module API
             headers API::V1::Defaults.client_auth_headers
           end
           params do
-            requires :old_password, type: String, desc: 'User old password'
-            requires :password, type: String, desc: 'User new password'
+            requires :password, type: String, desc: 'User old password'
+            requires :new_password, type: String, desc: 'User new password'
             requires :token, type: String, desc: 'User auth token'
           end
-          put '/password' do
+          post '/password' do
             user = authenticate!
             #old_password = Base64.decode64(params[:old_password])
-            old_password = params[:old_password]
+            old_password = params[:password]
             unless user.valid_password?(old_password)
               return Failure.new(109, "旧密码不正确")
             end
 
-            new_password = Base64.decode64(params[:password])
+            new_password = Base64.decode64(params[:new_password])
             if new_password.length < 6
               return Failure.new(105, "密码太短，至少为6位")
             end
         
             if user.update_attribute(:password, new_password)
-              { code: 0, message: "ok" }
+              return { code: 0, message: "ok" }
             else
               return Failure.new(110, "修改密码失败")
             end
@@ -191,7 +191,7 @@ module API
             end
         
             if @user.update_attribute(:password, password)
-              { code: 0, message: "ok" }
+              return { code: 0, message: "ok" }
             else
               Failure.new(108, "重置密码失败")
             end
@@ -204,14 +204,14 @@ module API
             requires :username, type: String, desc: 'User name'
             requires :token, type: String, desc: 'User auth token'
           end
-          put '/username' do
+          post '/username' do
             user = authenticate!
             if params["username"].length < 3 || params["username"].length > 20 
               return Failure.new(105, "用户名长度为3-20")
             end
         
             if user.update_attribute(:username, params["username"])
-              { code: 0, message: "ok" }
+              return { code: 0, message: "ok" }
             else
               return Failure.new(108, "修改用户名失败")
             end
