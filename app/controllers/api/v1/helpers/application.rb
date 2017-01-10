@@ -55,8 +55,6 @@ module API
 	    end
 	    
 	    def send_sms(mobile, sms_code, error_msg)
-	      p sms_code
-	      p "==========="
 	      url = "https://sms.yunpian.com/v2/sms/tpl_single_send.json"
 	      tpl_id = 1689800
 	      tpl_value = "#code#=#{sms_code}"
@@ -69,11 +67,11 @@ module API
 			if resp['code'] == 0
 			  return { code: 0, message: "ok" }
 			else
-			  # if resp['code'] == 9 or resp['code'] == 17
-			  return { code: 103, message: resp['msg'] }
-			  # else
-			  #   return { code: 103, message: error_msg }
-			  # end
+			  if resp['code'] == 9 or resp['code'] == 17
+			  	return { code: 103, message: resp['msg'] }
+			  else
+			    return { code: 103, message: error_msg }
+			  end
 			end
 	      }
 	    end
