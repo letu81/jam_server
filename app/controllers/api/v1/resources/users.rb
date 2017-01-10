@@ -16,7 +16,7 @@ module API
             requires :type, type: Integer, desc: '1 表示注册获取验证码 2 表示重置密码获取验证码 3 表示修改密码获取验证码'
           end
 
-          post '/sms_verification_code' do
+          get '/sms_verification_code' do
             unless check_mobile(params[:mobile])
 	            return Failure.new(100, "手机号错误")
 	          end
@@ -62,8 +62,8 @@ module API
             code = AuthCode.where('mobile = ? and verified = ? and c_type = ?', params[:mobile], true, type).first
             code = AuthCode.create!(mobile: params[:mobile], c_type: type) if code.blank?
   
-            if code          
-              result = send_sms(params[:mobile], "【佳安美智控】您的验证码是#{code.code}，5分钟内有效。若非本人操作，请忽略", "获取验证码失败")
+            if code
+              result = send_sms(params[:mobile], code.code, "获取验证码失败")
               if result['code'].to_i == 103
                 # 发送失败，更新每分钟发送限制
                 session.delete(sym)

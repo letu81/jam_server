@@ -54,9 +54,15 @@ module API
     
 	    end
 	    
-	    def send_sms(mobile, text, error_msg)
-	      RestClient.post('https://sms.yunpian.com/v2/sms/single_send.json', "apikey=ce8239620a67b5f0f696bef5bb0121a9&mobile=#{mobile}&text=#{text}") { |response, request, result, &block|
-			# puts response
+	    def send_sms(mobile, sms_code, error_msg)
+	      p sms_code
+	      p "==========="
+	      url = "https://sms.yunpian.com/v2/sms/tpl_single_send.json"
+	      tpl_id = 1689800
+	      tpl_value = "#code#=#{sms_code}"
+	      RestClient.post(url, 
+	      	"apikey=ce8239620a67b5f0f696bef5bb0121a9&mobile=#{mobile}&tpl_id=#{tpl_id}&tpl_value=#{tpl_value}") { |response, request, result, &block|
+			puts response
 			session.delete(:captcha)
 			resp = JSON.parse(response)
 			puts resp
