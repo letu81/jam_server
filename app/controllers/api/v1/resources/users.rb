@@ -16,7 +16,7 @@ module API
             requires :type, type: Integer, desc: '1 表示注册获取验证码 2 表示重置密码获取验证码 3 表示修改密码获取验证码'
           end
 
-          get '/sms_verification_code' do
+          post '/sms_verification_code' do
             unless check_mobile(params[:mobile])
 	            return Failure.new(100, "手机号错误")
 	          end
