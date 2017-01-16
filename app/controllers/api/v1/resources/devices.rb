@@ -51,7 +51,7 @@ module API
           end
           post  '/history' do
             hash = {"register" => "无线注册成功", "logout" => "删除无线成功",
-                    "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "获取动态密码",
+                    "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "生成动态密码",
                     "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
                     "finger_open" => "指纹开门", "low_power" => "电量低，请及时更换电池", 
                     "doorbell" => "有客到，请开门", "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
