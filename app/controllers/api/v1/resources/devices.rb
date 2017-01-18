@@ -58,7 +58,7 @@ module API
             datas = []
             user = authenticate!
             device = Device.where(id: params[:device_id]).first
-            messages = Message.smart_lock.resent.user(user.id).device(device.id).published
+            messages = Message.smart_lock.user(user.id).device(device.id).published.last(50)
             messages.each do |msg|
               data = { id: msg.id, user_id: user.id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: hash["#{msg.oper_cmd}"] }
               if msg.oper_cmd.include?("open")
