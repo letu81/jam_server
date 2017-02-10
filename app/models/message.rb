@@ -1,4 +1,6 @@
 class Message < ActiveRecord::Base
+    validates :oper_cmd, length: { maximum: 30, minimum: 1 }, presence: true
+
 	belongs_to :user
 	belongs_to :device
     
