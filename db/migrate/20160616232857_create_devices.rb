@@ -14,7 +14,7 @@ class CreateDevices < ActiveRecord::Migration
 
     add_index :devices, :name, using: :btree
     add_index :devices, :product_id, using: :btree
-    add_index :devices, :uuid, unique: true, using: :btree
+    add_index :devices, :uuid, using: :btree
 
     add_index :devices, :activited_at, using: :btree
     add_index :devices, [:product_id, :activited_at], name: "index_devices_on_product_activited", using: :btree
