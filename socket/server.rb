@@ -20,12 +20,6 @@ class Server
     end
 
     def run
-        begin
-                                        RestClient.post "http://183.62.232.142:3009/api/v1/devices/listen", {device_mac:"1213", device_token:"1232", device_cmd:"app_open"}
-                                    rescue Exception => e
-                                        p e.message
-                                        p "rest error...."
-                                    end
         loop {
             Thread.start(@server.accept) do | client |
                 ip = @server.addr.last
@@ -57,10 +51,10 @@ class Server
                                 @close_clients << @down_clients[mac]['clients'][mobile_mac] 
                             end
                             @down_clients[mac]['clients'][mobile_mac] = client
-                            if @up_clients[mac]
+                            if @up_clients[mac] && @up_clients[mac]['client']
                                 begin
                                     p "sent msg to gateway: #{res}"
-                                    @up_clients[mac].puts res.to_json
+                                    @up_clients[mac]['client'].puts res.to_json
                                     if cmd == "heartbeat"
                                         p "send hearbeat to app"
                                         client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
@@ -68,19 +62,26 @@ class Server
                                 rescue
                                     p "send hearbeat to app"
                                     client.puts res.merge({'cmd' => 'hearbeat', 'req' => 'up', 'status' => '2'}).to_json
-                                    @close_clients << @up_clients[mac]
-                                    @up_clients[mac] = nil
                                 end
                             else
                                 client.puts res.merge({'req' => 'up', 'status' => '2'}).to_json
                             end
                         else
-                            # {'222333' => client }
-                            @up_clients[mac] = client unless @up_clients[mac]
+                            # {'222333' => {'client' => client, 'activtied_on' => '2017-03-01 12:21:32'} }
+                            @up_clients[mac] ||= {}
+                            if @up_clients[mac]['client']
+                                if (@up_clients[mac]['activtied_on'] + 1.minute).utc < Time.now.utc
+                                    @close_clients << @up_clients[mac]['client']
+                                    @up_clients[mac]['activtied_on'] = Time.now
+                                    @up_clients[mac]['client'] = client
+                                end
+                            else
+                                @up_clients[mac]['activtied_on'] = Time.now
+                                @up_clients[mac]['client'] = client
+                            end
 
                             p "receive msg from gateway:#{res}"
 
-                            p @down_clients[mac]
                             unless "hearbeat" == cmd
                                 dev_id = dev_id.rjust(4, 'z') unless dev_id.length == 4
                                 if @down_clients[mac] && @down_clients[mac]['clients'][mobile_mac]
@@ -128,4 +129,4 @@ class Server
     end
 end
 
-Server.new( 6001, "192.168.0.102" )
+Server.new( 6001, "192.168.0.104" )
