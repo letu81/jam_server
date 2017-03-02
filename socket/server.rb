@@ -20,6 +20,8 @@ class Server
     end
 
     def run
+        p Time.now
+        p Time.now + 120
         loop {
             Thread.start(@server.accept) do | client |
                 ip = @server.addr.last
@@ -53,12 +55,12 @@ class Server
                             @down_clients[mac]['clients'][mobile_mac] = client
                             if @up_clients[mac] && @up_clients[mac]['client']
                                 begin
-                                    p "sent msg to gateway: #{res}"
-                                    @up_clients[mac]['client'].puts res.to_json
                                     if cmd == "heartbeat"
                                         p "send hearbeat to app"
                                         client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
                                     end
+                                    p "sent msg to gateway: #{res}"
+                                    @up_clients[mac]['client'].puts res.to_json
                                 rescue
                                     p "send hearbeat to app"
                                     client.puts res.merge({'cmd' => 'hearbeat', 'req' => 'up', 'status' => '2'}).to_json
@@ -70,14 +72,14 @@ class Server
                             # {'222333' => {'client' => client, 'activtied_on' => '2017-03-01 12:21:32'} }
                             @up_clients[mac] ||= {}
                             if @up_clients[mac]['client']
-                                if (@up_clients[mac]['activtied_on'] + 1.minute).utc < Time.now.utc
+                                if (@up_clients[mac]['activtied_on'] + 120) < Time.now
                                     @close_clients << @up_clients[mac]['client']
-                                    @up_clients[mac]['activtied_on'] = Time.now
                                     @up_clients[mac]['client'] = client
                                 end
-                            else
                                 @up_clients[mac]['activtied_on'] = Time.now
+                            else
                                 @up_clients[mac]['client'] = client
+                                @up_clients[mac]['activtied_on'] = Time.now
                             end
 
                             p "receive msg from gateway:#{res}"
@@ -129,4 +131,4 @@ class Server
     end
 end
 
-Server.new( 6001, "192.168.0.104" )
+Server.new( 6001, "192.168.1.102" )
