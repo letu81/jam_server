@@ -20,8 +20,6 @@ class Server
     end
 
     def run
-        p Time.now
-        p Time.now + 120
         loop {
             Thread.start(@server.accept) do | client |
                 ip = @server.addr.last
@@ -91,6 +89,7 @@ class Server
                                     begin
                                         @down_clients[mac]['clients'][mobile_mac].puts res
                                     rescue Exception => e
+                                        @close_clients << @down_clients[mac]['clients'][mobile_mac] 
                                         p e.message
                                     end
                                 end
@@ -111,15 +110,19 @@ class Server
                                 end
                             else
                                 if @down_clients[mac] && @down_clients[mac]['clients'][mobile_mac]
-                                    p "send msg to app:#{res}"
-                                    @down_clients[mac]['clients'][mobile_mac].puts res
+                                    begin
+                                        p "send msg to app:#{res}"
+                                        @down_clients[mac]['clients'][mobile_mac].puts res
+                                    escue Exception => e
+                                        p e.message
+                                        @close_clients << @down_clients[mac]['clients'][mobile_mac]
+                                    end
                                 end
                                 client.puts "server receive msg: #{res.to_json}"
                             end
                         end
                     rescue
                         p "========json parse error== #{msg}=============="
-                        p res.to_json
                         client.puts res.to_json
                     end
                 end
