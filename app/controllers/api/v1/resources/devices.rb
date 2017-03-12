@@ -1,6 +1,6 @@
-require 'socket'
 require 'base64'
 require 'json'
+require 'rest-client'
 # frozen_string_literal: true
 module API
   module V1
@@ -21,10 +21,28 @@ module API
             devices = Device.by_user(user.id)
             datas = []
             devices.each do |device|
-              datas << {device_id: device.id, device_token: device.password, device_type: '门锁',
-                        mac: device.mac, name: device.name, status: device.status_id}
+              datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
+                        device_uuid:device.dev_uuid, mac: device.mac, name: device.name, status: device.status_id}
             end
-	          return { code: 0, message: "ok", data: datas } 
+
+            if Setting[:ez_expire_time].to_i < Time.now.to_i
+                response = RestClient.post Setting.ez_base_url + Setting.ez_get_token_url, {appKey:Setting.ez_app_key, appSecret:Setting.ez_app_secret}
+                if response.code == 200
+                    result = JSON.parse(response.body)
+                    code = result['code']
+                    if code.to_i == 200
+                        data = result['data']
+                        Setting[:ez_access_token] = data['accessToken']
+                        Setting[:ez_expire_time] = data['expireTime']/1000
+                    else
+                        p "get token error"
+                    end
+                else
+                    p response.code 
+                    p response.body
+                end
+            end
+	          return { code: 0, message: "ok", data: datas, ez_data: {access_token: Setting[:ez_access_token], expire_time: Setting[:ez_expire_time]}} 
           end
 
           desc '设备详情' do
@@ -39,7 +57,7 @@ module API
             device = Device.by_device(params[:device_id])
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
-            return { code: 0, message: "ok", data: {name: device.name, type: "门锁", uuid: device.dev_uuid, mac: device.mac, device_token:device.password, status: device.status_id, status_name: online_str} } 
+            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, mac: device.mac, device_token:device.password, status: device.status_id, status_name: online_str} } 
           end
 
           desc '设备历史操作详情' do
@@ -117,7 +135,7 @@ module API
           post  '/bind' do
             user = authenticate!
             du = DeviceUuid.where(uuid: params[:device_id], password: params[:password]).first
-            if du
+            if du && !params[:company].include?("ys7")
               case du.status_id
               when DeviceUuid::STATUSES[:not_use]
                 Device.transaction do 
@@ -142,7 +160,25 @@ module API
                 return { code: 1, message: "设备添加失败,请稍后再试", data: "" }
               end
             else
-              return { code: 1, message: "设备码或检验码不存在", data: "" }
+              if params[:company].include?("ys7")
+                kind = Kind.find_or_create_by(name: params[:version], brand_id: Brand::NAMES[:hzys7])
+                uuid = DeviceUuid.find_or_create_by(uuid: params[:device_id], password: params[:password], 
+                  device_category_id: DeviceCategory::CATES[:monitor], kind_id: kind.id, status_id: DeviceUuid::STATUSES[:used])
+                if uuid
+                  device = Device.find_or_create_by(name: "监控", uuid: uuid.id, mac: "")
+                  user_device = UserDevice.where(user_id: user.id, device_id: device.id).first
+                  if user_device
+                    return { code: 1, message: "您已添加过设备", data: "" }
+                  else
+                    UserDevice.create!(user_id: user.id, device_id: device.id, ownership: true)
+                    return { code: 0, message: "设备添加成功", data: "" }
+                  end
+                else
+                  return { code: 1, message: "您已添加过设备", data: "" }
+                end
+              else
+                return { code: 1, message: "设备码或检验码不存在", data: "" }
+              end
             end
           end
 

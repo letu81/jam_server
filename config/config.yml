@@ -13,6 +13,18 @@ defaults: &defaults
   mq_user: 'guest'
   mq_password: 'guest'
 
+  ez_app_key: "3f9dc8041d0142dc838c90d23d544e4d"
+  ez_app_secret: "90999c5073e0dbb3615ecd9bda7e83ff"
+  ez_base_url: "https://open.ys7.com/api/lapp"
+  ez_get_token_url: "/token/get"
+  ez_camera_list_url: "/camera/list"
+  ez_device_info_url: "/device/info"
+  ez_device_add_url: "/device/add"
+  ez_device_delete_url: "/device/delete"
+  ez_device_capture_url: "device/capture"
+  ez_access_token: ""
+  ez_expire_time: ""
+
 
 development:
   <<: *defaults

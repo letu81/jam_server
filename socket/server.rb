@@ -70,7 +70,7 @@ class Server
                             # {'222333' => {'client' => client, 'activtied_on' => '2017-03-01 12:21:32'} }
                             @up_clients[mac] ||= {}
                             if @up_clients[mac]['client']
-                                if (@up_clients[mac]['activtied_on'] + 120) < Time.now
+                                if (@up_clients[mac]['activtied_on'] + 30) < Time.now
                                     @close_clients << @up_clients[mac]['client']
                                     @up_clients[mac]['client'] = client
                                 end
