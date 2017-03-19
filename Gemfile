@@ -53,6 +53,9 @@ gem 'shog', '0.1.8'
 
 gem 'whenever', :require => false
 
+gem 'jpush', git: 'https://github.com/jpush/jpush-api-ruby-client.git'
+
+
 # TODO for later
 # instrumentation
 # gem 'raygun4ruby'

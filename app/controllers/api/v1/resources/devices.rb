@@ -57,7 +57,7 @@ module API
             device = Device.by_device(params[:device_id])
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
-            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, mac: device.mac, device_token:device.password, status: device.status_id, status_name: online_str} } 
+            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, mac: device.mac, status: device.status_id, status_name: online_str} } 
           end
 
           desc '设备历史操作详情' do
