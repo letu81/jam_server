@@ -107,7 +107,7 @@ module API
                 device.update_attribute(:status_id, Device::STATUSES[:not_register])
               when 'lock_on'
                 p 'lock on'
-                device.update_attribute(:status_id, Device::STATUSES[:lock_on])
+                device.update_attribute(:status_id, Device::STATUSES[:registered])
               when 'lock_off'
                 p 'lock off'
                 device.update_attribute(:status_id, Device::STATUSES[:lock_off])
