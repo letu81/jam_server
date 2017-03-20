@@ -108,7 +108,7 @@ module API
               when 'lock_on'
                 p 'lock on'
                 device.update_attribute(:status_id, Device::STATUSES[:lock_on])
-              when 'lcok_off'
+              when 'lock_off'
                 p 'lock off'
                 device.update_attribute(:status_id, Device::STATUSES[:lock_off])
               else
