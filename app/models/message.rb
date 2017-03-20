@@ -31,12 +31,12 @@ class Message < ActiveRecord::Base
   	        pusher = jpush.pusher
 
             username = self.user.username
-            alert = self.oper_cmd.include?("open") ? "主人，#{username}回家了!" : "佳安美智控通知"
+            title = self.oper_cmd.include?("open") ? "主人，#{username}回家了!" : "佳安美智控通知"
 
             notification = JPush::Push::Notification.new
   	        notification.set_android(
-  	            alert: alert,
-  	            title: CMD[self.oper_cmd],
+  	            alert: CMD[self.oper_cmd],
+  	            title: title,
   	            builder_id: 1,
   	            extras: {user_id: self.user_id, user_name: ''}
   	        )
