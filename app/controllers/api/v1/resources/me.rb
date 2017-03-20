@@ -43,15 +43,10 @@ module API
           end
           post '/messages' do
             user = authenticate!
-            hash = {"register" => "无线注册成功", "logout" => "删除无线成功",
-                    "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "生成动态密码",
-                    "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
-                    "finger_open" => "指纹开门", "low_power" => "电量低，请及时更换电池", 
-                    "doorbell" => "有客到，请开门", "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
             datas = []
             messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.limit(50)
             messages.each do |msg|
-              data = { id: msg.id, user_id: msg.user_id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: + "#{msg.device.name}---" + hash["#{msg.oper_cmd}"] }
+              data = { id: msg.id, user_id: msg.user_id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: + "#{msg.device.name}---" + Message::CMD["#{msg.oper_cmd}"] }
               if msg.oper_cmd.include?("open")
                 datas << data.merge({user_name: " #{msg.user.username}回家了", })
               else
