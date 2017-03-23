@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160923030852) do
+ActiveRecord::Schema.define(version: 20170322031144) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -71,6 +71,19 @@ ActiveRecord::Schema.define(version: 20160923030852) do
 
   add_index "device_categories", ["name"], name: "index_device_categories_on_name", using: :btree
 
+  create_table "device_users", force: :cascade do |t|
+    t.integer  "device_id",   limit: 4,   null: false
+    t.integer  "device_type", limit: 4,   null: false
+    t.integer  "device_num",  limit: 4,   null: false
+    t.string   "name",        limit: 255, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "device_users", ["device_id", "device_type", "device_num"], name: "index_device_users_on_type_and_num", unique: true, using: :btree
+  add_index "device_users", ["device_id", "device_type"], name: "index_device_users_on_device_id_and_device_type", using: :btree
+  add_index "device_users", ["device_id"], name: "index_device_users_on_device_id", using: :btree
+
   create_table "device_uuids", force: :cascade do |t|
     t.string   "uuid",               limit: 255
     t.string   "password",           limit: 255
@@ -79,11 +92,14 @@ ActiveRecord::Schema.define(version: 20160923030852) do
     t.integer  "status_id",          limit: 4,   default: 1, null: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
+    t.string   "new_password",       limit: 255
   end
 
   add_index "device_uuids", ["device_category_id"], name: "index_device_uuids_on_device_category_id", using: :btree
   add_index "device_uuids", ["kind_id"], name: "index_device_uuids_on_kind_id", using: :btree
   add_index "device_uuids", ["status_id"], name: "index_device_uuids_on_status_id", using: :btree
+  add_index "device_uuids", ["uuid", "new_password"], name: "index_device_uuids_on_uuid_and_new_password", unique: true, using: :btree
+  add_index "device_uuids", ["uuid", "password"], name: "index_device_uuids_on_uuid_and_password", unique: true, using: :btree
   add_index "device_uuids", ["uuid", "status_id"], name: "index_device_uuids_on_uuid_and_status_id", using: :btree
   add_index "device_uuids", ["uuid"], name: "index_device_uuids_on_uuid", using: :btree
 
@@ -102,7 +118,6 @@ ActiveRecord::Schema.define(version: 20160923030852) do
   add_index "devices", ["name"], name: "index_devices_on_name", using: :btree
   add_index "devices", ["product_id", "activited_at"], name: "index_devices_on_product_activited", using: :btree
   add_index "devices", ["product_id"], name: "index_devices_on_product_id", using: :btree
-  add_index "devices", ["status_id"], name: "index_devices_on_status_id", unique: true, using: :btree
   add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
   create_table "feedbacks", force: :cascade do |t|

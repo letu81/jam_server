@@ -43,6 +43,7 @@ module API
 
       mount API::V1::Resources::Categories
       mount API::V1::Resources::Devices
+      mount API::V1::Resources::Locks
       mount API::V1::Resources::Me
       mount API::V1::Resources::Messages
       mount API::V1::Resources::Products
