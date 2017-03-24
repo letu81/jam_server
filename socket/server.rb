@@ -58,7 +58,11 @@ class Server
                                         client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
                                     end
                                     p "sent msg to gateway: #{res}"
-                                    @up_clients[mac]['client'].puts res.to_json
+                                    if cmd == "sync_time"
+                                        @up_clients[mac]['client'].puts res.merge({'data' => Time.new.strftime("%Y-%m-%d %H:%M:%S")}).to_json
+                                    else
+                                        @up_clients[mac]['client'].puts res.to_json
+                                    end
                                 rescue
                                     p "send hearbeat to app"
                                     client.puts res.merge({'cmd' => 'hearbeat', 'req' => 'up', 'status' => '2'}).to_json
@@ -93,7 +97,9 @@ class Server
                                         p e.message
                                     end
                                 end
-                                cmd_arrs = ["card_open", "pwd_open", "finger_open", "low_power", "tamper", "door_bell", "app_pwd_open"]
+                                cmd_arrs = ["card_open", "pwd_open", "finger_open", "low_power", "tamper", "door_bell", 
+                                            "finger_add", "finger_del", "pwd_add", "pwd_del", "card_add", "card_del",
+                                            "illegal_key", "illegal_try", "lctch_bolt", "dead_bolt"]
                                 if cmd_arrs.include?(cmd)
                                     p "=========rest start: #{cmd}========="
                                     begin
@@ -134,4 +140,4 @@ class Server
     end
 end
 
-Server.new( 6001, "192.168.1.102" )
+Server.new( 6001, "192.168.0.103" )

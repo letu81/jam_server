@@ -8,6 +8,8 @@ class Message < ActiveRecord::Base
            "pwd_add" => "添加密码", "pwd_del" => "删除密码",
            "card_add" => "添加IC卡", "card_del" => "删除IC卡",
            "finger_open" => "指纹开门", "low_power" => "电量低，请及时更换电池", 
+           "illegal_key" => "机械钥匙非法开锁", "illegal_try" => "非法开锁超过限次",
+           "lctch_bolt" => "斜舌报警", "dead_bolt" => "方舌信号",
            "doorbell" => "有客到，请开门", "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
     belongs_to :user
     belongs_to :device
