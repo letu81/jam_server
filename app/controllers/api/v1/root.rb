@@ -48,6 +48,7 @@ module API
       mount API::V1::Resources::Messages
       mount API::V1::Resources::Products
       mount API::V1::Resources::Users
+      mount API::V1::Resources::Versions
       mount API::V1::Resources::Feedback
 
       desc 'Alive endpoint', hidden: true

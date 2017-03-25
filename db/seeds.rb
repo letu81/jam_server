@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 if false
-user = User.create!(username: 'tutu', email: 'tutu@123456', mobile: '15712002798', password: '123456', password_confirmation: '123456')
+user = User.create!(username: 'tutu', email: 'tutu@123456', mobile: '15712000000', password: '123456', password_confirmation: '123456')
 DeviceCategory.create!(name: '门锁') 
 DeviceCategory.create!(name: '网关')
 DeviceCategory.create!(name: '插座')
@@ -17,15 +17,15 @@ Brand.create!(name: '深圳佳安美', identifier: 'szjam')
 brand = Brand.first
 kind = Kind.new({name: 'J-10', brand_id: brand.id})
 kind.save if kind.valid?
-DeviceUuid.new_uuid
 new_password = "123456"
-user = User.where(mobile: '15712002798').first
+user = User.where(mobile: '15712000000').first
 user.update_attribute(:password, new_password)
-end
 Brand.create!(name: '杭州萤石', identifier: 'hzys7')
+DeviceUuid.new_uuid
+end
 
-
-
+AppVersion.create({code: 1, name: '1.0.0', mobile_system: AppVersion::SYSTEMS[:android], content: "初始化"})
+AppVersion.create({code: 2, name: '1.0.1', mobile_system: AppVersion::SYSTEMS[:android], content: "功能：检测并下载更新"})
 
 #device1 = Device.create!(name: '', mac: '')
 #device2 = Device.create!(name: '', mac: '')

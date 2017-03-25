@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322031144) do
+ActiveRecord::Schema.define(version: 20170324125911) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -27,6 +27,17 @@ ActiveRecord::Schema.define(version: 20170322031144) do
   add_index "addresses", ["mobile"], name: "index_addresses_on_mobile", using: :btree
   add_index "addresses", ["user_id", "is_default"], name: "index_default_address_on_user_id", using: :btree
   add_index "addresses", ["user_id"], name: "index_addresses_on_user_id", using: :btree
+
+  create_table "app_versions", force: :cascade do |t|
+    t.integer  "code",          limit: 4,     default: 1, null: false
+    t.string   "name",          limit: 255,               null: false
+    t.integer  "mobile_system", limit: 4,                 null: false
+    t.text     "content",       limit: 65535,             null: false
+    t.datetime "created_at"
+  end
+
+  add_index "app_versions", ["code", "mobile_system"], name: "index_app_versions_on_code_and_mobile_system", unique: true, using: :btree
+  add_index "app_versions", ["name", "mobile_system"], name: "index_app_versions_on_name_and_mobile_system", unique: true, using: :btree
 
   create_table "auth_codes", force: :cascade do |t|
     t.string   "code",       limit: 255
