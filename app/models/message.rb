@@ -32,7 +32,7 @@ class Message < ActiveRecord::Base
 
     def send_notification
  		    begin
-	  		    JpushJob.set(queue: "jpush").perform_later(self)
+	  		    JpushJob.set(queue: "jpush").set(wait: 1.minute).perform_later(self)
         rescue Exception => e
             p "send_notification error...."
             p e.message
