@@ -48,7 +48,7 @@ module API
               data = { id: msg.id, user_id: msg.user_id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: + "#{msg.device.name}---" + Message::CMD["#{msg.oper_cmd}"] }
               if msg.oper_cmd.include?("open")
                 username = msg.username.nil? ? msg.user.username : msg.username
-                datas << data.merge({user_name: " #{msg.user.username}回家了"})
+                datas << data.merge({user_name: " #{username}回家了"})
               else
                 datas << data.merge({user_name: "【系统消息】"})
               end

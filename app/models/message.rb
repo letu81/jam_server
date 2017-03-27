@@ -1,7 +1,3 @@
-require 'jpush'
-require 'mini_magick'
-require 'rest-client'
-require 'json'
 class Message < ActiveRecord::Base
     serialize :ori_picture_urls, Hash
     
@@ -30,39 +26,13 @@ class Message < ActiveRecord::Base
 	  scope :published, lambda { where(is_deleted: false) }
 
 
-  	after_create :send_nootifycation
-    after_create :update_username, only: Proc.new { |msg| msg.device_type == "lock" && !msg.device_num.nil? && msg.device_num > 0 }
+    after_create :update_username, only: Proc.new { |msg| msg.device_type == "lock" && msg.device_num.to_i > 0 }
     after_create :update_lock_picture, only: Proc.new { |msg| msg.device_type == "lock" && msg.oper_cmd.include?("open") }
-    
+    after_create :send_nootifycation
 
     def send_nootifycation
  		    begin
-	  		    app_key = "f380bae15326074cded980af"
-  	        master_secret = "216ff40fb5019459d9ae2fe1"
-  	        jpush = JPush::Client.new(app_key, master_secret)
-  	        pusher = jpush.pusher
-
-            username = self.username.nil? ? self.user.username : self.username
-            title = self.oper_cmd.include?("open") ? "主人，#{username}回家了!" : "佳安美智控通知"
-
-            notification = JPush::Push::Notification.new
-  	        notification.set_android(
-  	            alert: CMD[self.oper_cmd],
-  	            title: title,
-  	            builder_id: 1,
-  	            extras: {user_id: self.user_id, user_name: ''}
-  	        )
-
-      			audience = JPush::Push::Audience.new
-      			audience.set_tag(self.user_id.to_s)
-
-	          push_payload = JPush::Push::PushPayload.new(
-                platform: 'all',
-                audience: audience,
-                notification: notification
-            )
-	        
-	          pusher.push(push_payload)
+	  		    JpushJob.set(queue: "jpush").perform_later(self)
         rescue Exception => e
             p "send_nootifycation error...."
             p e.message
