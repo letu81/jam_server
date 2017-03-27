@@ -16,7 +16,6 @@ module API
           post '/' do
             user = authenticate!
             datas = {:id => user.id, :name => user.username, :mobile => user.mobile, :gender => "", :avatar => ""}
-            p datas
             return { code: 0, message: "ok", data: datas } 
           end
 
@@ -44,13 +43,14 @@ module API
           post '/messages' do
             user = authenticate!
             datas = []
-            messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.limit(50)
+            messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.limit(30)
             messages.each do |msg|
               data = { id: msg.id, user_id: msg.user_id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: + "#{msg.device.name}---" + Message::CMD["#{msg.oper_cmd}"] }
               if msg.oper_cmd.include?("open")
-                datas << data.merge({user_name: " #{msg.user.username}回家了", })
+                username = msg.username.nil? ? msg.user.username : msg.username
+                datas << data.merge({user_name: " #{msg.user.username}回家了"})
               else
-                datas << data.merge({user_name: "【系统消息】", })
+                datas << data.merge({user_name: "【系统消息】"})
               end
             end
             return { code: 0, message: "ok", data: datas } 

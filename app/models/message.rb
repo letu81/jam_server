@@ -31,7 +31,9 @@ class Message < ActiveRecord::Base
 
 
   	after_create :send_nootifycation
+    after_create :update_username, only: Proc.new { |msg| msg.device_type == "lock" && !msg.device_num.nil? && msg.device_num > 0 }
     after_create :update_lock_picture, only: Proc.new { |msg| msg.device_type == "lock" && msg.oper_cmd.include?("open") }
+    
 
     def send_nootifycation
  		    begin
@@ -40,7 +42,7 @@ class Message < ActiveRecord::Base
   	        jpush = JPush::Client.new(app_key, master_secret)
   	        pusher = jpush.pusher
 
-            username = self.user.username
+            username = self.username.nil? ? self.user.username : self.username
             title = self.oper_cmd.include?("open") ? "主人，#{username}回家了!" : "佳安美智控通知"
 
             notification = JPush::Push::Notification.new
@@ -67,6 +69,15 @@ class Message < ActiveRecord::Base
         end
   	end
 
+    def update_username
+        begin
+            MessageUpdateUsernameJob.set(queue: "msg_update_username").perform_later(self)
+        rescue Exception => e
+            p "update_lock_picture error...."
+            p e.message
+        end
+    end
+
     def update_lock_picture
         begin
             monitor_id = '711309194' #todo
@@ -76,4 +87,5 @@ class Message < ActiveRecord::Base
             p e.message
         end
     end
+    
 end

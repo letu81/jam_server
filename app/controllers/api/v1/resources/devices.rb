@@ -71,13 +71,14 @@ module API
             datas = []
             user = authenticate!
             device = Device.where(id: params[:device_id]).first
-            messages = Message.smart_lock.user(user.id).device(device.id).published.limit(50)
+            messages = Message.smart_lock.user(user.id).device(device.id).published.limit(30)
             messages.each do |msg|
               data = { id: msg.id, user_id: user.id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: Message::CMD["#{msg.oper_cmd}"] }
               if msg.oper_cmd.include?("open")
-                datas << data.merge({user_name: " #{user.username}回家了", })
+                username = msg.username.nil? ? user.username : msg.username
+                datas << data.merge({user_name: " #{username}回家了"})
               else
-                datas << data.merge({user_name: "【系统消息】", })
+                datas << data.merge({user_name: "【系统消息】"})
               end
             end
             return { code: 0, message: "ok", data: datas } 
