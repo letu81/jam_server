@@ -26,20 +26,21 @@ class Message < ActiveRecord::Base
 	  scope :published, lambda { where(is_deleted: false) }
 
 
-    after_create :update_username, only: Proc.new { |msg| msg.device_type == "lock" && msg.device_num.to_i > 0 }
+    after_create :update_username
     after_create :update_lock_picture, only: Proc.new { |msg| msg.device_type == "lock" && msg.oper_cmd.include?("open") }
-    after_create :send_nootifycation
+    after_create :send_notification
 
-    def send_nootifycation
+    def send_notification
  		    begin
 	  		    JpushJob.set(queue: "jpush").perform_later(self)
         rescue Exception => e
-            p "send_nootifycation error...."
+            p "send_notification error...."
             p e.message
         end
   	end
 
     def update_username
+        return if self.lock_type.nil? || self.device_num.to_i == 0
         begin
             MessageUpdateUsernameJob.set(queue: "msg_update_username").perform_later(self)
         rescue Exception => e

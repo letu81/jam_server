@@ -12,8 +12,8 @@ class MessageUpdateUsernameJob < ActiveJob::Base
     		message.update_attribute(:username, "##{message.device_num}#{types[message.device_num]}")
     	end
     rescue Exception => e
-        p "MessageUpdateUsernameJob error...."
-        p e.message
+      p "MessageUpdateUsernameJob error...."
+      p e.message
     end
   end
 end
