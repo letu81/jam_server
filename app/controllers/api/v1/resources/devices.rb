@@ -73,7 +73,8 @@ module API
             device = Device.where(id: params[:device_id]).first
             messages = Message.smart_lock.user(user.id).device(device.id).published.limit(30)
             messages.each do |msg|
-              data = { id: msg.id, user_id: user.id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), content: Message::CMD["#{msg.oper_cmd}"] }
+              data = { id: msg.id, user_id: user.id, oper_time: msg.created_at.strftime('%Y-%m-%d %H:%M:%S'), 
+                       content: Message::CMD["#{msg.oper_cmd}"], avatar_path: msg.avatar_path, gif_path: msg.gif_path }
               if msg.oper_cmd.include?("open")
                 username = msg.username.nil? ? user.username : msg.username
                 datas << data.merge({user_name: " #{username}回家了"})
