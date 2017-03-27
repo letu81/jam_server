@@ -105,7 +105,7 @@ class Server
                                     p "=========rest start: #{cmd}========="
                                     begin
                                         if data.strip.length > 0
-                                            device_num = string.strip.gsub(string.strip[0,4], "").gsub("\\x", "").to_i(16)
+                                            device_num = data.strip.gsub(data.strip[0,4], "").gsub("\\x", "").to_i(16)
                                             RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, device_num:device_num}
                                         else
                                             RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}

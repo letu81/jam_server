@@ -184,12 +184,13 @@ module API
             requires :device_mac, type: String, desc: 'Device mac'
             requires :device_token, type: String, desc: 'Device token'
             requires :device_cmd, type: String, desc: 'Device cmd'
+            optional :device_num, type: Integer, desc: 'Device Num'
           end
           post  '/listen' do
             device = Device.by_device_mac_pwd(params[:device_mac], params[:device_token])
             return { code: 1, message: "设备不存在", data: "" } unless device
-            unless parmas[:device_num].blank?
-              msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd], device_num: parmas[:device_num].to_i)
+            unless params[:device_num].blank?
+              msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd], device_num: params[:device_num].to_i)
               msg.save if msg.valid?
             else
               msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd])
