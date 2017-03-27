@@ -3,8 +3,9 @@ class JpushJob < ActiveJob::Base
   	queue_as :default
 
   	def perform(*args)
-  		begin
-  			message = args[0]
+  		  begin
+  			    message = args[0]
+            message.reload
   			    app_key = Setting.jpush_app_key
   	        master_secret = Setting.jpush_app_secret
   	        jpush = JPush::Client.new(app_key, master_secret)
@@ -21,17 +22,17 @@ class JpushJob < ActiveJob::Base
   	            extras: {user_id: message.user_id, user_name: ''}
   	        )
 
-      		audience = JPush::Push::Audience.new
-      		audience.set_tag(message.user_id.to_s)
+      		  audience = JPush::Push::Audience.new
+      		  audience.set_tag(message.user_id.to_s)
 
-	        push_payload = JPush::Push::PushPayload.new(
+	          push_payload = JPush::Push::PushPayload.new(
                 platform: 'all',
                 audience: audience,
                 notification: notification
             )
 	        
-	        pusher.push(push_payload)
-	    rescue Exception => e
+	          pusher.push(push_payload)
+	      rescue Exception => e
             p "JpushJob error...."
             p e.message
         end
