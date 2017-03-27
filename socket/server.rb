@@ -41,6 +41,7 @@ class Server
                         dev_type = res['device_type']
                         reverse_req = req == "up" ? "down" : "up"
                         mobile_mac = res['mobile_mac']
+                        data = res['data']
                         @macs << mac unless @macs.include?(mac)
                         @mobile_macs << mobile_mac unless @mobile_macs.include?(mobile_mac)
                         # {'222333' =>  {'clients' => { '1111' => client, '2222' => client} } }
@@ -103,7 +104,12 @@ class Server
                                 if cmd_arrs.include?(cmd)
                                     p "=========rest start: #{cmd}========="
                                     begin
-                                        RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                        if data.strip.length > 0
+                                            device_num = string.strip.gsub(string.strip[0,4], "").gsub("\\x", "").to_i(16)
+                                            RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, device_num:device_num}
+                                        else
+                                            RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                        end
                                     rescue Exception => e
                                         p e.message
                                         p "rest error...."
