@@ -191,7 +191,7 @@ module API
             device = Device.by_device_mac_pwd(params[:device_mac], params[:device_token])
             return { code: 1, message: "设备不存在", data: "" } unless device
             unless params[:device_num].blank?
-              msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd], device_num: params[:device_num].to_i)
+              msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd], lock_type: params[:lock_type].to_i, device_num: params[:device_num].to_i)
               msg.save if msg.valid?
             else
               msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd])
