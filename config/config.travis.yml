@@ -4,17 +4,17 @@ defaults: &defaults
   mail_domain: "jiaanmei.com"
   upload_url: ""
   email_sender: 'noreply@jiaanmei.com'
-  sms_verification: '12107'
-  sms_order: '24351'
-  sms_group: '40569'
+  sms_verification: ''
+  sms_order: ''
+  sms_group: ''
   mq_host: '127.0.0.1'
   mq_port: '5672'
   mq_vhost: '/'
   mq_user: 'guest'
   mq_password: 'guest'
 
-  ez_app_key: "3f9dc8041d0142dc838c90d23d544e4d"
-  ez_app_secret: "90999c5073e0dbb3615ecd9bda7e83ff"
+  ez_app_key: ""
+  ez_app_secret: ""
   ez_base_url: "https://open.ys7.com/api/lapp"
   ez_get_token_url: "/token/get"
   ez_camera_list_url: "/camera/list"
@@ -25,6 +25,8 @@ defaults: &defaults
   ez_access_token: ""
   ez_expire_time: ""
 
+  jpush_app_key: ""
+  jpush_app_secret: ""
 
 development:
   <<: *defaults

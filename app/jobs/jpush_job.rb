@@ -5,8 +5,8 @@ class JpushJob < ActiveJob::Base
   	def perform(*args)
   		begin
   			message = args[0]
-  			app_key = Setting.ez_app_key
-  	        master_secret = Setting.ez_app_secret
+  			    app_key = Setting.jpush_app_key
+  	        master_secret = Setting.jpush_app_secret
   	        jpush = JPush::Client.new(app_key, master_secret)
   	        pusher = jpush.pusher
 
