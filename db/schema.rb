@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170324125911) do
+ActiveRecord::Schema.define(version: 20170326102834) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -150,12 +150,15 @@ ActiveRecord::Schema.define(version: 20170324125911) do
   add_index "kinds", ["status_id"], name: "index_kinds_on_status_id", using: :btree
 
   create_table "messages", force: :cascade do |t|
-    t.integer  "user_id",     limit: 4,                    null: false
-    t.integer  "device_id",   limit: 4,                    null: false
-    t.string   "device_type", limit: 255, default: "lock", null: false
-    t.string   "oper_cmd",    limit: 255,                  null: false
-    t.boolean  "is_deleted",              default: false,  null: false
+    t.integer  "user_id",          limit: 4,                      null: false
+    t.integer  "device_id",        limit: 4,                      null: false
+    t.string   "device_type",      limit: 255,   default: "lock", null: false
+    t.string   "oper_cmd",         limit: 255,                    null: false
+    t.boolean  "is_deleted",                     default: false,  null: false
     t.datetime "created_at"
+    t.string   "avatar_path",      limit: 255
+    t.string   "gif_path",         limit: 255
+    t.text     "ori_picture_urls", limit: 65535
   end
 
   add_index "messages", ["user_id", "device_type", "device_id", "is_deleted"], name: "index_messages_on_user_devices", using: :btree

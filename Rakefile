@@ -5,5 +5,6 @@ require File.expand_path('../config/application', __FILE__)
 
 require 'grape-route-helpers'
 require 'grape-route-helpers/tasks'
+require 'resque/tasks'
 
 Rails.application.load_tasks

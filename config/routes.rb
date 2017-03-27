@@ -1,3 +1,4 @@
+require 'resque/server'
 Rails.application.routes.draw do
   devise_for :users
   use_doorkeeper
@@ -7,4 +8,6 @@ Rails.application.routes.draw do
   get 'wap' => 'wap#index'
 
   mount GrapeSwaggerRails::Engine => '/docs'
+
+  mount Resque::Server, at: '/jobs'
 end

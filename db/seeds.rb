@@ -24,8 +24,10 @@ Brand.create!(name: '杭州萤石', identifier: 'hzys7')
 DeviceUuid.new_uuid
 end
 
+if false
 AppVersion.create({code: 1, name: '1.0.0', mobile_system: AppVersion::SYSTEMS[:android], content: "初始化"})
 AppVersion.create({code: 2, name: '1.0.1', mobile_system: AppVersion::SYSTEMS[:android], content: "功能：检测并下载更新"})
+end
 
-#device1 = Device.create!(name: '', mac: '')
-#device2 = Device.create!(name: '', mac: '')
+msg = Message.new(user_id: 1, device_id: 1, oper_cmd: "app_open")
+msg.save if msg.valid?

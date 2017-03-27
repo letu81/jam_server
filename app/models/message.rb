@@ -1,6 +1,10 @@
 require 'jpush'
+require 'mini_magick'
+require 'rest-client'
+require 'json'
 class Message < ActiveRecord::Base
-    validates :oper_cmd, length: { maximum: 30, minimum: 1 }, presence: true
+    serialize :ori_picture_urls, Hash
+    
     CMD = {"register" => "无线注册成功", "logout" => "删除无线成功",
            "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "生成临时密码",
            "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
@@ -11,6 +15,9 @@ class Message < ActiveRecord::Base
            "illegal_key" => "机械钥匙非法开锁", "illegal_try" => "非法开锁超过限次",
            "lctch_bolt" => "斜舌报警", "dead_bolt" => "方舌信号",
            "doorbell" => "有客到，请开门", "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
+
+    validates :oper_cmd, length: { maximum: 30, minimum: 1 }, presence: true
+
     belongs_to :user
     belongs_to :device
     
@@ -24,6 +31,7 @@ class Message < ActiveRecord::Base
 
 
   	after_create :send_nootifycation
+    after_create :update_lock_picture, only: Proc.new { |msg| msg.device_type == "lock" && msg.oper_cmd.include?("open") }
 
     def send_nootifycation
  		    begin
@@ -58,4 +66,14 @@ class Message < ActiveRecord::Base
             p e.message
         end
   	end
+
+    def update_lock_picture
+        begin
+            monitor_id = '711309194' #todo
+            YsCapturePictureJob.set(queue: "ys7").perform_later(self, monitor_id)
+        rescue Exception => e
+            p "update_lock_picture error...."
+            p e.message
+        end
+    end
 end

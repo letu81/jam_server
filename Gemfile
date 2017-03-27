@@ -36,6 +36,9 @@ gem 'grape-swagger-rails', '0.2.0'
 gem 'usecasing'
 
 gem 'migration_comments'
+gem 'mini_magick'
+
+gem 'resque', '~> 1.27.0'
 
 # JS
 gem 'jquery-rails'
