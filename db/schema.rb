@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170327035058) do
+ActiveRecord::Schema.define(version: 20170327061609) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -160,8 +160,10 @@ ActiveRecord::Schema.define(version: 20170327035058) do
     t.string   "gif_path",         limit: 255
     t.text     "ori_picture_urls", limit: 65535
     t.integer  "device_num",       limit: 4
+    t.integer  "lock_type",        limit: 4
   end
 
+  add_index "messages", ["device_id", "lock_type", "device_num"], name: "index_messages_on_device_id_and_lock_type_and_device_num", using: :btree
   add_index "messages", ["user_id", "device_type", "device_id", "is_deleted"], name: "index_messages_on_user_devices", using: :btree
   add_index "messages", ["user_id", "device_type", "is_deleted"], name: "index_messages_on_user_all_devices", using: :btree
   add_index "messages", ["user_id", "is_deleted"], name: "index_messages_on_user", using: :btree

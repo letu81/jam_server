@@ -105,8 +105,18 @@ class Server
                                     p "=========rest start: #{cmd}========="
                                     begin
                                         if data.strip.length > 0
-                                            device_num = data.strip.gsub(data.strip[0,4], "").gsub("\\x", "").to_i(16)
-                                            RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, device_num:device_num}
+                                            device_num = data.strip.gsub(data.strip[0,4], "").each_byte.map { |b| b.to_s(16) }.join.to_i(16)
+                                            types = {:finger => 1, :password => 2, :card => 3}
+                                            case cmd
+                                            when cmd.include?("finger")
+                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:finger], device_num:device_num}
+                                            when cmd.include?("pwd")
+                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:password], device_num:device_num}
+                                            when cmd.include?("card")
+                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:card], device_num:device_num}
+                                            else
+                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                            end
                                         else
                                             RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
                                         end

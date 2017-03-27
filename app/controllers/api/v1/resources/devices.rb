@@ -184,6 +184,7 @@ module API
             requires :device_mac, type: String, desc: 'Device mac'
             requires :device_token, type: String, desc: 'Device token'
             requires :device_cmd, type: String, desc: 'Device cmd'
+            optional :lock_type, type: Integer, desc: 'Lock type'
             optional :device_num, type: Integer, desc: 'Device Num'
           end
           post  '/listen' do
