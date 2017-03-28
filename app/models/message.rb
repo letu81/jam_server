@@ -1,11 +1,11 @@
 class Message < ActiveRecord::Base
     serialize :ori_picture_urls, Hash
     
-    CMD = {"register" => "无线注册成功", "logout" => "删除无线成功",
+    CMD = {"register" => "无线注册成功", "logout" => "删除无线成功", "sync_time" => "同步时间",
            "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "生成临时密码",
            "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
            "finger_add" => "添加指纹", "finger_del" => "删除指纹",
-           "pwd_add" => "添加密码", "pwd_del" => "删除密码",
+           "pwd_add" => "添加密码", "pwd_del" => "删除密码", 
            "card_add" => "添加IC卡", "card_del" => "删除IC卡",
            "finger_open" => "指纹开门", "low_power" => "电量低，请及时更换电池", 
            "illegal_key" => "机械钥匙非法开锁", "illegal_try" => "非法开锁超过限次",
@@ -33,7 +33,7 @@ class Message < ActiveRecord::Base
     def update_username
         return if self.lock_type.nil? || self.device_num.to_i == 0
         begin
-            MessageUpdateUsernameJob.set(queue: "msg_update_username").perform_later(self)
+            MessageUpdateUsernameJob.set(queue: "msg_update_username").perform_now(self)
         rescue Exception => e
             p "update_lock_picture error...."
             p e.message
