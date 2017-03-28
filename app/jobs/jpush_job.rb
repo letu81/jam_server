@@ -4,7 +4,7 @@ class JpushJob < ActiveJob::Base
 
   	def perform(*args)
   		  begin
-            sleep 10
+            sleep 5
   			    message_id = args[0]
             message = Message.where(id: message_id).first
   			    app_key = Setting.jpush_app_key
@@ -13,15 +13,25 @@ class JpushJob < ActiveJob::Base
   	        pusher = jpush.pusher
 
             username = message.username.nil? ? message.user.username : message.username
-            title = message.oper_cmd.include?("open") ? "主人，#{username}回家了!" : "佳安美智控通知"
-
+            
             notification = JPush::Push::Notification.new
-  	        notification.set_android(
-  	            alert: Message::CMD[message.oper_cmd],
-  	            title: title,
-  	            builder_id: 1,
-  	            extras: {user_id: message.user_id, user_name: ''}
-  	        )
+            if message.oper_cmd.include?("open")
+                alert = "主人，#{username}回家了!"
+                notification.set_android(
+                    alert: alert,
+                    title: Message::CMD[message.oper_cmd],
+                    builder_id: 1,
+                    extras: {user_id: message.user_id, user_name: ''}
+                )
+            else
+                title = "佳安美智控通知"
+                notification.set_android(
+                    alert: Message::CMD[message.oper_cmd],
+                    title: title,
+                    builder_id: 1,
+                    extras: {user_id: message.user_id, user_name: ''}
+                )
+            emd
 
       		  audience = JPush::Push::Audience.new
       		  audience.set_tag(message.user_id.to_s)

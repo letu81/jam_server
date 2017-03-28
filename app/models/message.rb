@@ -42,6 +42,7 @@ class Message < ActiveRecord::Base
     end
 
     def update_lock_picture
+        return unless self.user_id==1 #todo
         begin
             monitor_id = '711309194' #todo
             YsCapturePictureJob.set(queue: "ys7").perform_later(self, monitor_id)
