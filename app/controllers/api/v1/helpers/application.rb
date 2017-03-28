@@ -31,6 +31,15 @@ module API
 	      token = params[:token]
 	      @current_user ||= User.where(private_token: token).first
 	    end
+
+	    def relative_time_in_words(give_time)
+	    	i = (Time.now - give_time).to_i
+	    	case i
+		      when 0..86400 then give_time.strftime("%H:%M:%S") # 86400 = 1 day
+		      when 86401..172000 then '昨天' 
+		      else give_time.strftime("%Y-%m-%d")
+    		end
+	    end
 	    
 	    def deliver_info_for(product)
 	      return '' if product.blank?
