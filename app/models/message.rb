@@ -1,7 +1,8 @@
 class Message < ActiveRecord::Base
     serialize :ori_picture_urls, Hash
     
-    CMD = {"register" => "无线注册成功", "logout" => "删除无线成功", "sync_time" => "同步时间",
+    CMD = {"register" => "无线注册成功", "logout" => "删除无线成功", 
+           "sync_time" => "同步时间成功", "gateway_update" => "网关固件升级成功",
            "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "生成临时密码",
            "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
            "finger_add" => "添加指纹", "finger_del" => "删除指纹",
