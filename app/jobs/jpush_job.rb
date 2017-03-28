@@ -31,7 +31,7 @@ class JpushJob < ActiveJob::Base
                     builder_id: 1,
                     extras: {user_id: message.user_id, user_name: ''}
                 )
-            emd
+            end
 
       		  audience = JPush::Push::Audience.new
       		  audience.set_tag(message.user_id.to_s)
