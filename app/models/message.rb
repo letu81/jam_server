@@ -30,15 +30,6 @@ class Message < ActiveRecord::Base
     after_create :update_lock_picture, only: Proc.new { |msg| msg.device_type == "lock" && msg.oper_cmd.include?("open") }
     after_create :send_notification
 
-    def send_notification
- 		    begin
-	  		    JpushJob.set(queue: "jpush").set(wait: 1.minute).perform_later(self)
-        rescue Exception => e
-            p "send_notification error...."
-            p e.message
-        end
-  	end
-
     def update_username
         return if self.lock_type.nil? || self.device_num.to_i == 0
         begin
@@ -55,6 +46,16 @@ class Message < ActiveRecord::Base
             YsCapturePictureJob.set(queue: "ys7").perform_later(self, monitor_id)
         rescue Exception => e
             p "update_lock_picture error...."
+            p e.message
+        end
+    end
+
+    def send_notification
+        begin
+            JpushJob.set(wait: 1.minute)
+            JpushJob.set(queue: "jpush").perform_later(self)
+        rescue Exception => e
+            p "send_notification error...."
             p e.message
         end
     end
