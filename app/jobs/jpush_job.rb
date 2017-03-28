@@ -4,8 +4,9 @@ class JpushJob < ActiveJob::Base
 
   	def perform(*args)
   		  begin
-  			    message = args[0]
-            message.reload
+            sleep 10
+  			    message_id = args[0]
+            message = Message.where(id: message_id).first
   			    app_key = Setting.jpush_app_key
   	        master_secret = Setting.jpush_app_secret
   	        jpush = JPush::Client.new(app_key, master_secret)
