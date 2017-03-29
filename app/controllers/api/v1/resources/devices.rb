@@ -22,7 +22,8 @@ module API
             datas = []
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
-                        device_uuid:device.dev_uuid, mac: device.mac, name: device.name, status: device.status_id}
+                        device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
+                        monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status: device.status_id}
             end
 
             if Setting[:ez_expire_time].to_i < Time.now.to_i
@@ -57,7 +58,8 @@ module API
             device = Device.by_device(params[:device_id])
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
-            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, mac: device.mac, status: device.status_id, status_name: online_str} } 
+            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, 
+                   mac: device.mac, status: device.status_id, monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status_name: online_str} } 
           end
 
           desc '设备历史操作详情' do
@@ -209,13 +211,18 @@ module API
           params do
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: Integer, desc: 'Device id'
-            requires :device_name, type: String, desc: 'Device name'
+            optional :device_name, type: String, desc: 'Device name'
+            optional :monitor_sn, type: String, desc: 'Monitor SN'
           end
           post  '/update' do
             user = authenticate!
             device = Device.where(id:params[:device_id]).first
             return { code: 1, message: "设备不存在", data: "" } unless device
-            device.update_attribute(:name, params[:device_name])
+            if params[:device_name]
+              device.update_attribute(:name, params[:device_name])
+            elsif params[:monitor_sn]
+              device.update_attribute(:monitor_sn, params[:monitor_sn])
+            end
             return { code: 0, message: "", data: "ok" } 
           end
 

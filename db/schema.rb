@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170329052854) do
+ActiveRecord::Schema.define(version: 20170329141603) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -123,9 +123,11 @@ ActiveRecord::Schema.define(version: 20170329052854) do
     t.string   "mac",          limit: 255, default: ""
     t.datetime "activited_at"
     t.datetime "last_request"
+    t.string   "monitor_sn",   limit: 255
   end
 
   add_index "devices", ["activited_at"], name: "index_devices_on_activited_at", using: :btree
+  add_index "devices", ["monitor_sn"], name: "index_devices_on_monitor_sn", using: :btree
   add_index "devices", ["name"], name: "index_devices_on_name", using: :btree
   add_index "devices", ["product_id", "activited_at"], name: "index_devices_on_product_activited", using: :btree
   add_index "devices", ["product_id"], name: "index_devices_on_product_id", using: :btree

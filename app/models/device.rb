@@ -8,7 +8,7 @@ class Device < ActiveRecord::Base
 		self.joins("INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
 		.where(:id => device_id)
 		.select("devices.id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
-			device_uuids.password, device_uuids.device_category_id")
+			devices.monitor_sn, device_uuids.password, device_uuids.device_category_id")
 		.first
 	end
 
@@ -17,7 +17,7 @@ class Device < ActiveRecord::Base
 			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
 		.where(:user_devices => {:user_id => user_id})
 		.select("devices.id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
-			device_uuids.password, device_uuids.device_category_id")
+			devices.monitor_sn, device_uuids.password, device_uuids.device_category_id")
 	end
 
 	def self.by_device_mac_pwd(mac, pwd)

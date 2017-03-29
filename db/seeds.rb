@@ -24,6 +24,9 @@ Brand.create!(name: '杭州萤石', identifier: 'hzys7')
 DeviceUuid.new_uuid
 end
 
-if true
+if false
 AppVersion.create({code: 4, name: '1.0.3', mobile_system: AppVersion::SYSTEMS[:android], content: "功能：1、增加售后服务和关于佳安美；2、显示开门动图"})
 end
+
+msg = Message.new(user_id: 1, device_id: 1, oper_cmd: "app_open")
+msg.save if msg.valid?
