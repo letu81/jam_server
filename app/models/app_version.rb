@@ -6,6 +6,10 @@ class AppVersion < ActiveRecord::Base
 
 	default_scope { order("id desc") }
 
+	def self.by_system(mobile_system)
+		self.where(:mobile_system => mobile_system)
+	end
+
 	def self.by_system_and_code(mobile_system, version_code)
 		self.where(:mobile_system => mobile_system, :code => version_code)
 	end
