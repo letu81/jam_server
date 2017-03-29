@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # coding: utf-8
 require "rest_client"
+require 'date'
 module API
   module V1
     module Helpers
@@ -33,10 +34,10 @@ module API
 	    end
 
 	    def relative_time_in_words(give_time)
-	    	i = (Time.now - give_time).to_i
+	    	i = Date.today - give_time.to_date
 	    	case i
-		      when 0..86400 then give_time.strftime("%H:%M:%S") # 86400 = 1 day
-		      when 86401..172000 then '昨天' 
+		      when 0 then give_time.strftime("%H:%M:%S") # 86400 = 1 day
+		      when 1 then '昨天' 
 		      else give_time.strftime("%Y-%m-%d")
     		end
 	    end
@@ -48,19 +49,18 @@ module API
 	    
 	      order_time_line = SiteConfig.order_time_line || '12:00'
 	      if product.delivered_at.blank?
-		if Time.zone.now.strftime('%H:%M:%S') < order_time_line
-		  week_index = Time.zone.now.wday
-		  order_time_line + "前完成下单，今天（#{Time.zone.now.strftime("%Y-%m-%d")} #{weeks[week_index]}）18:00至21:00之间配送"
-		else
-		  week_index = (Time.zone.now + 1.day).wday
-		  order_time_line + "后完成下单，明天（#{(Time.zone.now + 1.day).strftime("%Y-%m-%d")} #{weeks[week_index]}）18:00至21:00之间配送"
-		end
+			if Time.zone.now.strftime('%H:%M:%S') < order_time_line
+			  week_index = Time.zone.now.wday
+			  order_time_line + "前完成下单，今天（#{Time.zone.now.strftime("%Y-%m-%d")} #{weeks[week_index]}）18:00至21:00之间配送"
+			else
+			  week_index = (Time.zone.now + 1.day).wday
+			  order_time_line + "后完成下单，明天（#{(Time.zone.now + 1.day).strftime("%Y-%m-%d")} #{weeks[week_index]}）18:00至21:00之间配送"
+			end
 	      else
-		date = product.delivered_at.strftime('%Y-%m-%d')
-		week_index = product.delivered_at.wday
-		date + ' ' + order_time_line + "前完成下单，当天（#{date} #{weeks[week_index]}）18:00至21:00之间配送"
+			date = product.delivered_at.strftime('%Y-%m-%d')
+			week_index = product.delivered_at.wday
+			date + ' ' + order_time_line + "前完成下单，当天（#{date} #{weeks[week_index]}）18:00至21:00之间配送"
 	      end
-    
 	    end
 	    
 	    def send_sms(mobile, sms_code, error_msg)
