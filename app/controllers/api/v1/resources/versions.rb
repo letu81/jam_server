@@ -5,7 +5,7 @@ module API
       class Versions < API::V1::Root
         helpers API::V1::Helpers::Application
 
-        resource :versions, desc: '版本关接口' do
+        resource :versions, desc: '版本相关接口' do
           desc '获取最新版本信息' do
             headers API::V1::Defaults.client_auth_headers
           end

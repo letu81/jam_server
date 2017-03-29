@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170327084607) do
+ActiveRecord::Schema.define(version: 20170329052854) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -138,6 +138,18 @@ ActiveRecord::Schema.define(version: 20170327084607) do
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
+
+  create_table "jam_services", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4,                   null: false
+    t.integer  "service_type", limit: 4,   default: 1,     null: false
+    t.string   "content",      limit: 255, default: "",    null: false
+    t.boolean  "is_recall",                default: false, null: false
+    t.datetime "created_at"
+  end
+
+  add_index "jam_services", ["is_recall"], name: "index_jam_services_on_is_recall", using: :btree
+  add_index "jam_services", ["service_type", "is_recall"], name: "index_jam_services_on_service_type_and_is_recall", using: :btree
+  add_index "jam_services", ["user_id"], name: "index_jam_services_on_user_id", using: :btree
 
   create_table "kinds", force: :cascade do |t|
     t.string  "name",      limit: 255,             null: false
