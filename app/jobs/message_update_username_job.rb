@@ -1,5 +1,5 @@
 class MessageUpdateUsernameJob < ActiveJob::Base
-  queue_as :low_priority
+  queue_as :high_priority
 
   def perform(*args)
   	begin

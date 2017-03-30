@@ -27,14 +27,12 @@ class Message < ActiveRecord::Base
 	  scope :published, lambda { where(is_deleted: false) }
 
 
-    after_create :update_username
-    after_create :update_lock_picture
-    after_create :send_notification
+    after_create :update_username, :update_lock_picture, :send_notification
 
     def update_username
         return if self.lock_type.nil? || self.device_num.to_i == 0
         begin
-            MessageUpdateUsernameJob.set(queue: "msg_update_username").perform_now(self)
+            MessageUpdateUsernameJob.set(queue: "msg_update_username").perform_later(self)
         rescue Exception => e
             p "update_lock_picture error...."
             p e.message
@@ -44,7 +42,7 @@ class Message < ActiveRecord::Base
     def update_lock_picture
         if self.oper_cmd.include?("open") && self.device_type == "lock"
           begin
-              YsCapturePictureJob.set(queue: "ys_capture").perform_now(self)
+              YsCapturePictureJob.set(queue: "ys_capture").perform_later(self)
           rescue Exception => e
               p "update_lock_picture error...."
               p e.message

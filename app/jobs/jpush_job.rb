@@ -1,6 +1,6 @@
 require 'jpush'
 class JpushJob < ActiveJob::Base
-  	queue_as :default
+  	queue_as :low_priority
 
   	def perform(*args)
   		  begin
