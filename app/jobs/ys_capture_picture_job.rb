@@ -6,9 +6,11 @@ class YsCapturePictureJob < ActiveJob::Base
 
     def perform(*args)
         begin
-        	message = args[0]
+            message = args[0]
+            device = Device.where(device_id: message.device_id).first
+            return if device.nil? || device.monitor_sn.nil? || device.monitor_sn.blank?
+        	device_id = device.monitor_sn
     		max_time = 6
-            device_id = args[1]
             succuessed = 0
             path = "public/pictures/lock/#{device_id}"
             Dir.mkdir(path) unless Dir.exist?(path)

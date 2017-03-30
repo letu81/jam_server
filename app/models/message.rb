@@ -42,10 +42,8 @@ class Message < ActiveRecord::Base
     end
 
     def update_lock_picture
-        device = self.device
-        return if device.nil? || device.monitor_sn.nil? || device.monitor_sn.blank?
         begin
-            YsCapturePictureJob.set(queue: "ys7").perform_now(self, device.monitor_sn)
+            YsCapturePictureJob.set(queue: "ys7").perform_now(self)
         rescue Exception => e
             p "update_lock_picture error...."
             p e.message
