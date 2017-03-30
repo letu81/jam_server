@@ -23,12 +23,12 @@ class Message < ActiveRecord::Base
     scope :smart_lock, lambda { where(device_type: "lock") }
     scope :user, lambda { |user_id| where(user_id: user_id) }
     scope :device, lambda { |device_id| where(device_id: device_id) }
-	scope :resent, lambda { where("created_at > ?", 1.days.ago) }
-	scope :published, lambda { where(is_deleted: false) }
+	  scope :resent, lambda { where("created_at > ?", 1.days.ago) }
+	  scope :published, lambda { where(is_deleted: false) }
 
 
     after_create :update_username
-    after_create :update_lock_picture, only: Proc.new { |msg| msg.device_type == "lock" && msg.oper_cmd.include?("open") }
+    after_create :update_lock_picture
     after_create :send_notification
 
     def update_username
@@ -42,11 +42,13 @@ class Message < ActiveRecord::Base
     end
 
     def update_lock_picture
-        begin
-            YsCapturePictureJob.set(queue: "ys7").perform_now(self)
-        rescue Exception => e
-            p "update_lock_picture error...."
-            p e.message
+        if self.oper_cmd.include?("open") && self.device_type == "lock"
+          begin
+              YsCapturePictureJob.set(queue: "ys7").perform_now(self)
+          rescue Exception => e
+              p "update_lock_picture error...."
+              p e.message
+          end
         end
     end
 

@@ -7,7 +7,7 @@ class YsCapturePictureJob < ActiveJob::Base
     def perform(*args)
         begin
             message = args[0]
-            device = Device.where(device_id: message.device_id).first
+            device = Device.where(id: message.device_id).first
             return if device.nil? || device.monitor_sn.nil? || device.monitor_sn.blank?
         	device_id = device.monitor_sn
     		max_time = 6
