@@ -44,7 +44,7 @@ class Message < ActiveRecord::Base
     def update_lock_picture
         if self.oper_cmd.include?("open") && self.device_type == "lock"
           begin
-              YsCapturePictureJob.set(queue: "ys7").perform_now(self)
+              YsCapturePictureJob.set(queue: "ys_capture").perform_now(self)
           rescue Exception => e
               p "update_lock_picture error...."
               p e.message

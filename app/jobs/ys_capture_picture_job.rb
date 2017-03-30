@@ -2,7 +2,7 @@ require 'mini_magick'
 require 'rest-client'
 require 'json'
 class YsCapturePictureJob < ActiveJob::Base
-    queue_as :default
+    queue_as :critical_priority
 
     def perform(*args)
         begin
