@@ -27,3 +27,6 @@ end
 if false
 AppVersion.create({code: 5, name: '1.0.4', mobile_system: AppVersion::SYSTEMS[:android], content: ""})
 end
+
+msg = Message.new(user_id:1, device_id:4, oper_cmd: "app_open")
+msg.save

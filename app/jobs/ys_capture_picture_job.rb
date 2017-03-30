@@ -38,6 +38,8 @@ class YsCapturePictureJob < ActiveJob::Base
             while (i < max_time) do
                 response = RestClient.post ys7_capture_url, params
                 result = JSON.parse(response.body)
+                p result
+
                 if response.code == 200             
                     if result['code'].to_i == 200
                         succuessed += 1
@@ -64,7 +66,7 @@ class YsCapturePictureJob < ActiveJob::Base
                     p result['msg']
                 end
                 i = i + 1
-                sleep 6
+                sleep 5
             end
             if succuessed > 0
                 ## onvert gif
