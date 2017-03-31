@@ -20,7 +20,7 @@ gem 'grape-entity', '0.5.1'
 gem 'kramdown'
 gem 'rack-cors', require: 'rack/cors'
 gem 'httparty'
-gem 'kaminari', '0.16.3'
+gem 'kaminari', '0.16.3', require: 'kaminari/grape'
 
 # Authentication
 gem 'doorkeeper'

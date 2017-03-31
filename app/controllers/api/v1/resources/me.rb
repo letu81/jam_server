@@ -39,11 +39,13 @@ module API
           end
           params do
             requires :token, type: String, desc: 'User token'
+            optional :page, type: Integer, desc: 'page'
           end
           post '/messages' do
+            page = params[:page].to_i
             user = authenticate!
             datas = []
-            messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.limit(30)
+            messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.page(page).per(default_page_size)
             messages.each do |msg|
               data = { id: msg.id, user_id: msg.user_id, relative_time: relative_time_in_words(msg.created_at),
                        oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), 
@@ -56,7 +58,7 @@ module API
                 datas << data.merge({user_name: "【系统消息】"})
               end
             end
-            return { code: 0, message: "ok", data: datas } 
+            return { code: 0, message: "ok", data: datas, total_pages: messages.total_pages, current_page: page } 
           end
 
           desc '反馈意见' do

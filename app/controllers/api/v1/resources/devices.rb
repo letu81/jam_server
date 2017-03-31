@@ -68,12 +68,14 @@ module API
           params do
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: Integer, desc: 'Device id'
+            optional :page, type: Integer, desc: 'page'
           end
           post  '/history' do
+            page = params[:page].to_i
             datas = []
             user = authenticate!
             device = Device.where(id: params[:device_id]).first
-            messages = Message.smart_lock.user(user.id).device(device.id).published.limit(30)
+            messages = Message.smart_lock.user(user.id).device(device.id).published.page(page).per(default_page_size)
             messages.each do |msg|
               data = { id: msg.id, user_id: user.id, relative_time: relative_time_in_words(msg.created_at), 
                        oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), 
@@ -85,7 +87,7 @@ module API
                 datas << data.merge({user_name: "【系统消息】"})
               end
             end
-            return { code: 0, message: "ok", data: datas } 
+            return { code: 0, message: "ok", data: datas, total_pages: messages.total_pages, current_page: page } 
           end
 
           desc '操作设备' do
