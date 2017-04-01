@@ -8,7 +8,7 @@ module API
       class Devices < API::V1::Root
         helpers API::V1::Helpers::Application
 
-        resource :devices, desc: '设备相关接口[todo]' do
+        resource :devices, desc: '设备相关接口' do
 
           desc '获取当前用户设备列表' do
             headers API::V1::Defaults.client_auth_headers
