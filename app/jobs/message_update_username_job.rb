@@ -9,7 +9,7 @@ class MessageUpdateUsernameJob < ActiveJob::Base
     		message.update_attribute(:username, user.name)
     	else
     		types = {1 => "指纹", 2 => "密码", 3 => "IC卡"}
-    		message.update_attribute(:username, "##{message.device_num}#{types[message.device_num]}")
+    		message.update_attribute(:username, "##{message.device_num}#{types[message.lock_type]}")
     	end
     rescue Exception => e
       p "MessageUpdateUsernameJob error...."
