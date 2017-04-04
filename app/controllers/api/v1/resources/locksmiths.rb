@@ -19,7 +19,7 @@ module API
             page = params[:page].to_i
             datas = []
             if user.district_code.nil?
-              return { code: 0, message: "ok", data: datas, total_pages: locksmiths.total_pages, current_page: page } 
+              return { code: 0, message: "ok", data: datas, total_pages: 1, current_page: 1 } 
             else
               locksmiths = Locksmith.district(user.district_code).verified.page(page).per(default_page_size)
               locksmiths.each do |locksmith|
