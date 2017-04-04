@@ -238,7 +238,6 @@ module API
               device.update_attribute(:name, params[:device_name])
               return { code: 0, message: "", data: {} } 
             elsif params[:monitor_sn]
-              select * from device_uuids where uuid=711309194;
               device_uuid = DeviceUuid.where(uuid: params[:monitor_sn]).first
               if device_uuid
                 device.update_attribute(:monitor_sn, params[:monitor_sn])
