@@ -68,7 +68,7 @@ class YsCapturePictureJob < ActiveJob::Base
                     p result['msg']
                 end
                 i = i + 1
-                sleep 5
+                sleep 4
             end
             if succuessed > 0
                 ## onvert gif

@@ -4,7 +4,7 @@ class JpushJob < ActiveJob::Base
 
   	def perform(*args)
   		  begin
-            sleep 5
+            sleep 20
   			    message_id = args[0]
             message = Message.where(id: message_id).first
   			    app_key = Setting.jpush_app_key
