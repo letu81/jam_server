@@ -34,6 +34,27 @@ module API
             return { code: 0, message: "ok", data: "" } 
           end
 
+          desc '更新个人地址' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :province, type: String, desc: 'User province'
+            requires :city, type: String, desc: 'User city'
+            requires :district, type: String, desc: 'User district'
+            requires :address, type: String, desc: 'User address'
+            requires :latitude, type: String, desc: 'User latitude'
+            requires :longitude, type: String, desc: 'User longitude'
+          end
+          post '/location/update' do
+            user = authenticate!
+            user.update_attributes({:address => params[:address], :latitude => params[:latitude], :longitude => params[:longitude]})
+            if user.address_changed?
+              UpdateDistrictCodeJob.set(queue: "update_districe_code").perform_later(user, params[:province], params[:city], params[:district])
+            end
+            return { code: 0, message: "ok", data: "" } 
+          end
+
           desc '消息列表' do
             headers API::V1::Defaults.client_auth_headers
           end

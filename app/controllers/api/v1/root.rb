@@ -47,6 +47,7 @@ module API
       mount API::V1::Resources::Me
       mount API::V1::Resources::Messages
       mount API::V1::Resources::Products
+      mount API::V1::Resources::Locksmiths
       mount API::V1::Resources::Users
       mount API::V1::Resources::Versions
       mount API::V1::Resources::JamServices

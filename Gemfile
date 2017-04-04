@@ -58,6 +58,9 @@ gem 'whenever', :require => false
 
 gem 'jpush', git: 'https://github.com/jpush/jpush-api-ruby-client.git'
 
+gem 'chinese_pinyin'
+gem 'GB2260'
+gem 'geocoder'
 
 # TODO for later
 # instrumentation

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170329141603) do
+ActiveRecord::Schema.define(version: 20170404002419) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -133,6 +133,27 @@ ActiveRecord::Schema.define(version: 20170329141603) do
   add_index "devices", ["product_id"], name: "index_devices_on_product_id", using: :btree
   add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
+  create_table "districts", force: :cascade do |t|
+    t.string   "code",            limit: 255,                 null: false
+    t.string   "parent_code",     limit: 255
+    t.string   "name",            limit: 255,                 null: false
+    t.string   "pinyin",          limit: 255,                 null: false
+    t.string   "abbr",            limit: 255,                 null: false
+    t.string   "zip",             limit: 255
+    t.integer  "level",           limit: 4
+    t.boolean  "sensitive_areas",             default: false, null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+  end
+
+  add_index "districts", ["abbr"], name: "index_districts_on_abbr", using: :btree
+  add_index "districts", ["code"], name: "index_districts_on_code", unique: true, using: :btree
+  add_index "districts", ["level"], name: "index_districts_on_level", using: :btree
+  add_index "districts", ["parent_code"], name: "index_districts_on_parent_code", using: :btree
+  add_index "districts", ["pinyin"], name: "index_districts_on_pinyin", using: :btree
+  add_index "districts", ["sensitive_areas"], name: "index_districts_on_sensitive_areas", using: :btree
+  add_index "districts", ["zip"], name: "index_districts_on_zip", using: :btree
+
   create_table "feedbacks", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.text     "content",    limit: 65535
@@ -162,6 +183,30 @@ ActiveRecord::Schema.define(version: 20170329141603) do
   add_index "kinds", ["brand_id"], name: "index_kinds_on_brand_id", using: :btree
   add_index "kinds", ["name"], name: "index_kinds_on_name", using: :btree
   add_index "kinds", ["status_id"], name: "index_kinds_on_status_id", using: :btree
+
+  create_table "locksmiths", force: :cascade do |t|
+    t.string   "name",               limit: 255,                   null: false
+    t.string   "phone",              limit: 255
+    t.string   "mobile",             limit: 255
+    t.string   "company",            limit: 255
+    t.integer  "district_code",      limit: 4,                     null: false
+    t.string   "qq",                 limit: 255
+    t.string   "address",            limit: 255
+    t.string   "certificate_number", limit: 255
+    t.string   "avatar",             limit: 255
+    t.boolean  "is_verified",                      default: false, null: false
+    t.text     "company_info",       limit: 65535
+    t.text     "company_service",    limit: 65535
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
+  end
+
+  add_index "locksmiths", ["certificate_number", "is_verified"], name: "index_locksmiths_on_certificate_number_and_is_verified", using: :btree
+  add_index "locksmiths", ["company"], name: "index_locksmiths_on_company", using: :btree
+  add_index "locksmiths", ["district_code"], name: "index_locksmiths_on_district_code", using: :btree
+  add_index "locksmiths", ["mobile"], name: "index_locksmiths_on_mobile", using: :btree
+  add_index "locksmiths", ["name"], name: "index_locksmiths_on_name", using: :btree
+  add_index "locksmiths", ["phone"], name: "index_locksmiths_on_phone", using: :btree
 
   create_table "messages", force: :cascade do |t|
     t.integer  "user_id",          limit: 4,                      null: false
@@ -290,9 +335,16 @@ ActiveRecord::Schema.define(version: 20170329141603) do
     t.string   "avatar",                 limit: 255
     t.string   "private_token",          limit: 255
     t.integer  "score",                  limit: 4,   default: 0,               comment: "积分"
+    t.string   "district_code",          limit: 255
+    t.string   "address",                limit: 255
+    t.float    "latitude",               limit: 24
+    t.float    "longitude",              limit: 24
   end
 
+  add_index "users", ["address"], name: "index_users_on_address", using: :btree
+  add_index "users", ["district_code"], name: "index_users_on_district_code", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["latitude", "longitude"], name: "index_users_on_latitude_and_longitude", using: :btree
   add_index "users", ["mobile"], name: "index_users_on_mobile", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["user_type"], name: "index_users_on_user_type", using: :btree
