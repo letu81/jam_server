@@ -72,7 +72,7 @@ namespace :locksmith do
                     p res
                     p "=======vvvv========"
 
-                    service_district = District.where(pinyin: district_pinyin).first
+                    service_district = District.where(parent_code: '440300', pinyin: district_pinyin).first
                     if service_district
                       new_locksmith = Locksmith.new(name: res['姓名'], mobile: res['联系手机'],
                         avatar: '', is_verified: true, address: "深圳市" + service_district.name, 
