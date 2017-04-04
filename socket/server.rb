@@ -7,6 +7,7 @@ require 'rest-client'
 class Server
     def initialize( port, ip )
         @server = TCPServer.open( ip, port )
+        @port = port
         @connections = Hash.new
         @down_clients = Hash.new
         @up_clients = Hash.new
@@ -141,6 +142,12 @@ class Server
                                     end
                                 end
                                 client.puts "server receive msg: #{res.to_json}"
+                                begin
+                                    RestClient.post "http://10.88.33.209:3009/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port}
+                                rescue Exception => e
+                                    p e.message
+                                    p "rest error...."
+                                end
                             end
                         end
                     rescue

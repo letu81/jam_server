@@ -125,6 +125,20 @@ module API
             return { code: 0, message: "ok", data: {status: device.status_id} } 
           end
 
+
+          desc '更新设备端口' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :device_mac, type: String, desc: 'Device mac'
+            requires :gateway_port, type: String, desc: 'Gateway port'
+          end
+          post  '/port/update' do
+            user = authenticate!
+            Device.where(mac: params[:device_mac])update_all(port: params[:gateway_port])
+          end
+
           desc '添加设备' do
             headers API::V1::Defaults.client_auth_headers
           end
@@ -218,14 +232,21 @@ module API
           end
           post  '/update' do
             user = authenticate!
-            device = Device.where(id:params[:device_id]).first
-            return { code: 1, message: "设备不存在", data: "" } unless device
+            device = Device.where(id: params[:device_id]).first
+            return { code: 1, message: "设备不存在", data: {} } unless device
             if params[:device_name]
               device.update_attribute(:name, params[:device_name])
+              return { code: 0, message: "", data: {} } 
             elsif params[:monitor_sn]
-              device.update_attribute(:monitor_sn, params[:monitor_sn])
+              select * from device_uuids where uuid=711309194;
+              device_uuid = DeviceUuid.where(uuid: params[:monitor_sn]).first
+              if device_uuid
+                device.update_attribute(:monitor_sn, params[:monitor_sn])
+                return { code: 0, message: "ok", data: { password: device_uuid.password } } 
+              else
+                return { code: 1, message: "监控序列号不存在", data: {} } 
+              end
             end
-            return { code: 0, message: "", data: "ok" } 
           end
 
           desc '删除设备' do
