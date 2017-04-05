@@ -5,7 +5,7 @@ namespace :locksmith do
 
   desc 'insert locksmiths to db'
   task :insert_data => :environment do
-    city_url = "http://www.zhaosuojiang.com/list.php?fid=73&city_id=6"
+    city_url = "http://www.zhaosuojiang.com/list.php?fid=73&city_id=1"
     time_start = Time.now
     p Time.now.strftime("%Y-%m-%d-%H-%M-%S")
 
@@ -15,7 +15,8 @@ namespace :locksmith do
             doc_city.css('div.zone span.choose a').each do |link|
                 next if link.text == "市辖区"
                 p link.text
-                district_pinyin = Pinyin.t(link.text, splitter: '')
+                district_pinyin = Pinyin.t(link.text+"区", splitter: '')
+                #district_pinyin = Pinyin.t(link.text+"县", splitter: '')
                 doc_district = Nokogiri::HTML(open(link['href']))
                 return if doc_district.css('div.ShowList div.date').empty?
 
@@ -72,10 +73,11 @@ namespace :locksmith do
                     p res
                     p "=======vvvv========"
 
-                    service_district = District.where(parent_code: '440300', pinyin: district_pinyin).first
+                    service_district = District.where(parent_code: '110100', pinyin: district_pinyin).first
+                    #service_district = District.where(parent_code: '110200', pinyin: district_pinyin).first
                     if service_district
                       new_locksmith = Locksmith.new(name: res['姓名'], mobile: res['联系手机'],
-                        avatar: '', is_verified: true, address: "深圳市" + service_district.name, 
+                        avatar: '', is_verified: true, address: "北京市" + service_district.name, 
                         phone: res['联系电话'].nil? ? "" : res['联系电话'], district_code: service_district.code,
                         certificate_number: res['备案号'], qq: res['客服1 QQ'].nil? ? "" : res['客服1 QQ'],
                         company_info: res['company_info'], company_service: res['company_service'])

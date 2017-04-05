@@ -137,6 +137,7 @@ module API
           post  '/port/update' do
             user = authenticate!
             Device.where(mac: params[:device_mac]).update_all(port: params[:gateway_port])
+            return { code: 0, message: "ok", data: "" } 
           end
 
           desc '添加设备' do

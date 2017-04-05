@@ -11,6 +11,7 @@ class Server
         @connections = Hash.new
         @down_clients = Hash.new
         @up_clients = Hash.new
+        @gateways = Hash.new
         @macs = Array.new
         @mobile_macs = Array.new
         @close_clients = Array.new
@@ -143,7 +144,10 @@ class Server
                                 end
                                 client.puts "server receive msg: #{res.to_json}"
                                 begin
-                                    RestClient.post "http://10.88.33.209:3009/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port}
+                                    if @gateways[mac].nil? || @gateways[mac]!=@port
+                                        RestClient.post "http://10.88.33.209:3009/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port}
+                                        @gateways[mac] = @port
+                                    end
                                 rescue Exception => e
                                     p e.message
                                     p "rest error...."
@@ -163,4 +167,4 @@ class Server
     end
 end
 
-Server.new( 6001, "192.168.0.103" )
+Server.new( 6002, "192.168.0.103" )
