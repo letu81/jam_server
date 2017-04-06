@@ -18,6 +18,7 @@ class Server
         @connections[:server] = @server
         @connections[:down_clients] = @down_clients
         @connections[:up_clients] = @up_clients
+        @api_url = "http://192.168.0.105:3000"
         run
     end
 
@@ -111,16 +112,16 @@ class Server
                                             types = {:finger => 1, :password => 2, :card => 3}
                                             case cmd
                                             when cmd.include?("finger")
-                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:finger], device_num:device_num}
+                                                RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:finger], device_num:device_num}
                                             when cmd.include?("pwd")
-                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:password], device_num:device_num}
+                                                RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:password], device_num:device_num}
                                             when cmd.include?("card")
-                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:card], device_num:device_num}
+                                                RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:card], device_num:device_num}
                                             else
-                                                RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                                RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
                                             end
                                         else
-                                            RestClient.post "http://10.88.33.209:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                            RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
                                         end
                                     rescue Exception => e
                                         p e.message
@@ -137,15 +138,15 @@ class Server
                                     begin
                                         p "send msg to app:#{res}"
                                         @down_clients[mac]['clients'][mobile_mac].puts res
-                                    escue Exception => e
-                                        p e.message
+                                    rescue Exception => e
                                         @close_clients << @down_clients[mac]['clients'][mobile_mac]
+                                        p e.message
                                     end
                                 end
                                 client.puts "server receive msg: #{res.to_json}"
                                 begin
                                     if @gateways[mac].nil? || @gateways[mac]!=@port
-                                        RestClient.post "http://10.88.33.209:3009/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port}
+                                        RestClient.post "#{@api_url}/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port}
                                         @gateways[mac] = @port
                                     end
                                 rescue Exception => e
@@ -167,4 +168,4 @@ class Server
     end
 end
 
-Server.new( 6002, "192.168.0.103" )
+Server.new( 3001, "192.168.0.105" )

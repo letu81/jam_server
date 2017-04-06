@@ -130,7 +130,7 @@ module API
             headers API::V1::Defaults.client_auth_headers
           end
           params do
-            requires :token, type: String, desc: 'User token'
+            #requires :token, type: String, desc: 'User token'
             requires :device_mac, type: String, desc: 'Device mac'
             requires :gateway_port, type: String, desc: 'Gateway port'
           end
