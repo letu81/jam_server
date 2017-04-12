@@ -114,14 +114,14 @@ class Server
                                             when cmd.include?("finger")
                                                 RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:finger], device_num:device_num}
                                             when cmd.include?("pwd")
-                                                RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:password], device_num:device_num}
+                                                RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:password], device_num:device_num}
                                             when cmd.include?("card")
-                                                RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:card], device_num:device_num}
+                                                RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:card], device_num:device_num}
                                             else
-                                                RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                                RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
                                             end
                                         else
-                                            RestClient.post "#{@api_url}:3009/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
+                                            RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
                                         end
                                     rescue Exception => e
                                         p e.message
@@ -146,7 +146,7 @@ class Server
                                 client.puts "server receive msg: #{res.to_json}"
                                 begin
                                     if @gateways[mac].nil? || @gateways[mac]!=@port
-                                        RestClient.post "#{@api_url}/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port}
+                                        RestClient.post "#{@api_url}/api/v1/devices/port/update", {device_mac:mac, gateway_port:@port, gateway_version:data}
                                         @gateways[mac] = @port
                                     end
                                 rescue Exception => e

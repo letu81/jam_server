@@ -133,10 +133,12 @@ module API
             #requires :token, type: String, desc: 'User token'
             requires :device_mac, type: String, desc: 'Device mac'
             requires :gateway_port, type: String, desc: 'Gateway port'
+            requires :gateway_version, type: String, desc: 'Gateway Version'
           end
           post  '/port/update' do
             user = authenticate!
             Device.where(mac: params[:device_mac]).update_all(port: params[:gateway_port])
+            # todo update params[:gateway_version]
             return { code: 0, message: "ok", data: "" } 
           end
 
