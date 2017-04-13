@@ -231,6 +231,7 @@ module API
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: Integer, desc: 'Device id'
             optional :device_name, type: String, desc: 'Device name'
+            optional :device_mac, type: String, desc: 'Device mac'
             optional :monitor_sn, type: String, desc: 'Monitor SN'
           end
           post  '/update' do
@@ -248,6 +249,9 @@ module API
               else
                 return { code: 1, message: "监控序列号不存在", data: {} } 
               end
+            elsif params[:device_mac]
+              device.update_attribute(:mac, params[:device_mac])
+              return { code: 0, message: "ok", data: {} } 
             end
           end
 
