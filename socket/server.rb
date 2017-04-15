@@ -12,6 +12,7 @@ class Server
         @down_clients = Hash.new
         @up_clients = Hash.new
         @gateways = Hash.new
+        @threads = Hash.new
         @macs = Array.new
         @mobile_macs = Array.new
         @close_clients = Array.new
@@ -23,8 +24,8 @@ class Server
     end
 
     def run
-        loop {
-            Thread.start(@server.accept) do | client |
+        while (true) do
+            Thread.start(@server.accept) do | client , thread |
                 ip = @server.addr.last
                 p "start...#{client}=====ip:#{ip}"
                 while msg = client.gets.chomp
@@ -52,12 +53,13 @@ class Server
                             @down_clients[mac] ||= {}
                             @down_clients[mac]['clients'] ||= {}
                             if @down_clients[mac]['clients'][mobile_mac]
-                                @close_clients << @down_clients[mac]['clients'][mobile_mac] 
+                                @close_clients << { 'thread' => @down_clients[mac]['thread'], 'client' => @down_clients[mac]['clients'][mobile_mac] } 
                             end
+                            @down_clients[mac]['thread'] = thread
                             @down_clients[mac]['clients'][mobile_mac] = client
                             if @up_clients[mac] && @up_clients[mac]['client']
                                 begin
-                                    if cmd == "heartbeat"
+                                    if cmd == "hearbeat"
                                         p "send hearbeat to app"
                                         client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
                                     end
@@ -75,17 +77,19 @@ class Server
                                 client.puts res.merge({'req' => 'up', 'status' => '2'}).to_json
                             end
                         else
-                            # {'222333' => {'client' => client, 'activtied_on' => '2017-03-01 12:21:32'} }
+                            # {'222333' => {'client' => client, 'activtied_on' => '2017-03-01 12:21:32', 'thread' => t} }
                             @up_clients[mac] ||= {}
                             if @up_clients[mac]['client']
                                 if (@up_clients[mac]['activtied_on'] + 30) < Time.now
-                                    @close_clients << @up_clients[mac]['client']
+                                    @close_clients << { 'thread' => @up_clients[mac]['thread'], 'client' => @up_clients[mac]['client'] } 
+                                    @close_clients << @up_clients[mac]
                                     @up_clients[mac]['client'] = client
                                 end
                                 @up_clients[mac]['activtied_on'] = Time.now
                             else
                                 @up_clients[mac]['client'] = client
                                 @up_clients[mac]['activtied_on'] = Time.now
+                                @up_clients[mac]['thread'] = thread
                             end
 
                             p "receive msg from gateway:#{res}"
@@ -97,7 +101,7 @@ class Server
                                     begin
                                         @down_clients[mac]['clients'][mobile_mac].puts res
                                     rescue Exception => e
-                                        @close_clients << @down_clients[mac]['clients'][mobile_mac] 
+                                        @close_clients << { 'thread' => @down_clients[mac]['thread'], 'client' => @down_clients[mac]['clients'][mobile_mac] } 
                                         p e.message
                                     end
                                 end
@@ -131,7 +135,9 @@ class Server
                                 end
                                 sleep 2
                                 @close_clients.each do |close_client|
-                                    close_client.close
+                                    close_client['client'].close
+                                    Thread.kill close_client['thread']
+                                    Thread.exit close_client['thread']
                                 end
                             else
                                 if @down_clients[mac] && @down_clients[mac]['clients'][mobile_mac]
@@ -161,11 +167,16 @@ class Server
                     end
                 end
                 @close_clients.each do |close_client|
-                    close_client.close
+                    if close_client
+                        close_client['client'].close
+                        Thread.kill close_client['thread']
+                        Thread.exit close_client['thread']
+                    end
                 end
             end
-        }.join
+        end
     end
 end
 
-Server.new( 3001, "192.168.0.105" )
+Server.new( 6001, "192.168.0.105" )
+GC.start
