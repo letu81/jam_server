@@ -62,6 +62,8 @@ gem 'chinese_pinyin'
 gem 'GB2260'
 gem 'geocoder'
 
+gem 'agent'
+
 # TODO for later
 # instrumentation
 # gem 'raygun4ruby'

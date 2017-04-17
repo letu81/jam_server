@@ -43,6 +43,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    agent (0.12.0)
     amq-protocol (2.1.0)
     arel (6.0.4)
     ast (2.3.0)
@@ -312,6 +313,7 @@ PLATFORMS
 
 DEPENDENCIES
   GB2260
+  agent
   bcrypt
   bunny (= 2.4.0)
   chinese_pinyin
