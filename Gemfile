@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 source 'https://gems.ruby-china.org'
 
-ruby '2.3.0'
+ruby '2.4.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.6'
+gem 'rails', '~> 4.2.6'
 #gem 'pg', '0.18.1'
 gem 'mysql2', '0.3.20'
 gem 'puma'
 
 gem 'devise', '4.1.1'
-gem 'rest-client', '1.8.0'
+gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # api
