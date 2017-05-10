@@ -23,9 +23,9 @@ class Server
         @connections[:server] = @server
         @connections[:down_clients] = @down_clients
         @connections[:up_clients] = @up_clients
-        @mac_connections = 1000
+        @mac_connections = 2000
         @is_sent_sms = false
-        @api_url = "http://192.168.0.105:3000"
+        @api_url = "http://192.168.11.4:3000"
         start
     end
 
@@ -35,8 +35,9 @@ class Server
                 thread = Thread.start(@server.accept) do |client| 
                     handle_client( client, thread )
                     @threads << thread
+                    thread.join
                 end
-                @threads.each { |t| t.join }
+                #@threads.each { |t| t.join }
                 remove_close_clients
 
                 if @gateways.length > @mac_connections
@@ -67,7 +68,7 @@ class Server
         ip = @server.addr.last
         p "start...#{client}=====ip:#{ip}"
         while msg = client.gets.chomp
-            sleep 0.001
+            #sleep 0.001
             rmsg = msg.gsub("\u0000", "").gsub(/^[.]+req/, "req").gsub("\"", "").gsub("}", "")
             begin
                 res = {}
@@ -118,7 +119,7 @@ class Server
                     # {'222333' => {'client' => client, 'activtied_on' => '2017-03-01 12:21:32', 'thread' => t} }
                     @up_clients[mac] ||= {}
                     if @up_clients[mac]['client']
-                        if (@up_clients[mac]['activtied_on'] + 30) < Time.now
+                        if (@up_clients[mac]['activtied_on'] + 15) < Time.now
                             @close_clients << { 'thread' => @up_clients[mac]['thread'], 'client' => @up_clients[mac]['client'] } 
                             @close_clients << @up_clients[mac]
                             @up_clients[mac]['client'] = client
@@ -151,13 +152,23 @@ class Server
                                 begin
                                     if data.strip.length > 0
                                         device_num = data.strip.gsub(data.strip[0,4], "").each_byte.map { |b| b.to_s(16) }.join.to_i(16)
+                                        temp_id = data.strip.gsub(data.strip[0,4], "").each_byte.map { |b| b.to_s(16) }.join(',')
+                                        if temp_id.include?(',')
+                                          first_id = temp_id.split(',').first
+                                          last_id = temp_id.split(',').last
+                                          if last_id.length == 1
+                                            temp_id = first_id.to_s + '0' + last_id.to_s
+                                            device_num = temp_id.to_i(16)
+                                          end
+                                        end
+                                        p device_num 
                                         types = {:finger => 1, :password => 2, :card => 3}
-                                        case cmd
-                                        when cmd.include?("finger")
+                                        
+                                        if cmd.include?("finger")
                                             RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:finger], device_num:device_num}
-                                        when cmd.include?("pwd")
+                                        elsif cmd.include?("pwd")
                                             RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:password], device_num:device_num}
-                                        when cmd.include?("card")
+                                        elsif cmd.include?("card")
                                             RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd, lock_type:types[:card], device_num:device_num}
                                         else
                                             RestClient.post "#{@api_url}/api/v1/devices/listen", {device_mac:mac, device_token:dev_id, device_cmd:cmd}
@@ -201,7 +212,7 @@ class Server
     end
 
     def remove_close_clients
-        go! do
+        #go! do
             sleep 3
             @close_clients.each do |close_client|
                 if close_client
@@ -212,7 +223,7 @@ class Server
                     end
                 end
             end
-        end
+        #end
     end
 
 
@@ -238,5 +249,5 @@ class Server
     end
 end
 
-Server.new( 6001, "192.168.0.105" )
+Server.new( 6001, "192.168.11.4" )
 GC.start
