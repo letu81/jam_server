@@ -82,6 +82,24 @@ module API
             return { code: 0, message: "ok", data: datas, total_pages: messages.total_pages, current_page: page } 
           end
 
+          desc '删除消息' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :message_id, type: Integer, desc: 'Message id'
+          end
+          post '/messages/destroy' do
+            user = authenticate!
+            message = Message.find_by(id: params[:message_id])
+            if message
+              message.update_attribute(:is_deleted, true) if message.user_id == user.id
+              return { code: 0, message: "ok", data: "" }
+            else
+              return { code: 1, message: "error", data: "消息不存在或已被删除" } 
+            end
+          end
+
           desc '反馈意见' do
             headers API::V1::Defaults.client_auth_headers
           end
@@ -92,7 +110,7 @@ module API
           end
           post '/feedback' do
             user = authenticate!
-            return { code: 0, message: "ok", data: ""}
+            return { code: 0, message: "ok", data: "" }
           end
         end
       end
