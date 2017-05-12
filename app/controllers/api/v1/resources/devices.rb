@@ -15,10 +15,12 @@ module API
           end
           params do
             requires :token, type: String, desc: 'User token'
+             optional :page, type: Integer, desc: 'page'
           end
           post '/' do
             user = authenticate!
-            devices = Device.by_user(user.id)
+            page = params[:page].to_i
+            devices = Device.by_user(user.id).page(page).per(default_page_size)
             datas = []
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
@@ -43,7 +45,28 @@ module API
                     p response.body
                 end
             end
-	          return { code: 0, message: "ok", data: datas, ez_data: {access_token: Setting[:ez_access_token], expire_time: Setting[:ez_expire_time]}} 
+	          return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page, ez_data: {access_token: Setting[:ez_access_token], expire_time: Setting[:ez_expire_time]}} 
+          end
+
+          desc '搜索设备' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :query, type: String, desc: 'Query string'
+            optional :page, type: Integer, desc: 'page'
+          end
+          post  '/search' do
+            user = authenticate!
+            page = params[:page].to_i
+            devices = Device.by_user_and_device_name(user.id, params[:query].strip).page(page).per(default_page_size)
+            datas = []
+            devices.each do |device|
+              datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
+                        device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
+                        monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status: device.status_id}
+            end
+            return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page } 
           end
 
           desc '设备详情' do

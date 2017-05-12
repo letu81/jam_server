@@ -20,6 +20,14 @@ class Device < ActiveRecord::Base
 			devices.monitor_sn, device_uuids.password, device_uuids.device_category_id")
 	end
 
+	def self.by_user_and_device_name(user_id, name)
+		self.joins("INNER JOIN user_devices ON user_devices.device_id = devices.id 
+			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
+		.where("user_devices.user_id=? and devices.name like ?", user_id, "%#{name}%")
+		.select("devices.id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
+			devices.monitor_sn, device_uuids.password, device_uuids.device_category_id")
+	end
+
 	def self.by_device_mac_pwd(mac, pwd)
 		self.joins("INNER JOIN user_devices ON user_devices.device_id = devices.id 
 			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
