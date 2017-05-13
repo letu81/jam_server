@@ -243,6 +243,9 @@ module API
             else
               msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd])
               msg.save if msg.valid?
+              if params[:device_cmd] == "reset"
+                device.update_attribute(:status_id, Device::STATUSES[:not_register])
+              end
             end
             return { code: 0, message: "", data: "ok" } 
           end
