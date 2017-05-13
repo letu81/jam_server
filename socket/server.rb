@@ -146,7 +146,7 @@ class Server
                         end
                         cmd_arrs = ["card_open", "pwd_open", "finger_open", "low_power", "tamper", "door_bell", 
                                     "finger_add", "finger_del", "pwd_add", "pwd_del", "card_add", "card_del",
-                                    "illegal_key", "illegal_try", "lctch_bolt", "dead_bolt"]
+                                    "illegal_key", "illegal_try", "lctch_bolt", "dead_bolt", "reset"]
                         if cmd_arrs.include?(cmd)
                             p "=========rest start: #{cmd}========="
                                 begin
