@@ -219,7 +219,7 @@ module API
                   return { code: 1, message: "您已添加过设备", data: "" }
                 end
               else
-                return { code: 1, message: "设备码或检验码不存在", data: "" }
+                return { code: 1, message: "设备码或校验码不存在", data: "" }
               end
             end
           end

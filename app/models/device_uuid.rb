@@ -33,20 +33,20 @@ class DeviceUuid < ActiveRecord::Base
         device_uuid.save! if device_uuid.valid?
     end
 
-    def self.by_brand(brand_name)
+    def self.by_brand(brand_ident)
         self.joins("INNER JOIN kinds ON device_uuids.kind_id = kinds.id 
                     INNER JOIN brands ON brands.id = kinds.brand_id
                     INNER JOIN device_categories ON device_categories.id = device_uuids.device_category_id")
-        .where("brands.name = ? and device_uuids.status_id = ?", brand_name, STATUSES[:not_use])
+        .where("brands.identifier = ? and device_uuids.status_id = ?", brand_ident, STATUSES[:not_use])
         .select("brands.name as brand_name, kinds.name as kind_name, 
                  device_categories.name as category_name, device_uuids.uuid, device_uuids.password")
     end
 
-    def self.by_brand_and_kind(brand_name, kind_name)
+    def self.by_brand_and_kind(brand_ident, kind_name)
         self.joins("INNER JOIN kinds ON device_uuids.kind_id = kinds.id 
                     INNER JOIN brands ON brands.id = kinds.brand_id
                     INNER JOIN device_categories ON device_categories.id = device_uuids.device_category_id")
-        .where("brands.name = ? and kinds.name = ? and device_uuids.status_id = ?", brand_name, kind_name, STATUSES[:not_use])
+        .where("brands.identifier = ? and kinds.name = ? and device_uuids.status_id = ?", brand_ident, kind_name, STATUSES[:not_use])
         .select("brands.name as brand_name, kinds.name as kind_name, 
                  device_categories.name as category_name, device_uuids.uuid, device_uuids.password")
     end
