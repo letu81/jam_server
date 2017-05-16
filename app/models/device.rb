@@ -5,9 +5,12 @@ class Device < ActiveRecord::Base
 	belongs_to :user_device, :foreign_key => 'id'
 
 	def self.by_device(device_id)
-		self.joins("INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
+		self.joins("INNER JOIN device_uuids ON device_uuids.id = devices.uuid
+			        INNER JOIN kinds ON device_uuids.kind_id = kinds.id
+			        INNER JOIN brands ON kinds.brand_id = brands.id")
 		.where(:id => device_id)
 		.select("devices.id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
+			brands.name as brand_name, brands.support_phone, kinds.name as kind_name, 
 			devices.monitor_sn, device_uuids.password, device_uuids.device_category_id")
 		.first
 	end

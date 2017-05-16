@@ -63,6 +63,7 @@ module API
             datas = []
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
+                        brand_name: device.brand_name, kind_name: device.kind_name, support_phone: device.support_phone,
                         device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status: device.status_id}
             end
