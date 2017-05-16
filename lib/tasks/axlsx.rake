@@ -29,7 +29,6 @@ namespace :axlsx do
 		  		#p Kind.by_brand("中山雅麒").map(&:name)
 	            kind_name = "JZMG86"
 		  		uuids = DeviceUuid.by_brand_and_kind("zsyq", kind_name)
-		  		p uuids.map(&:id)
 	            p = Axlsx::Package.new
 				p.workbook.add_worksheet(:name => "Basic Worksheet") do |sheet|
 				  	sheet.add_row ["厂家", "型号", "设备码", "校验码", "类别", "网址"]
