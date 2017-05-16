@@ -63,7 +63,6 @@ module API
             datas = []
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
-                        brand_name: device.brand_name, kind_name: device.kind_name, support_phone: device.support_phone,
                         device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status: device.status_id}
             end
@@ -83,6 +82,7 @@ module API
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
             return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, 
+                   brand_name: device.brand_name, kind_name: device.kind_name, support_phone: device.support_phone,
                    mac: device.mac, status: device.status_id, monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status_name: online_str} } 
           end
 
