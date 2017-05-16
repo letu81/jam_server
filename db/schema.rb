@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170404063257) do
+ActiveRecord::Schema.define(version: 20170516092717) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -52,8 +52,10 @@ ActiveRecord::Schema.define(version: 20170404063257) do
   add_index "auth_codes", ["mobile"], name: "index_auth_codes_on_mobile", using: :btree
 
   create_table "brands", force: :cascade do |t|
-    t.string "name",       limit: 255, null: false
-    t.string "identifier", limit: 255, null: false
+    t.string "name",          limit: 255, null: false
+    t.string "identifier",    limit: 255, null: false
+    t.string "sales_phone",   limit: 255
+    t.string "support_phone", limit: 255
   end
 
   add_index "brands", ["identifier"], name: "index_brands_on_identifier", using: :btree
