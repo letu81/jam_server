@@ -64,6 +64,8 @@ gem 'geocoder'
 
 gem 'agent'
 
+gem 'axlsx'
+
 # TODO for later
 # instrumentation
 # gem 'raygun4ruby'
