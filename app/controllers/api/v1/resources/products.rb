@@ -17,8 +17,12 @@ module API
             user = authenticate!
 
             datas = []
-            datas << {id:1, name: "jam j10", sale_num: 180, sale_price: 1980.0, price: 2380.0, avatar_path: "pictures/products/lock/j10.jpg", desc_paths: ""}
-            datas << {id:1, name: "jam j08", sale_num: 180, sale_price: 1680.0, price: 2180.0, avatar_path: "pictures/products/lock/j08.jpg", desc_paths: ""}
+            datas << {id:1, name: "瑞玛特 A6", sale_num: 0, sale_price: 2499.0, price: 3200.0, 
+                      avatar_path: "pictures/products/lock/A6.jpg", desc_paths: "", 
+                      store_path: "https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-16019892495.6.EaXaq7&id=548763023269"}
+            datas << {id:1, name: "瑞玛特 K6", sale_num: 0, sale_price: 2200.0, price: 2680.0, 
+                      avatar_path: "pictures/products/lock/k6.jpg", desc_paths: "", 
+                      store_path: "https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-16019892495.2.EaXaq7&id=548771087076"}
             return { code: 0, message: "ok", data: datas, total_pages: 1, current_page: 1 } 
           end
 
