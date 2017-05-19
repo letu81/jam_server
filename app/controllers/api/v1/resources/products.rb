@@ -21,7 +21,7 @@ module API
                       avatar_path: "pictures/products/lock/A6.png", desc_paths: "", 
                       store_path: "https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-16019892495.6.EaXaq7&id=548763023269"}
             datas << {id:1, name: "瑞玛特 K6", sale_num: 0, sale_price: 2200.0, price: 2680.0, 
-                      avatar_path: "pictures/products/lock/k6.png", desc_paths: "", 
+                      avatar_path: "pictures/products/lock/K6.png", desc_paths: "", 
                       store_path: "https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-16019892495.2.EaXaq7&id=548771087076"}
             return { code: 0, message: "ok", data: datas, total_pages: 1, current_page: 1 } 
           end

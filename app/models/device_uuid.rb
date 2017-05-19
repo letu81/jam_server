@@ -7,8 +7,8 @@ class DeviceUuid < ActiveRecord::Base
 	validates :uuid, :uniqueness => true
 
     def self.new_uuid
-    	uuid = SecureRandom.hex.first(8)
-    	pwd = SecureRandom.hex.first(4)
+    	uuid = SecureRandom.hex[0..7]
+    	pwd = SecureRandom.hex[0..3]
     	kind = Kind.first
     	if kind
     		device_uuid = self.new(uuid: uuid, password: pwd, kind_id: kind.id)
@@ -20,8 +20,8 @@ class DeviceUuid < ActiveRecord::Base
     end
 
     def self.new_uuid_by_kind_and_category(kind_id, category_id)
-        uuid = SecureRandom.hex.first(8)
-        pwd = SecureRandom.hex.first(4)
+        uuid = SecureRandom.hex[0..7]
+        pwd = SecureRandom.hex[0..3]
         device_uuid = self.new(uuid: uuid, password: pwd, kind_id: kind_id, device_category_id: category_id)
         device_uuid.save! if device_uuid.valid?
     end
