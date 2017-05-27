@@ -11,7 +11,7 @@ module API
         expose :mobile, documentation: { type: String, desc: 'The users phone number' }
         expose :username, documentation: { type: String, desc: 'The username' }
         expose :token,   documentation: { type: String, desc: 'The authentication_token' }
-        expose :address, using: API::V1::Entities::Address, documentation: { type: 'API::V1::Entities::Address' }
+        expose :address, using: "API::V1::Entities::Address", documentation: { type: 'API::V1::Entities::Address' }
         
         with_options(format_with: :iso_timestamp) do
           expose :created_at
