@@ -25,7 +25,7 @@ class Server
         @connections[:up_clients] = @up_clients
         @mac_connections = 2000
         @is_sent_sms = false
-        @api_url = "http://192.168.11.4:3000"
+        @api_url = "http://192.168.0.111:3000"
         start
     end
 
@@ -101,9 +101,7 @@ class Server
                             if cmd == "hearbeat"
                                 p "send hearbeat to app"
                                 client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
-                            end
-                            p "sent msg to gateway: #{res}"
-                            if cmd == "sync_time"
+                            elsif cmd == "sync_time"
                                 @up_clients[mac]['client'].puts res.merge({'data' => Time.new.strftime("%Y-%m-%d %H:%M:%S")}).to_json
                             else
                                 @up_clients[mac]['client'].puts res.to_json
@@ -111,6 +109,7 @@ class Server
                         rescue
                             p "send hearbeat to app"
                             client.puts res.merge({'cmd' => 'hearbeat', 'req' => 'up', 'status' => '2'}).to_json
+                            @close_clients << { 'thread' => @up_clients[mac], 'client' => @up_clients[mac]['client'] } 
                         end
                     else
                         client.puts res.merge({'req' => 'up', 'status' => '2'}).to_json
@@ -213,7 +212,7 @@ class Server
 
     def remove_close_clients
         #go! do
-            sleep 3
+            sleep 2
             @close_clients.each do |close_client|
                 if close_client
                     close_client['client'].close if close_client['client']
@@ -249,5 +248,5 @@ class Server
     end
 end
 
-Server.new( 6001, "192.168.11.4" )
+Server.new( 6001, "http://192.168.0.111" )
 GC.start

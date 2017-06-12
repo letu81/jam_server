@@ -10,25 +10,32 @@ class YsCapturePictureJob < ActiveJob::Base
             device = Device.where(id: message.device_id).first
             return if device.nil? || device.monitor_sn.nil? || device.monitor_sn.blank?
         	device_id = device.monitor_sn
+            device_uuid = DeviceUuid.where(uuid: device.monitor_sn).first
     		max_time = 6
             succuessed = 0
             path = "public/pictures/lock/#{device_id}"
             Dir.mkdir(path) unless Dir.exist?(path)
-            if Setting[:ez_access_token].blank?
-            	ys_token_url = "https://open.ys7.com/api/lapp/token/get"
-            	params = {appKey:Setting.ez_app_key, appSecret:Setting.ez_app_secret}
-            	response = RestClient.post ys_token_url, params
-                if response.code == 200
-                    result = JSON.parse(response.body)
-                    data = result['data']
-                    Setting[:ez_access_token] = data['accessToken']
-                else
-                	p response.code 
-                    p response.body
+            access_token = ""
+            if device_uuid.access_token.nil? || device_uuid.access_token.blank?
+                if Setting[:ez_access_token].blank?
+                	ys_token_url = "https://open.ys7.com/api/lapp/token/get"
+                	params = {appKey:Setting.ez_app_key, appSecret:Setting.ez_app_secret}
+                	response = RestClient.post ys_token_url, params
+                    if response.code == 200
+                        result = JSON.parse(response.body)
+                        data = result['data']
+                        Setting[:ez_access_token] = data['accessToken']
+                        access_token = data['accessToken']
+                    else
+                    	p response.code 
+                        p response.body
+                    end
                 end
+            else
+                access_token = device_uuid.access_token
             end
 
-            params = {accessToken: Setting[:ez_access_token], deviceSerial: device_id, channelNo: 1, quality: 1}
+            params = {accessToken: access_token, deviceSerial: device_id, channelNo: 1, quality: 1}
             ys7_capture_url = "https://open.ys7.com/api/lapp/device/capture"
             tmp_gif_path = "#{path}/#{Time.now.strftime("%Y_%m_%d_%H_%M_%S")}.gif"
             tmp_avatar_path = ""

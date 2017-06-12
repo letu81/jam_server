@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516092717) do
+ActiveRecord::Schema.define(version: 20170611133649) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -106,9 +106,13 @@ ActiveRecord::Schema.define(version: 20170516092717) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.string   "new_password",       limit: 255
+    t.string   "access_token",       limit: 255
+    t.integer  "expired_at",         limit: 4
   end
 
+  add_index "device_uuids", ["access_token"], name: "index_device_uuids_on_access_token", using: :btree
   add_index "device_uuids", ["device_category_id"], name: "index_device_uuids_on_device_category_id", using: :btree
+  add_index "device_uuids", ["expired_at"], name: "index_device_uuids_on_expired_at", using: :btree
   add_index "device_uuids", ["kind_id"], name: "index_device_uuids_on_kind_id", using: :btree
   add_index "device_uuids", ["status_id"], name: "index_device_uuids_on_status_id", using: :btree
   add_index "device_uuids", ["uuid", "new_password"], name: "index_device_uuids_on_uuid_and_new_password", unique: true, using: :btree

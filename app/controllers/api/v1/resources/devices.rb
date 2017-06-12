@@ -27,25 +27,7 @@ module API
                         device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status: device.status_id}
             end
-
-            if Setting[:ez_expire_time].to_i < Time.now.to_i
-                response = RestClient.post Setting.ez_base_url + Setting.ez_get_token_url, {appKey:Setting.ez_app_key, appSecret:Setting.ez_app_secret}
-                if response.code == 200
-                    result = JSON.parse(response.body)
-                    code = result['code']
-                    if code.to_i == 200
-                        data = result['data']
-                        Setting[:ez_access_token] = data['accessToken']
-                        Setting[:ez_expire_time] = data['expireTime']/1000
-                    else
-                        p "get token error"
-                    end
-                else
-                    p response.code 
-                    p response.body
-                end
-            end
-	          return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page, ez_data: {access_token: Setting[:ez_access_token], expire_time: Setting[:ez_expire_time]}} 
+	          return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page, ez_data: {access_token: '', expire_time: 0}} 
           end
 
           desc '搜索设备' do
@@ -280,6 +262,21 @@ module API
               device.update_attribute(:mac, params[:device_mac])
               return { code: 0, message: "ok", data: {} } 
             end
+          end
+
+          desc '更新监控设备' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :monitor_sn, type: String, desc: 'Monitor SN'
+            requires :access_token, type: String, desc: 'Access Token'
+            requires :expired_at, type: String, desc: 'Expired At'
+          end
+          post  '/monitor/update' do
+            user = authenticate!
+            DeviceUuid.where(uuid: params[:monitor_sn]).update_all(access_token: params[:access_token], expired_at:params[:expired_at].to_i)
+            return { code: 0, message: "ok", data: {} } 
           end
 
           desc '删除设备' do
