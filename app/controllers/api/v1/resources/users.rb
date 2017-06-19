@@ -101,8 +101,8 @@ module API
                 pusher = jpush.pusher
                 notification = JPush::Push::Notification.new
                 notification.set_android(
-                    alert: "佳安美智控通知",
-                    title: "主人，您的帐号在另一台设备登录，请知悉。",
+                    alert: "主人，您的帐号在另一台设备登录，请知悉。",
+                    title: "佳安美智控通知",
                     builder_id: 1,
                     extras: {user_id: user.id, user_name: ''}
                 )
