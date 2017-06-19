@@ -84,6 +84,7 @@ module API
           params do
             requires :mobile, type: String, desc: 'User mobile'
             requires :password, type: String, desc: 'User password'
+            optional :mac, type: String, desc: 'User mobile mac'
           end
           post '/login' do
             user = User.where(["mobile = :value", { value: params[:mobile].downcase }]).first
@@ -93,6 +94,26 @@ module API
             password = params[:phone_info].nil? ? Base64.decode64(params[:password]) : params[:password]
             #password = params[:password]
             if user.valid_password?(password)
+              if !params["mac"].nil? && !params["mac"].blank?
+                app_key = Setting.jpush_app_key
+                master_secret = Setting.jpush_app_secret
+                jpush = JPush::Client.new(app_key, master_secret)
+                pusher = jpush.pusher
+                notification.set_android(
+                    alert: "佳安美智控通知",
+                    title: "主人，您的帐号在另一台设备登录，请知悉。",
+                    builder_id: 1,
+                    extras: {user_id: user.id, user_name: ''}
+                )
+                audience = JPush::Push::Audience.new
+                audience.set_alias(user.id.to_s).set_tag_not(params["mac"])
+                push_payload = JPush::Push::PushPayload.new(
+                  platform: 'all',
+                  audience: audience,
+                  notification: notification
+                )
+                pusher.push(push_payload)
+              end
               return { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username } }
             else
               return { code: 107, message: "登录密码不正确" }

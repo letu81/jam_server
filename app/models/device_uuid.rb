@@ -39,7 +39,7 @@ class DeviceUuid < ActiveRecord::Base
         self.joins("INNER JOIN kinds ON device_uuids.kind_id = kinds.id 
                     INNER JOIN brands ON brands.id = kinds.brand_id
                     INNER JOIN device_categories ON device_categories.id = device_uuids.device_category_id")
-        .where("brands.identifier = ? and kinds.name = ? and device_uuids.status_id = ?", brand_ident, kind_name, STATUSES[:not_use])
+        .where("brands.identifier = ? and kinds.name = ? and device_uuids.status_id = ? and DATE(device_uuids.created_at) = ?", brand_ident, kind_name, STATUSES[:not_use], Date.today)
         .select("brands.name as brand_name, kinds.name as kind_name, 
                  device_categories.name as category_name, device_uuids.uuid, device_uuids.password")
     end

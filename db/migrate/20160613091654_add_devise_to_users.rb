@@ -47,7 +47,7 @@ class AddDeviseToUsers < ActiveRecord::Migration
     add_index :users, :email,                unique: true
     add_index :users, :reset_password_token, unique: true
     add_index :users, :mobile,               unique: true, using: :btree
-    add_index :users, :username,             unique: true, using: :btree
+    add_index :users, :username,             using: :btree
     add_index :users, :user_type
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true

@@ -33,7 +33,8 @@ class JpushJob < ActiveJob::Base
             end
 
       		  audience = JPush::Push::Audience.new
-      		  audience.set_tag(message.user_id.to_s)
+      		  #audience.set_tag(message.user_id.to_s)
+            audience.set_alias(message.user_id.to_s)
 
 	          push_payload = JPush::Push::PushPayload.new(
                 platform: 'all',

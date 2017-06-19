@@ -101,6 +101,7 @@ class Server
                             if cmd == "hearbeat"
                                 p "send hearbeat to app"
                                 client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
+                                client.puts res.merge({'req' => 'up', 'status' => '1'}).to_json
                             elsif cmd == "sync_time"
                                 @up_clients[mac]['client'].puts res.merge({'data' => Time.new.strftime("%Y-%m-%d %H:%M:%S")}).to_json
                             else

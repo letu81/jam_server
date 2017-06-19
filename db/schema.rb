@@ -356,6 +356,6 @@ ActiveRecord::Schema.define(version: 20170611133649) do
   add_index "users", ["mobile"], name: "index_users_on_mobile", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["user_type"], name: "index_users_on_user_type", using: :btree
-  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
 end

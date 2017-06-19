@@ -15,7 +15,7 @@ module API
           end
           params do
             requires :token, type: String, desc: 'User token'
-             optional :page, type: Integer, desc: 'page'
+            optional :page, type: Integer, desc: 'page'
           end
           post '/' do
             user = authenticate!
