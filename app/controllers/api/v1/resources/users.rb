@@ -99,6 +99,7 @@ module API
                 master_secret = Setting.jpush_app_secret
                 jpush = JPush::Client.new(app_key, master_secret)
                 pusher = jpush.pusher
+                notification = JPush::Push::Notification.new
                 notification.set_android(
                     alert: "佳安美智控通知",
                     title: "主人，您的帐号在另一台设备登录，请知悉。",
