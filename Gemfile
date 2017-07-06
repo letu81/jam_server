@@ -56,7 +56,7 @@ gem 'shog', '0.1.8'
 
 gem 'whenever', :require => false
 
-gem 'jpush', git: 'https://github.com/jpush/jpush-api-ruby-client.git'
+gem 'jpush', '4.0.8', git: 'https://github.com/jpush/jpush-api-ruby-client.git'
 
 gem 'chinese_pinyin'
 gem 'GB2260'

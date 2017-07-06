@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/jpush/jpush-api-ruby-client.git
-  revision: 5110a7f91da5b5aa47ca0279e00b50c179c8e1df
+  revision: f11feb937369dcc28d4d8e4a21a0597e4080517e
   specs:
-    jpush (4.0.7)
+    jpush (4.0.8)
 
 GEM
   remote: https://gems.ruby-china.org/
@@ -340,7 +340,7 @@ DEPENDENCIES
   hashie-forbidden_attributes
   httparty
   jbuilder (~> 2.0)
-  jpush!
+  jpush (= 4.0.8)!
   jquery-rails
   kaminari (= 0.16.3)
   kramdown
