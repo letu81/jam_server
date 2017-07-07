@@ -101,10 +101,10 @@ module API
                 pusher = jpush.pusher
                 notification = JPush::Push::Notification.new
                 notification.set_android(
-                    alert: "主人，您的帐号在另一台设备登录，请知悉。",
+                    alert: "主人，您的帐号在另一台手机上登陆，请确认您的账号和密码是否泄露。",
                     title: "佳安美智控通知",
                     builder_id: 1,
-                    extras: {user_id: user.id, user_name: ''}
+                    extras: {user_id: user.id, user_name: '', type: 'login'}
                 )
                 audience = JPush::Push::Audience.new
                 audience.set_alias(user.id.to_s).set_tag_not(params["mac"])
