@@ -13,14 +13,14 @@ module API
           end
           params do
             requires :mobile, type: String, desc: '手机号'
-            requires :type, type: Integer, desc: '1 表示注册获取验证码 2 表示重置密码获取验证码 3 表示修改密码获取验证码'
+            requires :type, type: Integer, desc: '1 表示注册获取验证码 2 表示重置密码获取验证码 3 表示修改密码获取验证码 4 修改手机号码'
           end
 
           post '/sms_verification_code' do
             unless check_mobile(params[:mobile])
 	            return Failure.new(100, "手机号错误")
 	          end
-            unless %W(1 2 3).include?(params[:type].to_s)
+            unless %W(1 2 3 4).include?(params[:type].to_s)
               return Failure.new(-1, "type参数错误")
             end
 
@@ -29,6 +29,8 @@ module API
             user = User.find_by(mobile: params[:mobile])
             if type == 1    # 注册
               return Failure.new(101, "#{params[:mobile]}已经注册") if user.present?
+            elsif type == 4 # 修改手机号码
+              return Failure.new(101, "#{params[:mobile]}已经被占用") if user.present?
             else # 重置密码和修改密码
               return Failure.new(102, "#{params[:mobile].gsub(/\s+/,"")}未注册") if user.blank?
             end
@@ -237,6 +239,41 @@ module API
               return { code: 0, message: "ok" }
             else
               return Failure.new(108, "修改用户名失败")
+            end
+          end
+
+          desc '修改手机' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :mobile, type: String, desc: 'User new mobile'
+            requires :token, type: String, desc: 'User auth token'
+            requires :verification_code, type: String, desc: 'Sms verification_code'
+          end
+          post '/update/mobile' do
+            user = authenticate!
+            unless check_mobile(params[:mobile])
+              return Failure.new(100, "不正确的手机号")
+            end
+
+            if user.mobile == params[:mobile].strip
+              return Failure.new(101, "与原手机号相同")
+            end
+
+            @user = User.find_by(mobile: params[:mobile])
+            unless @user.blank?
+              return Failure.new(102, "#{params[:mobile]}已经被占用")
+            end
+
+            ac = AuthCode.where('mobile = ? and code = ? and verified = ?', params[:mobile], params[:verification_code], true).first
+            if ac.blank?
+              return Failure.new(104, "验证码无效")
+            end
+
+            if user.update_attribute(:mobile, params["mobile"])
+              return { code: 0, message: "ok" }
+            else
+              return Failure.new(108, "修改手机失败")
             end
           end
         end

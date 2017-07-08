@@ -112,6 +112,47 @@ module API
             user = authenticate!
             return { code: 0, message: "ok", data: "" }
           end
+
+          desc '更新头像' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :json, type: String, desc: 'User token'
+            optional :avatar, type: String, desc: 'User avatar'
+          end
+          post '/update/avatar' do
+            j = JSON.parse(params[:json])
+            if params[:json].nil? || j["token"].nil?
+              return { code: 1, message: "参数错误", data: { avatar: "" } }
+            end
+            user = User.where(private_token: j["token"]).first
+            if user.blank?
+              return { code: 1, message: "用户不存在", data: { avatar: "" } }
+            end
+            tmp = params[:avatar]
+            if tmp.nil?
+              return { code: 0, message: "ok", data: { avatar: "" } }
+            else
+              begin
+                file = File.join("public/pictures/avatars", "file.jpg")
+                File.open(file, "wb") { |f| f.write(tmp) }
+                image = MiniMagick::Image.open(file)
+                image.contrast
+                image.resize "48x48!"
+                filename = "#{user.id}_thumbnail.jpg"
+                image.write("public/pictures/avatars/#{filename}")
+                File.delete(file)
+                if File.exist?("public/pictures/avatars/#{filename}")
+                  user.update_attribute(:avatar, filename)
+                  return { code: 0, message: "ok", data: { avatar: filename } }
+                else
+                  return { code: 0, message: "ok", data: { avatar: "" } }
+                end
+              rescue Exception => e
+                p e.message
+              end
+            end
+          end
         end
       end
     end
