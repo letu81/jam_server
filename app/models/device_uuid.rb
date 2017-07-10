@@ -3,6 +3,7 @@ class DeviceUuid < ActiveRecord::Base
 
     belongs_to :device_category, :foreign_key => 'device_category_id'
     belongs_to :device
+    belongs_to :kind, :foreign_key => 'kind_id'
 
 	validates :uuid, :uniqueness => true
 
@@ -17,6 +18,14 @@ class DeviceUuid < ActiveRecord::Base
     		device_uuid = self.new(uuid: uuid, password: pwd)
     		device_uuid.save! if device_uuid.valid?
     	end
+    end
+
+    def self.by_user(user_id)
+        self.joins("INNER JOIN devices ON device_uuids.id=devices.id
+                    INNER JOIN user_devices ON user_devices.device_id=devices.id")
+        .where("user_devices.user_id = ?", user_id)
+        .select("devices.brand_id as id")
+        .group("devices.brand_id")
     end
 
     def self.new_uuid_by_kind_and_category(kind_id, category_id)

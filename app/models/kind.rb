@@ -3,6 +3,8 @@ class Kind < ActiveRecord::Base
 
 	belongs_to :brand
 
+	validates :name, :uniqueness => {scope: [:brand_id]}
+
 	def self.by_brand(brand_name)
         self.joins("INNER JOIN brands ON brands.id = kinds.brand_id")
         .where("brands.name = ?", brand_name)

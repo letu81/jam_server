@@ -24,7 +24,7 @@ module API
             datas = []
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
-                        device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
+                        device_uuid: device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, status: device.status_id}
             end
 	          return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page, ez_data: {access_token: '', expire_time: 0}} 
@@ -163,8 +163,9 @@ module API
             if du && !params[:company].include?("ys7")
               case du.status_id
               when DeviceUuid::STATUSES[:not_use]
-                Device.transaction do 
-                  device = Device.new(name: du.device_category.name, uuid: du.id, mac: params[:device_mac])
+                Device.transaction do
+                  kind = du.kind
+                  device = Device.new(name: du.device_category.name, brand_id: kind.brand_id, uuid: du.id, mac: params[:device_mac])
                   if device.valid? && device.save
                     du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
                     UserDevice.find_or_create_by!(user_id: user.id, device_id: device.id)
@@ -176,8 +177,9 @@ module API
                 if user_device
                   return { code: 1, message: "您已添加过设备", data: "" }
                 else
-                  UserDevice.create!(user_id: user.id, device_id: device.id, ownership: false)
-                  return { code: 0, message: "设备添加成功,但其他用户也添加过该设备", data: "" }
+                  return { code: 1, message: "该设备已被使用", data: "" }
+                  #UserDevice.create!(user_id: user.id, device_id: device.id, ownership: false)
+                  #return { code: 0, message: "设备添加成功,但其他用户也添加过该设备", data: "" }
                 end
               when DeviceUuid::STATUSES[:discard]
                 return { code: 1, message: "设备码已过期", data: "" }
@@ -190,7 +192,7 @@ module API
                 uuid = DeviceUuid.find_or_create_by(uuid: params[:device_id], password: params[:password], 
                   device_category_id: DeviceCategory::CATES[:monitor], kind_id: kind.id, status_id: DeviceUuid::STATUSES[:used])
                 if uuid
-                  device = Device.find_or_create_by(name: "监控", uuid: uuid.id, mac: "")
+                  device = Device.find_or_create_by(name: "监控", brand_id: Brand::NAMES[:hzys7], uuid: uuid.id, mac: "")
                   user_device = UserDevice.where(user_id: user.id, device_id: device.id).first
                   if user_device
                     return { code: 1, message: "您已添加过设备", data: "" }

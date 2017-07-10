@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170611133649) do
+ActiveRecord::Schema.define(version: 20170709012857) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -52,14 +52,17 @@ ActiveRecord::Schema.define(version: 20170611133649) do
   add_index "auth_codes", ["mobile"], name: "index_auth_codes_on_mobile", using: :btree
 
   create_table "brands", force: :cascade do |t|
-    t.string "name",          limit: 255, null: false
-    t.string "identifier",    limit: 255, null: false
-    t.string "sales_phone",   limit: 255
-    t.string "support_phone", limit: 255
+    t.string  "name",          limit: 255,             null: false
+    t.string  "identifier",    limit: 255,             null: false
+    t.string  "sales_phone",   limit: 255
+    t.string  "support_phone", limit: 255
+    t.string  "full_name",     limit: 255,             null: false
+    t.integer "status_id",     limit: 4,   default: 1, null: false
   end
 
   add_index "brands", ["identifier"], name: "index_brands_on_identifier", using: :btree
   add_index "brands", ["name"], name: "index_brands_on_name", using: :btree
+  add_index "brands", ["status_id"], name: "index_brands_on_status_id", using: :btree
 
   create_table "categories", force: :cascade do |t|
     t.string  "name",     limit: 255, null: false
@@ -106,6 +109,7 @@ ActiveRecord::Schema.define(version: 20170611133649) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.string   "new_password",       limit: 255
+    t.integer  "expirted_a",         limit: 4
     t.string   "access_token",       limit: 255
     t.integer  "expired_at",         limit: 4
   end
@@ -122,7 +126,6 @@ ActiveRecord::Schema.define(version: 20170611133649) do
 
   create_table "devices", force: :cascade do |t|
     t.string   "name",         limit: 255, default: "门锁",  null: false
-    t.integer  "product_id",   limit: 4,   default: 1,     null: false
     t.integer  "uuid",         limit: 4,                   null: false
     t.boolean  "is_online",                default: false, null: false
     t.integer  "status_id",    limit: 4,   default: 1,     null: false
@@ -131,14 +134,15 @@ ActiveRecord::Schema.define(version: 20170611133649) do
     t.datetime "last_request"
     t.string   "monitor_sn",   limit: 255
     t.integer  "port",         limit: 4
+    t.integer  "brand_id",     limit: 4,   default: 1,     null: false
   end
 
   add_index "devices", ["activited_at"], name: "index_devices_on_activited_at", using: :btree
+  add_index "devices", ["brand_id", "activited_at"], name: "index_devices_on_brand_activited", using: :btree
+  add_index "devices", ["brand_id"], name: "index_devices_on_brand_id", using: :btree
   add_index "devices", ["monitor_sn"], name: "index_devices_on_monitor_sn", using: :btree
   add_index "devices", ["name"], name: "index_devices_on_name", using: :btree
   add_index "devices", ["port"], name: "index_devices_on_port", using: :btree
-  add_index "devices", ["product_id", "activited_at"], name: "index_devices_on_product_activited", using: :btree
-  add_index "devices", ["product_id"], name: "index_devices_on_product_id", using: :btree
   add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
   create_table "districts", force: :cascade do |t|
@@ -356,6 +360,6 @@ ActiveRecord::Schema.define(version: 20170611133649) do
   add_index "users", ["mobile"], name: "index_users_on_mobile", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["user_type"], name: "index_users_on_user_type", using: :btree
-  add_index "users", ["username"], name: "index_users_on_username", using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
 end

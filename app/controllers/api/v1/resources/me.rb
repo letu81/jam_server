@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'mini_magick'
 module API
   module V1
     module Resources
@@ -111,6 +112,50 @@ module API
           post '/feedback' do
             user = authenticate!
             return { code: 0, message: "ok", data: "" }
+          end
+
+          desc '合作伙伴' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+          end
+          post '/partners' do
+            user = authenticate!
+            brands = DeviceUuid.by_user(user.id)
+            if brands.length > 0
+              datas = []
+              bs = Brand.where("status_id = ? AND id IN (?)", Brand::STATUSES[:active], brands.map(&:id))
+              bs.each do |brand|
+                datas << { id: brand.id, name: brand.name, full_name: brand.full_name }
+              end
+              return { code: 0, message: "ok", data: datas }
+            else
+              return { code: 0, message: "ok", data: [] }
+            end
+          end
+
+          desc '配置帮助视频' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+          end
+          post '/video/lock_config' do
+            user = authenticate!
+            brands = DeviceUuid.by_user(user.id)
+            if brands.length > 0
+              datas = []
+              bs = Brand.by_ids(brands.map(&:id))
+              bs.each do |brand|
+                if File.exist?("public/videos/#{brand.id}/#{brand.name}.mp4")
+                  datas << { id: brand.id, name: brand.name, path: "videos/#{brand.id}/#{brand.name}.mp4" }
+                end
+              end
+              return { code: 0, message: "ok", data: datas }
+            else
+              return { code: 0, message: "ok", data: [] }
+            end
           end
 
           desc '更新头像' do
