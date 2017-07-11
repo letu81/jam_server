@@ -21,7 +21,7 @@ class DeviceUuid < ActiveRecord::Base
     end
 
     def self.by_user(user_id)
-        self.joins("INNER JOIN devices ON device_uuids.id=devices.id
+        self.joins("INNER JOIN devices ON device_uuids.id=devices.uuid
                     INNER JOIN user_devices ON user_devices.device_id=devices.id")
         .where("user_devices.user_id = ?", user_id)
         .select("devices.brand_id as id")
