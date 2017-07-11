@@ -148,8 +148,8 @@ module API
               datas = []
               bs = Brand.by_ids(brands.map(&:id))
               bs.each do |brand|
-                if File.exist?("public/videos/#{brand.id}/#{brand.name}.mp4")
-                  datas << { id: brand.id, name: brand.name, path: "videos/#{brand.id}/#{brand.name}.mp4" }
+                if File.exist?("public/videos/#{brand.id}/config/#{brand.name}.mp4")
+                  datas << { id: brand.id, name: brand.name, path: "videos/#{brand.id}/config/#{brand.name}.mp4" }
                 end
               end
               return { code: 0, message: "ok", data: datas }

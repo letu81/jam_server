@@ -7,7 +7,7 @@ class Brand < ActiveRecord::Base
 	has_many :kinks
 
 	def self.by_ids(ids)
-		self.joins("INNER JOIN brands ON kinds.brand_id = brands.id")
+		self.joins("INNER JOIN kinds ON kinds.brand_id = brands.id")
 		.where("brands.status_id = ? AND brands.id IN (?)", STATUSES[:active], ids)
 		.select("brands.id, kinds.name")
 	end
