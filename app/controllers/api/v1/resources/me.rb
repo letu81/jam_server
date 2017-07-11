@@ -142,6 +142,8 @@ module API
             requires :token, type: String, desc: 'User token'
           end
           post '/video/lock_config' do
+            Rails.logger.debug "=================="
+            Rails.logger.debug File.exist?("public/videos/5/Q7.mp4")
             user = authenticate!
             brands = DeviceUuid.by_user(user.id)
             if brands.length > 0
@@ -149,7 +151,7 @@ module API
               bs = Brand.by_ids(brands.map(&:id))
               bs.each do |brand|
                 if File.exist?("public/videos/#{brand.id}/config/#{brand.name}.mp4")
-                  datas << { id: brand.id, name: brand.name, path: "videos/#{brand.id}/config/#{brand.name}.mp4" }
+                  datas << { id: brand.id, name: brand.name, path: "#{brand.id}/config/#{brand.name}.mp4" }
                 end
               end
               return { code: 0, message: "ok", data: datas }

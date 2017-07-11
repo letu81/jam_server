@@ -312,6 +312,36 @@ module API
             end
             return { code: 0, message: "ok", data: "ok" } 
           end
+
+
+          desc '删除监控设备' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :token, type: String, desc: 'User token'
+            requires :device_id, type: String, desc: 'Device uuid'
+          end
+          post  '/monitor/destroy' do
+            user = authenticate!
+            du = DeviceUuid.where(password: params[:device_id]).first
+            return { code: 1, message: "设备不存在", data: "" } unless device
+            devices = Device.where(uuid: du.id)
+            if devices.length > 0
+              Device.transaction do
+                devices.each do |device|
+                  uds = UserDevice.where(user_id:user.id, device_id:device.id)
+                  uds.each do |ud|
+                    ud.destroy
+                  end
+                  device.destroy
+                end
+                du.destroy
+              end
+            else
+              du.destroy 
+            end
+            return { code: 0, message: "ok", data: "ok" } 
+          end
         end
       end
     end
