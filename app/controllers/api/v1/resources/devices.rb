@@ -321,10 +321,10 @@ module API
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: String, desc: 'Device uuid'
           end
-          post  '/monitor/destroy' do
+          post '/monitor/destroy' do
             user = authenticate!
-            du = DeviceUuid.where(password: params[:device_id]).first
-            return { code: 1, message: "设备不存在", data: "" } unless device
+            du = DeviceUuid.where(uuid: params[:device_id]).first
+            return { code: 1, message: "设备不存在", data: "" } unless du
             devices = Device.where(uuid: du.id)
             if devices.length > 0
               Device.transaction do
