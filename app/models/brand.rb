@@ -1,7 +1,7 @@
 class Brand < ActiveRecord::Base
 	validates :name, :uniqueness => true
 
-	NAMES = {:hzys7 => 2}
+	NAMES = {:hzys7 => 3}
 	STATUSES = {:active => 1, :not_public => 2, :locked => 3}
 
 	has_many :kinks
