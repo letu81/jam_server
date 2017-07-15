@@ -13,7 +13,10 @@ module API
             requires :token, type: String, desc: 'User token'
           end
           get '/' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
           end
 
 

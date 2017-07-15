@@ -14,7 +14,10 @@ module API
             requires :token, type: String, desc: 'User token'
           end
           post '/hot' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
 
             datas = []
             datas << {id:1, name: "瑞玛特 A6", sale_num: 0, sale_price: 2499.0, price: 3200.0, 

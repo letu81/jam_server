@@ -14,7 +14,10 @@ module API
             requires :service_type, type: String, desc: 'Service type'
           end
           post '/request' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             jam_service = JamService.new(user_id: user.id, service_type: params[:service_type])
             if jam_service.valid? && jam_service.save
               return { code: 0, message: "ok", data: "" }

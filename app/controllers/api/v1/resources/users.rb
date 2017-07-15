@@ -118,7 +118,9 @@ module API
                 pusher.push(push_payload)
               end
               device_num = UserDevice.user(user.id).length
-              return { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username, device_num: device_num, avatar: user.avatar.blank? ? "" : user.avatar } }
+              expired_at = Time.now + 3.months
+              user.update_attribute(:remember_created_at, expired_at)
+              return { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username, device_num: device_num, avatar: user.avatar.blank? ? "" : user.avatar, expired_at: expired_at.to_i } }
             else
               return { code: 107, message: "登录密码不正确" }
             end
@@ -169,7 +171,10 @@ module API
             requires :token, type: String, desc: 'User auth token'
           end
           post '/password' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             #old_password = Base64.decode64(params[:old_password])
             old_password = params[:password]
             unless user.valid_password?(old_password)
@@ -230,7 +235,10 @@ module API
             requires :token, type: String, desc: 'User auth token'
           end
           post '/username' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             if params["username"].length < 3 || params["username"].length > 20 
               return Failure.new(105, "用户名长度为3-20")
             end
@@ -251,7 +259,10 @@ module API
             requires :verification_code, type: String, desc: 'Sms verification_code'
           end
           post '/update/mobile' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             unless check_mobile(params[:mobile])
               return Failure.new(100, "不正确的手机号")
             end

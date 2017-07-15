@@ -15,7 +15,10 @@ module API
             optional :page, type: Integer, desc: 'page'
           end
           post '/nearby' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             page = params[:page].to_i
             datas = []
             if user.district_code.nil?
@@ -40,7 +43,10 @@ module API
             requires :locksmith_id, type: Integer, desc: 'Locksmith id'
           end
           post '/show' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             data = []
             locksmith = Locksmith.where(id: params[:locksmith_id]).first
             data = {id: locksmith.id, name: locksmith.name, 

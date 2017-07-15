@@ -15,7 +15,10 @@ module API
             requires :lock_type, type: String, desc: 'Device id'
           end
           post '/users' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             datas = []
             users = DeviceUser.by_device_and_type(params[:device_id], params[:lock_type])
             users.each do |user|
@@ -35,7 +38,10 @@ module API
             requires :name, type: String, desc: 'User name'
           end
           post '/add_user' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             lock_user = DeviceUser.new(device_id: params[:device_id], device_type: params[:lock_type], name: params[:name], device_num: params[:device_num])
             if lock_user.valid? && lock_user.save
               return { code: 0, message: "ok", data: ""}
@@ -54,7 +60,10 @@ module API
             requires :device_num, type: String, desc: 'Device num'
           end
           post '/update_user' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             lock_user = DeviceUser.where(id: params[:device_id]).first
             if lock_user
               if lock_user.update_attributes({:name => params[:name], :device_num => params[:device_num]})
@@ -76,7 +85,10 @@ module API
             requires :device_id, type: String, desc: 'Device id'
           end
           post '/remove_user' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             lock_user = DeviceUser.where(id: params[:device_id]).first
             if lock_user
               lock_user.destroy

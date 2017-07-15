@@ -14,7 +14,10 @@ module API
             requires :mobile_system, type: String, desc: 'Mobile system'
           end
           post '/' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             versions = AppVersion.by_system(params[:mobile_system])
             data = []
             versions.each do |v|
@@ -33,7 +36,10 @@ module API
             requires :mobile_system, type: String, desc: 'Mobile system'
           end
           post '/app/latest' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             version = AppVersion.latest_by_system(params[:mobile_system])
             if version
               data = { code: version.code, name: version.name, content: version.content, download_url: "http://jiaanmei.com/download" }

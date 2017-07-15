@@ -15,7 +15,10 @@ module API
             requires :token, type: String, desc: 'User token'
           end
           post '/' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             datas = {:id => user.id, :name => user.username, :mobile => user.mobile, :gender => "", :avatar => ""}
             return { code: 0, message: "ok", data: datas } 
           end
@@ -30,7 +33,10 @@ module API
             requires :phone, type: String, desc: 'User phone'
           end
           post '/update' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             user.update_attributes({:username => params[:name], :mobile => params[:phone]})
             return { code: 0, message: "ok", data: "" } 
           end
@@ -48,7 +54,10 @@ module API
             requires :longitude, type: String, desc: 'User longitude'
           end
           post '/location/update' do
-            user = authenticate!
+            user = current_user
+            unless user
+              return { code: 401, message: "用户未登录", data: "" }
+            end
             user.update_attributes({:address => params[:address], :latitude => params[:latitude], :longitude => params[:longitude]})
             if user.address_changed?
               UpdateDistrictCodeJob.set(queue: "update_districe_code").perform_later(user, params[:province], params[:city], params[:district])
@@ -65,7 +74,10 @@ module API
           end
           post '/messages' do
             page = params[:page].to_i
-            user = authenticate!
+            user = current_user
+            unless user
+              return { code: 401, message: "用户未登录", data: "" }
+            end
             datas = []
             messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.page(page).per(default_page_size)
             messages.each do |msg|
@@ -91,7 +103,10 @@ module API
             requires :message_id, type: Integer, desc: 'Message id'
           end
           post '/messages/destroy' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             message = Message.find_by(id: params[:message_id])
             if message
               message.update_attribute(:is_deleted, true) if message.user_id == user.id
@@ -110,7 +125,10 @@ module API
             optional :content, type: String, desc: 'content'
           end
           post '/feedback' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             return { code: 0, message: "ok", data: "" }
           end
 
@@ -121,7 +139,10 @@ module API
             requires :token, type: String, desc: 'User token'
           end
           post '/partners' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             brands = DeviceUuid.by_user(user.id)
             if brands.length > 0
               datas = []
@@ -144,7 +165,10 @@ module API
           post '/video/lock_config' do
             Rails.logger.debug "=================="
             Rails.logger.debug File.exist?("public/videos/5/Q7.mp4")
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             brands = DeviceUuid.by_user(user.id)
             if brands.length > 0
               datas = []

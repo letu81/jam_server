@@ -30,7 +30,7 @@ module API
 	    
 	    def current_user
 	      token = params[:token]
-	      @current_user ||= User.where(private_token: token).first
+	      @current_user ||= User.where("private_token = ? AND remember_created_at > ?", token, Time.now).first
 	    end
 
 	    def relative_time_in_words(give_time)
@@ -86,8 +86,7 @@ module API
 	    end
 	    
 	    def authenticate!
-	      return { code: 401, message: "用户未登录" } unless current_user
-	      current_user
+	    	current_user
 	    end
 	    
 	    def check_mobile(mobile)

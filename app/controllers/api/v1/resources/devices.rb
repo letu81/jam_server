@@ -18,7 +18,10 @@ module API
             optional :page, type: Integer, desc: 'page'
           end
           post '/' do
-            user = authenticate!
+            user = current_user
+            unless user
+              return { code: 401, message: "用户未登录", data: "" }
+            end
             page = params[:page].to_i
             devices = Device.by_user(user.id).page(page).per(default_page_size)
             datas = []
@@ -39,7 +42,10 @@ module API
             optional :page, type: Integer, desc: 'page'
           end
           post  '/search' do
-            user = authenticate!
+            user = current_user
+            unless user
+              return { code: 401, message: "用户未登录", data: "" }
+            end
             page = params[:page].to_i
             devices = Device.by_user_and_device_name(user.id, params[:query].strip).page(page).per(default_page_size)
             datas = []
@@ -59,7 +65,10 @@ module API
             requires :device_id, type: Integer, desc: 'Device id'
           end
           post  '/show' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             device = Device.by_device(params[:device_id])
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
@@ -79,7 +88,10 @@ module API
           post  '/history' do
             page = params[:page].to_i
             datas = []
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             device = Device.where(id: params[:device_id]).first
             messages = Message.smart_lock.user(user.id).device(device.id).published.page(page).per(default_page_size)
             messages.each do |msg|
@@ -104,7 +116,10 @@ module API
             requires :device_id, type: Integer, desc: 'Device id'
           end
           post  '/cmd' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             
@@ -142,7 +157,10 @@ module API
             requires :gateway_version, type: String, desc: 'Gateway Version'
           end
           post  '/port/update' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             Device.where(mac: params[:device_mac]).update_all(port: params[:gateway_port])
             # todo update params[:gateway_version]
             return { code: 0, message: "ok", data: "" } 
@@ -158,7 +176,10 @@ module API
             requires :password, type: String, desc: 'Device password'
           end
           post  '/bind' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             du = DeviceUuid.where(uuid: params[:device_id], password: params[:password]).first
             if du && !params[:company].include?("ys7")
               case du.status_id
@@ -246,7 +267,10 @@ module API
             optional :monitor_sn, type: String, desc: 'Monitor SN'
           end
           post  '/update' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在", data: {} } unless device
             if params[:device_name]
@@ -276,7 +300,10 @@ module API
             requires :expired_at, type: String, desc: 'Expired At'
           end
           post  '/monitor/update' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             DeviceUuid.where(uuid: params[:monitor_sn]).update_all(access_token: params[:access_token], expired_at:params[:expired_at].to_i)
             return { code: 0, message: "ok", data: {} } 
           end
@@ -289,7 +316,10 @@ module API
             requires :device_id, type: String, desc: 'Device uuid'
           end
           post  '/destroy' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             device = Device.where(id: params[:device_id]).first
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             owner_device = UserDevice.where(user_id:user.id, device_id:device.id, ownership:true).first
@@ -322,7 +352,10 @@ module API
             requires :device_id, type: String, desc: 'Device uuid'
           end
           post '/monitor/destroy' do
-            user = authenticate!
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
             du = DeviceUuid.where(uuid: params[:device_id]).first
             return { code: 1, message: "设备不存在", data: "" } unless du
             devices = Device.where(uuid: du.id)
