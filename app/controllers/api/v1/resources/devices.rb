@@ -162,10 +162,6 @@ module API
             requires :gateway_version, type: String, desc: 'Gateway Version'
           end
           post  '/port/update' do
-            user = current_user
-            unless user
-                return { code: 401, message: "用户未登录", data: "" }
-            end
             Device.where(mac: params[:device_mac]).update_all(port: params[:gateway_port])
             # todo update params[:gateway_version]
             return { code: 0, message: "ok", data: "" } 
