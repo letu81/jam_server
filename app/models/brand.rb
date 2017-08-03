@@ -4,6 +4,8 @@ class Brand < ActiveRecord::Base
 	NAMES = {:hzys7 => 3}
 	STATUSES = {:active => 1, :not_public => 2, :locked => 3}
 
+	LOCK_END_ON = [1]
+
 	has_many :kinks
 
 	def self.by_ids(ids)

@@ -30,7 +30,7 @@ module API
                         device_uuid: device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, 
                         port: device.port.blank? ? "" : device.port, 
-                        status: device.status_id}
+                        switch_lock_end_on: device.switch_lock_end, status: device.status_id}
             end
 	          return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page, ez_data: {access_token: '', expire_time: 0}} 
           end
@@ -56,7 +56,7 @@ module API
                         device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, 
                         port: device.port.blank? ? "" : device.port, 
-                        status: device.status_id}
+                        switch_lock_end_on: device.switch_lock_end, status: device.status_id}
             end
             return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page } 
           end
@@ -76,7 +76,8 @@ module API
             device = Device.by_device(params[:device_id])
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
-            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], device_uuid: device.dev_uuid, 
+            return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], 
+                   device_uuid: device.dev_uuid, switch_lock_end_on: device.switch_lock_end, 
                    brand_name: device.brand_name, kind_name: device.kind_name, support_phone: device.support_phone,
                    mac: device.mac, status: device.status_id, monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, 
                    port: device.port.blank? ? "" : device.port, status_name: online_str} } 
@@ -286,7 +287,8 @@ module API
                 return { code: 1, message: "监控序列号不存在", data: {} } 
               end
             elsif params[:device_mac]
-              device.update_attribute(:mac, params[:device_mac])
+              #device.update_attribute(:mac, params[:device_mac])
+              device.update_attributes({:mac => params[:device_mac], :port => nil})
               return { code: 0, message: "ok", data: {} } 
             end
           end
