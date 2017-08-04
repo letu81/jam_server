@@ -28,7 +28,7 @@ module API
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
                         device_uuid: device.dev_uuid, mac: device.mac, name: device.name, 
-                        monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, 
+                        monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                         port: device.port.blank? ? "" : device.port, 
                         switch_lock_end_on: device.switch_lock_end, status: device.status_id}
             end
@@ -54,7 +54,7 @@ module API
             devices.each do |device|
               datas << {device_id: device.id, device_token: device.password, device_type: DeviceCategory::NAMES[device.device_category_id],
                         device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
-                        monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, 
+                        monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                         port: device.port.blank? ? "" : device.port, 
                         switch_lock_end_on: device.switch_lock_end, status: device.status_id}
             end
@@ -79,7 +79,8 @@ module API
             return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], 
                    device_uuid: device.dev_uuid, switch_lock_end_on: device.switch_lock_end, 
                    brand_name: device.brand_name, kind_name: device.kind_name, support_phone: device.support_phone,
-                   mac: device.mac, status: device.status_id, monitor_sn: device.monitor_sn.blank? ? "" : device.monitor_sn, 
+                   mac: device.mac, status: device.status_id, 
+                   monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                    port: device.port.blank? ? "" : device.port, status_name: online_str} } 
           end
 
@@ -267,6 +268,7 @@ module API
             optional :device_name, type: String, desc: 'Device name'
             optional :device_mac, type: String, desc: 'Device mac'
             optional :monitor_sn, type: String, desc: 'Monitor SN'
+            optional :pwd_setting, type: String, desc: 'Lock temp password setting'
           end
           post  '/update' do
             user = current_user
@@ -289,6 +291,9 @@ module API
             elsif params[:device_mac]
               #device.update_attribute(:mac, params[:device_mac])
               device.update_attributes({:mac => params[:device_mac], :port => nil})
+              return { code: 0, message: "ok", data: {} } 
+            elsif params[:pwd_setting]
+              device.update_attribute(:pwd_setting, params[:pwd_setting])
               return { code: 0, message: "ok", data: {} } 
             end
           end

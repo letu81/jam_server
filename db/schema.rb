@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170709012857) do
+ActiveRecord::Schema.define(version: 20170804070533) do
 
   create_table "addresses", force: :cascade do |t|
     t.integer  "user_id",    limit: 4,                   null: false
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(version: 20170709012857) do
     t.string   "monitor_sn",   limit: 255
     t.integer  "port",         limit: 4
     t.integer  "brand_id",     limit: 4,   default: 1,     null: false
+    t.string   "pwd_setting",  limit: 255
   end
 
   add_index "devices", ["activited_at"], name: "index_devices_on_activited_at", using: :btree
@@ -143,6 +144,7 @@ ActiveRecord::Schema.define(version: 20170709012857) do
   add_index "devices", ["monitor_sn"], name: "index_devices_on_monitor_sn", using: :btree
   add_index "devices", ["name"], name: "index_devices_on_name", using: :btree
   add_index "devices", ["port"], name: "index_devices_on_port", using: :btree
+  add_index "devices", ["pwd_setting"], name: "index_devices_on_pwd_setting", using: :btree
   add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
   create_table "districts", force: :cascade do |t|
