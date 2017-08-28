@@ -119,8 +119,7 @@ GEM
       awesome_print
       grape (>= 0.12.0)
       grape-entity
-    grape-swagger-rails (0.2.0)
-      grape-swagger (>= 0.7.2)
+    grape-swagger-rails (0.3.0)
       railties (>= 3.2.12)
     hashie (3.5.6)
     hashie-forbidden_attributes (0.1.1)
@@ -341,8 +340,8 @@ DEPENDENCIES
   grape-entity (= 0.5.1)
   grape-middleware-logger (= 1.6.0)
   grape-route-helpers (= 1.2.2)
-  grape-swagger (= 0.20.3)
-  grape-swagger-rails (= 0.2.0)
+  grape-swagger (~> 0.20.3)
+  grape-swagger-rails (= 0.3.0)
   hashie-forbidden_attributes
   httparty
   jbuilder (~> 2.0)

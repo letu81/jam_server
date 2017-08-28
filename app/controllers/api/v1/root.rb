@@ -65,7 +65,7 @@ module API
           mount_path: 'doc',
           hide_documentation_path: true,
           hide_format: true,
-          markdown: GrapeSwagger::Markdown::KramdownAdapter.new,
+          #markdown: GrapeSwagger::Markdown::KramdownAdapter.new,
           info: {
               title: 'jam smarthome API',
               description: 'The smarthome API of jiaanmei.com'

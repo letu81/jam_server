@@ -4,7 +4,7 @@ module API
     module Resources
       class Feedback < API::V1::Root
 
-        resource :feedback, desc: '反馈相关接口[OK]' do
+        resource :feedback, desc: '反馈相关接口' do
 
           desc '获取当前用户反馈列表' do
             headers API::V1::Defaults.auth_headers

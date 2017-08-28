@@ -30,8 +30,8 @@ gem 'hashie-forbidden_attributes'
 gem 'oauth2'
 
 # documentation
-gem 'grape-swagger', '0.20.3'
-gem 'grape-swagger-rails', '0.2.0'
+gem 'grape-swagger', '~> 0.20.3'
+gem 'grape-swagger-rails', '0.3.0'
 
 gem 'usecasing'
 

@@ -7,7 +7,7 @@ module API
         helpers API::V1::Helpers::UserParams
         helpers API::V1::Helpers::Application
 
-        resources :users, desc: '注册登录相关接口[OK]' do
+        resources :users, desc: '注册登录相关接口' do
           desc '获取短信验证码' do
             headers API::V1::Defaults.client_auth_headers
           end
