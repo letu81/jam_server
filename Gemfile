@@ -13,10 +13,10 @@ gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # api
-gem 'grape', '~> 0.18.0'
-gem 'grape-middleware-logger', '1.6.0'
-gem 'grape-route-helpers', '1.2.2'
-gem 'grape-entity', '0.5.1'
+gem 'grape', '~> 0.19.2'
+gem 'grape-middleware-logger', '~> 1.9'
+gem 'grape-route-helpers', '~> 2.1'
+gem 'grape-entity', '0.5.2'
 gem 'kramdown'
 gem 'rack-cors', require: 'rack/cors'
 gem 'httparty'
@@ -24,7 +24,7 @@ gem 'kaminari', '0.16.3', require: 'kaminari/grape'
 
 # Authentication
 gem 'doorkeeper'
-gem 'wine_bouncer'
+gem 'wine_bouncer', '~> 1.0', '>= 1.0.1'
 gem 'bcrypt'
 gem 'hashie-forbidden_attributes'
 gem 'oauth2'
