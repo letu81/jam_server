@@ -13,7 +13,7 @@ gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # api
-gem 'grape', '0.14.0'
+gem 'grape', '~> 0.18.0'
 gem 'grape-middleware-logger', '1.6.0'
 gem 'grape-route-helpers', '1.2.2'
 gem 'grape-entity', '0.5.1'

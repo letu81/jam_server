@@ -289,8 +289,8 @@ module API
                 return { code: 1, message: "监控序列号不存在", data: {} } 
               end
             elsif params[:device_mac]
-              #device.update_attribute(:mac, params[:device_mac])
-              device.update_attributes({:mac => params[:device_mac], :port => nil})
+              device.update_attribute(:mac, params[:device_mac])
+              #device.update_attributes({:mac => params[:device_mac], :port => nil})
               return { code: 0, message: "ok", data: {} } 
             elsif params[:pwd_setting]
               device.update_attribute(:pwd_setting, params[:pwd_setting])
