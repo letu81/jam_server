@@ -22,7 +22,7 @@ module API
             data = []
             versions.each do |v|
               data << { id: v.id, code: v.code, name: v.name, content: v.content,
-                        title: "佳安美智控#{v.name}主要更新",
+                        title: "#{v.name}主要更新",
                         published_on: v.created_at.strftime("%Y-%m-%d") }
             end
             return { code: 0, message: "ok", data: data }

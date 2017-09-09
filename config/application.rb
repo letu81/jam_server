@@ -45,3 +45,4 @@ module DistrictGrape
   end
 end
 GC::Profiler.enable
+GC.start
