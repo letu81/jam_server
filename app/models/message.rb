@@ -3,8 +3,9 @@ class Message < ActiveRecord::Base
     
     CMD = {"register" => "无线注册成功", "logout" => "删除无线成功", 
            "sync_time" => "同步时间成功", "gateway_update" => "网关固件升级成功",
-           "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁", "new_pwd" => "生成临时密码",
-           "app_open" => "app开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
+           "lock_on" => "允许近端开锁", "lock_off" => "禁止近端开锁",
+           "new_pwd" => "生成临时密码", "get_pwd" => "生成临时密码",
+           "app_open" => "APP开门", "pwd_open" => "密码开门", "card_open" => "IC卡开门",
            "finger_add" => "添加指纹", "finger_del" => "删除指纹",
            "pwd_add" => "添加密码", "pwd_del" => "删除密码", 
            "card_add" => "添加IC卡", "card_del" => "删除IC卡",
@@ -15,6 +16,7 @@ class Message < ActiveRecord::Base
            "dead_bolt" => "方舌信号，小智提醒您注意安全并及时报警",
            "reset" => "恢复出厂设置",
            "doorbell" => "有客人拜访，请开门", 
+           "door_bell" => "有客人拜访，请开门", 
            "tamper" => "暴力开门，小智提醒您注意安全并及时报警"}
 
     validates :oper_cmd, length: { maximum: 30, minimum: 1 }, presence: true
