@@ -35,6 +35,10 @@ class Message < ActiveRecord::Base
 
     after_create :update_username, :update_lock_picture, :send_notification
 
+    def content_detail
+        self.username.blank? ? Message::CMD["#{msg.oper_cmd}"] : Message::CMD["#{msg.oper_cmd}"] + "[#{self.username}]"
+    end
+
     def update_username
         return if self.lock_type.nil? || self.device_num.to_i == 0
         begin
