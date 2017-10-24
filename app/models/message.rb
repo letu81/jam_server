@@ -50,7 +50,7 @@ class Message < ActiveRecord::Base
     end
 
     def update_lock_picture
-        if self.oper_cmd.include?("open") && self.device_type == "lock"
+        if (self.oper_cmd == "tamper" || self.oper_cmd.include?("open")) && self.device_type == "lock"
           begin
               YsCapturePictureJob.set(queue: "ys_capture").perform_later(self)
           rescue Exception => e
