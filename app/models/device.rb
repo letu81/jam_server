@@ -20,11 +20,12 @@ class Device < ActiveRecord::Base
 		monitor_sn.blank? ? "" : monitor_sn
     end
 
-	def self.by_device(device_id)
+	def self.by_device(device_id, user_id)
 		self.joins("INNER JOIN device_uuids ON device_uuids.id = devices.uuid
+			        INNER JOIN user_devices ON user_devices.device_id = devices.id 
 			        INNER JOIN kinds ON device_uuids.kind_id = kinds.id
 			        INNER JOIN brands ON kinds.brand_id = brands.id")
-		.where(:id => device_id)
+		.where(:id => device_id, :user_devices => {:user_id => user_id})
 		.select("devices.id, devices.brand_id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
 			devices.pwd_setting, brands.name as brand_name, brands.support_phone, kinds.name as kind_name, 
 			devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_category_id")

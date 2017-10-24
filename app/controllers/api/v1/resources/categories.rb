@@ -19,9 +19,6 @@ module API
             present_model ::Me::Update::Base.perform(context).user, with: API::V1::Entities::User
           end
 
-
-
-          
         end
       end
     end

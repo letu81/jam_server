@@ -22,7 +22,7 @@ module API
             unless user
               return { code: 401, message: "用户未登录", data: "" }
             end
-            page = params[:page].to_i
+            page = params[:page].blank? ? 1 : params[:page].to_i
             devices = Device.by_user(user.id).page(page).per(default_page_size)
             datas = []
             devices.each do |device|
@@ -48,7 +48,7 @@ module API
             unless user
               return { code: 401, message: "用户未登录", data: "" }
             end
-            page = params[:page].to_i
+            page = params[:page].blank? ? 1 : params[:page].to_i
             devices = Device.by_user_and_device_name(user.id, params[:query].strip).page(page).per(default_page_size)
             datas = []
             devices.each do |device|
@@ -73,12 +73,13 @@ module API
             unless user
                 return { code: 401, message: "用户未登录", data: "" }
             end
-            device = Device.by_device(params[:device_id])
+            device = Device.by_device(params[:device_id], user.id)
             return { code: 1, message: "设备不存在，请刷新设备列表", data: "" } unless device
             online_str = "在线"
             return { code: 0, message: "ok", data: {name: device.name, type: DeviceCategory::NAMES[device.device_category_id], 
                    device_uuid: device.dev_uuid, switch_lock_end_on: device.switch_lock_end, 
-                   brand_name: device.brand_name, kind_name: device.kind_name, support_phone: device.support_phone,
+                   brand_name: device.brand_name, kind_name: device.kind_name, 
+                   support_phone: device.support_phone.blank? ? "" : device.support_phone,
                    mac: device.mac, status: device.status_id, 
                    monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                    port: device.port.blank? ? "" : device.port, status_name: online_str} } 
@@ -103,8 +104,8 @@ module API
             messages = Message.smart_lock.user(user.id).device(device.id).published.page(page).per(default_page_size)
             messages.each do |msg|
               data = { id: msg.id, user_id: user.id, relative_time: relative_time_in_words(msg.created_at), 
-                       oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), 
-                       content: Message::CMD["#{msg.oper_cmd}"], avatar_path: msg.avatar_path, gif_path: msg.gif_path }
+                       oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), oper_cmd: msg.oper_cmd,
+                       content: msg.content_detail, avatar_path: msg.avatar_path, gif_path: msg.gif_path }
               if msg.oper_cmd.include?("open")
                 username = msg.username.nil? ? user.username : msg.username
                 datas << data.merge({user_name: " #{username}回家了"})
@@ -121,6 +122,7 @@ module API
           params do
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: Integer, desc: 'Device id'
+            optional :cmd, type: String, desc: 'Device cmd'
           end
           post  '/cmd' do
             user = current_user
@@ -177,6 +179,8 @@ module API
             requires :device_mac, type: String, desc: 'Device mac'
             requires :device_id, type: String, desc: 'Device uuid'
             requires :password, type: String, desc: 'Device password'
+            optional :company, type: String, desc: 'Device company'
+            optional :version, type: String, desc: 'Device version'
           end
           post  '/bind' do
             user = current_user

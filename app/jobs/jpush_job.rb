@@ -18,14 +18,14 @@ class JpushJob < ActiveJob::Base
                 alert = "主人，#{username}回家了!"
                 notification.set_android(
                     alert: alert,
-                    title: Message::CMD[message.oper_cmd],
+                    title: message.content_detail,
                     builder_id: 1,
                     extras: {user_id: message.user_id, user_name: ''}
                 )
             else
                 title = "佳安美智控通知"
                 notification.set_android(
-                    alert: Message::CMD[message.oper_cmd],
+                    alert: message.content_detail,
                     title: title,
                     builder_id: 1,
                     extras: {user_id: message.user_id, user_name: ''}

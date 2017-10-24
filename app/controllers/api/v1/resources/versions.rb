@@ -12,13 +12,15 @@ module API
           params do
             requires :token, type: String, desc: 'User token'
             requires :mobile_system, type: String, desc: 'Mobile system'
+            optional :page, type: Integer, desc: 'page'
           end
           post '/' do
             user = current_user
             unless user
                 return { code: 401, message: "用户未登录", data: "" }
             end
-            versions = AppVersion.by_system(params[:mobile_system])
+            page = params[:page].blank? ? 1 : params[:page].to_i
+            versions = AppVersion.by_system(params[:mobile_system]).page(page).per(default_page_size)
             data = []
             versions.each do |v|
               data << { id: v.id, code: v.code, name: v.name, content: v.content,

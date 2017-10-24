@@ -83,7 +83,7 @@ module API
             messages.each do |msg|
               data = { id: msg.id, user_id: msg.user_id, relative_time: relative_time_in_words(msg.created_at),
                        oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), 
-                       content: + "#{msg.device.name}---" + Message::CMD["#{msg.oper_cmd}"],
+                       content: + "#{msg.device.name}---" + msg.content_detail, oper_cmd: msg.oper_cmd,
                        avatar_path: msg.avatar_path, gif_path: msg.gif_path }
               if msg.oper_cmd.include?("open")
                 username = msg.username.nil? ? msg.user.username : msg.username

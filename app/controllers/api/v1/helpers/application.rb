@@ -16,7 +16,7 @@ module API
 	    end
 	    
 	    def default_page_size
-	      15
+	      12
 	    end
 	    
 	    def session

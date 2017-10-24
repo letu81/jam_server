@@ -36,7 +36,7 @@ class Message < ActiveRecord::Base
     after_create :update_username, :update_lock_picture, :send_notification
 
     def content_detail
-        self.username.blank? ? Message::CMD["#{msg.oper_cmd}"] : Message::CMD["#{msg.oper_cmd}"] + "[#{self.username}]"
+        self.username.blank? ? Message::CMD["#{self.oper_cmd}"] : Message::CMD["#{self.oper_cmd}"] + " - #{self.username}"
     end
 
     def update_username

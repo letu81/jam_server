@@ -20,11 +20,12 @@ module API
                 return { code: 401, message: "用户未登录", data: "" }
             end
             datas = []
-            users = DeviceUser.by_device_and_type(params[:device_id], params[:lock_type])
+            page = params[:page].blank? ? 1 : params[:page].to_i
+            users = DeviceUser.by_device_and_type(params[:device_id], params[:lock_type]).page(page).per(default_page_size)
             users.each do |user|
               datas << user
             end
-            return { code: 0, message: "ok", data: datas } 
+            return { code: 0, message: "ok", data: datas, total_pages: users.total_pages, current_page: page } 
           end
           
           desc '添加用户' do

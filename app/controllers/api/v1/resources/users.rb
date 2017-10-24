@@ -80,6 +80,72 @@ module API
             end
           end
 
+          desc '检测手机号及验证码并注册' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :username, type: String, desc: '用户名'
+            requires :mobile, type: String, desc: '手机号'
+            requires :verification_code, type: String, desc: '验证码'
+            requires :type, type: Integer, desc: '1 表示注册获取验证码 2 表示重置密码获取验证码 3 表示修改密码获取验证码 4 修改手机号码'
+          end
+          post '/verify_and_register' do
+            unless check_mobile(params[:mobile])
+              return Failure.new(100, "手机号错误")
+            end
+            unless %W(1 2 3 4).include?(params[:type].to_s)
+              return Failure.new(-1, "type参数错误")
+            end
+            user = User.find_by(mobile: params[:mobile])
+            if user.present?
+              return Failure.new(101, "#{params[:mobile]}已经注册")
+            end
+            ac = AuthCode.where('mobile = ? and code = ? and verified = ?', params[:mobile], params[:verification_code], true).first
+            if ac.blank?
+              return Failure.new(104, "验证码无效")
+            else
+              @user = User.new(email: "#{params[:mobile].gsub(/\s+/,"")}@jiaanmei.com", mobile: params[:mobile].gsub(/\s+/, ''), password: password, password_confirmation: password, username: params[:username])
+              if @user.save
+                warden.set_user(@user)
+                ac.update_attribute(:verified, false)
+                return { code: 0, message: "ok", data: { token: @user.private_token || "", id: @user.id, username: @user.username } }
+              else
+                return Failure.new(106, "用户注册失败")
+              end
+            end
+          end
+
+          desc '检测手机号及验证码' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :mobile, type: String, desc: '手机号'
+            requires :verification_code, type: String, desc: '验证码'
+            requires :type, type: Integer, desc: '1 表示注册获取验证码 2 表示重置密码获取验证码 3 表示修改密码获取验证码 4 修改手机号码'
+          end
+          post '/verify_sms_verification_code' do
+            unless check_mobile(params[:mobile])
+              return Failure.new(100, "手机号错误")
+            end
+            unless %W(1 2 3 4).include?(params[:type].to_s)
+              return Failure.new(-1, "type参数错误")
+            end
+            user = User.find_by(mobile: params[:mobile])
+            unless user.present?
+              return Failure.new(101, "#{params[:mobile]}未注册")
+            end
+            ac = AuthCode.where('mobile = ? and code = ? and verified = ?', params[:mobile], params[:verification_code], true).first
+            if ac.blank?
+              return Failure.new(104, "验证码无效")
+            else
+              if ac.update_attribute(:verified, false)
+                return { code: 0, message: "ok", data: {} }
+              else
+                return Failure.new(106, "验证失败")
+              end
+            end
+          end
+
           desc '登录' do
             headers API::V1::Defaults.client_auth_headers
           end
@@ -162,6 +228,26 @@ module API
             end
           end
 
+          desc '设置用户密码' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :password, type: String, desc: 'User old password'
+            requires :token, type: String, desc: 'User auth token'
+          end
+          post '/password/create' do
+            user = current_user
+            unless user
+                return { code: 401, message: "用户未登录", data: "" }
+            end
+            new_password = Base64.decode64(params[:new_password])
+            if user.update_attribute(:password, new_password)
+              return { code: 0, message: "ok" }
+            else
+              return Failure.new(110, "设置密码失败")
+            end
+          end
+
           desc '修改用户密码' do
             headers API::V1::Defaults.client_auth_headers
           end
@@ -175,8 +261,7 @@ module API
             unless user
                 return { code: 401, message: "用户未登录", data: "" }
             end
-            #old_password = Base64.decode64(params[:old_password])
-            old_password = params[:password]
+            old_password = Base64.decode64(params[:password])
             unless user.valid_password?(old_password)
               return Failure.new(109, "旧密码不正确")
             end
