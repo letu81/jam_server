@@ -92,6 +92,7 @@ module API
             requires :token, type: String, desc: 'User token'
             requires :device_id, type: Integer, desc: 'Device id'
             optional :page, type: Integer, desc: 'page'
+            optional :query_date, type: String, desc: 'query date'
           end
           post  '/history' do
             page = params[:page].to_i
@@ -101,7 +102,13 @@ module API
                 return { code: 401, message: "用户未登录", data: "" }
             end
             device = Device.where(id: params[:device_id]).first
-            messages = Message.smart_lock.user(user.id).device(device.id).published.page(page).per(default_page_size)
+            messages = []
+            if params[:query_date].blank?
+              messages = Message.smart_lock.user(user.id).device(device.id).published.page(page).per(default_page_size)
+            else
+              messages = Message.smart_lock.user(user.id).device(device.id).by_date(params[:query_date]).published.page(page).per(default_page_size)
+            end
+            
             messages.each do |msg|
               data = { id: msg.id, user_id: user.id, relative_time: relative_time_in_words(msg.created_at), 
                        oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), oper_cmd: msg.oper_cmd,

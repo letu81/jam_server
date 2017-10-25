@@ -31,6 +31,7 @@ class Message < ActiveRecord::Base
     scope :device, lambda { |device_id| where(device_id: device_id) }
 	  scope :resent, lambda { where("created_at > ?", 1.days.ago) }
 	  scope :published, lambda { where(is_deleted: false) }
+    scope :by_date, lambda { |created_at| where("DATE(messages.created_at) = ?", created_at) }
 
 
     after_create :update_username, :update_lock_picture, :send_notification

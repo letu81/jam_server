@@ -71,6 +71,7 @@ module API
           params do
             requires :token, type: String, desc: 'User token'
             optional :page, type: Integer, desc: 'page'
+            optional :query_date, type: String, desc: 'query date'
           end
           post '/messages' do
             page = params[:page].to_i
@@ -79,7 +80,13 @@ module API
               return { code: 401, message: "用户未登录", data: "" }
             end
             datas = []
-            messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.page(page).per(default_page_size)
+            messages = []
+            if params[:query_date].blank?
+              messages = Message.includes([:user, :device]).smart_lock.user(user.id).published.page(page).per(default_page_size)
+            else
+              messages = Message.includes([:user, :device]).smart_lock.user(user.id).by_date(params[:query_date]).published.page(page).per(default_page_size)
+            end
+            
             messages.each do |msg|
               data = { id: msg.id, user_id: msg.user_id, relative_time: relative_time_in_words(msg.created_at),
                        oper_time: msg.created_at.strftime("%Y-%m-%d %H:%M:%S"), 
