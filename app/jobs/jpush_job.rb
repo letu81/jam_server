@@ -28,7 +28,7 @@ class JpushJob < ActiveJob::Base
                     contentavailable: true,
                     mutablecontent: nil,
                     category: nil,
-                    extras: {user_id: user.id, user_name: '', type: 'login'}
+                    extras: {user_id: message.user_id, user_name: ''}
                 )
             else
                 title = "佳安美智控通知"
@@ -44,7 +44,7 @@ class JpushJob < ActiveJob::Base
                     contentavailable: true,
                     mutablecontent: nil,
                     category: nil,
-                    extras: {user_id: user.id, user_name: '', type: 'login'}
+                    extras: {user_id: message.user_id, user_name: ''}
                 )
             end
 

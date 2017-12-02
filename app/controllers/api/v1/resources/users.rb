@@ -168,19 +168,16 @@ module API
                 jpush = JPush::Client.new(app_key, master_secret)
                 pusher = jpush.pusher
                 notification = JPush::Push::Notification.new
-                notification.set_android(
-                    alert: "主人，您的帐号在另一台手机上登陆，请确认您的账号和密码是否泄露。",
+                alert = "主人，您的帐号在另一台手机上登陆，请确认您的账号和密码是否泄露。"
+                extras = {user_id: user.id, user_name: '', type: 'login'}
+                notification.set_alert(alert).set_android(
+                    alert: alert,
                     title: "佳安美智控通知",
                     builder_id: 1,
-                    extras: {user_id: user.id, user_name: '', type: 'login'}
+                    extras: extras
                 ).set_ios(
-                    alert: "主人，您的帐号在另一台手机上登陆，请确认您的账号和密码是否泄露。",
-                    sound: nil,
-                    badge: 0,
-                    contentavailable: true,
-                    mutablecontent: nil,
-                    category: nil,
-                    extras: {user_id: user.id, user_name: '', type: 'login'}
+                    alert: extras,
+                    extras: extras
                 )
 
                 audience = JPush::Push::Audience.new
