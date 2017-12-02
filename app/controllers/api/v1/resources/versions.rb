@@ -10,15 +10,10 @@ module API
             headers API::V1::Defaults.client_auth_headers
           end
           params do
-            requires :token, type: String, desc: 'User token'
             requires :mobile_system, type: String, desc: 'Mobile system'
             optional :page, type: Integer, desc: 'page'
           end
           post '/' do
-            user = current_user
-            unless user
-                return { code: 401, message: "用户未登录", data: "" }
-            end
             page = params[:page].blank? ? 1 : params[:page].to_i
             versions = AppVersion.by_system(params[:mobile_system]).page(page).per(default_page_size)
             data = []
@@ -27,7 +22,7 @@ module API
                         title: "#{v.name}主要更新",
                         published_on: v.created_at.strftime("%Y-%m-%d") }
             end
-            return { code: 0, message: "ok", data: data }
+            return { code: 0, message: "ok", data: data, total_pages: versions.total_pages, current_page: page } 
           end
 
           desc '获取最新版本信息' do

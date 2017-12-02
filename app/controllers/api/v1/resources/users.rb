@@ -173,7 +173,16 @@ module API
                     title: "佳安美智控通知",
                     builder_id: 1,
                     extras: {user_id: user.id, user_name: '', type: 'login'}
+                ).set_ios(
+                    alert: "主人，您的帐号在另一台手机上登陆，请确认您的账号和密码是否泄露。",
+                    sound: nil,
+                    badge: 0,
+                    contentavailable: true,
+                    mutablecontent: nil,
+                    category: nil,
+                    extras: {user_id: user.id, user_name: '', type: 'login'}
                 )
+
                 audience = JPush::Push::Audience.new
                 audience.set_alias(user.id.to_s).set_tag_not(params["mac"])
                 push_payload = JPush::Push::PushPayload.new(

@@ -21,6 +21,14 @@ class JpushJob < ActiveJob::Base
                     title: message.content_detail,
                     builder_id: 1,
                     extras: {user_id: message.user_id, user_name: ''}
+                ).set_ios(
+                    alert: alert,
+                    sound: nil,
+                    badge: 0,
+                    contentavailable: true,
+                    mutablecontent: nil,
+                    category: nil,
+                    extras: {user_id: user.id, user_name: '', type: 'login'}
                 )
             else
                 title = "佳安美智控通知"
@@ -29,6 +37,14 @@ class JpushJob < ActiveJob::Base
                     title: title,
                     builder_id: 1,
                     extras: {user_id: message.user_id, user_name: ''}
+                ).set_ios(
+                    alert: message.content_detail,
+                    sound: nil,
+                    badge: 0,
+                    contentavailable: true,
+                    mutablecontent: nil,
+                    category: nil,
+                    extras: {user_id: user.id, user_name: '', type: 'login'}
                 )
             end
 
