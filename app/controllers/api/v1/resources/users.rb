@@ -104,10 +104,11 @@ module API
             if ac.blank?
               return Failure.new(104, "验证码无效")
             else
+              password = SecureRandom.hex[0..7]
               @user = User.new(email: "#{params[:mobile].gsub(/\s+/,"")}@jiaanmei.com", mobile: params[:mobile].gsub(/\s+/, ''), password: password, password_confirmation: password, username: params[:username])
               if @user.save
                 warden.set_user(@user)
-                ac.update_attribute(:verified, false)
+                #ac.update_attribute(:verified, false)
                 return { code: 0, message: "ok", data: { token: @user.private_token || "", id: @user.id, username: @user.username } }
               else
                 return Failure.new(106, "用户注册失败")
