@@ -170,19 +170,20 @@ module API
                 pusher = jpush.pusher
                 notification = JPush::Push::Notification.new
                 alert = "主人，您的帐号在另一台手机上登陆，请确认您的账号和密码是否泄露。"
-                extras = {user_id: user.id, user_name: '', type: 'login'}
+                extras = {user_id: user.id, type: 'login'}
                 notification.set_alert(alert).set_android(
                     alert: alert,
                     title: "佳安美智控通知",
                     builder_id: 1,
                     extras: extras
                 ).set_ios(
-                    alert: extras,
+                    alert: alert,
+                    contentavailable: true,
                     extras: extras
                 )
 
                 audience = JPush::Push::Audience.new
-                audience.set_alias(user.id.to_s).set_tag_not(params["mac"])
+                audience.set_alias(user.id.to_s).set_tag_not([params["mac"], "logout"])
                 push_payload = JPush::Push::PushPayload.new(
                   platform: 'all',
                   audience: audience,

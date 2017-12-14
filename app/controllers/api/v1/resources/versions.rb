@@ -39,7 +39,7 @@ module API
             end
             version = AppVersion.latest_by_system(params[:mobile_system])
             if version
-              data = { code: version.code, name: version.name, content: version.content, download_url: "http://jiaanmei.com/download" }
+              data = { code: version.code, name: version.name, content: version.content, download_url: "http://jiaanmei.com/apk/jam_smarthome.apk" }
               return { code: 0, message: "ok", data: data }
             else
               return { code: 1, message: "ok", data: "" }
