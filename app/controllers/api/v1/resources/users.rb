@@ -181,7 +181,6 @@ module API
                     contentavailable: true,
                     extras: extras
                 )
-
                 audience = JPush::Push::Audience.new
                 audience.set_alias(user.id.to_s).set_tag_not([params["mac"], "logout"])
                 push_payload = JPush::Push::PushPayload.new(
@@ -194,7 +193,7 @@ module API
               device_num = UserDevice.user(user.id).length
               expired_at = Time.now + 2.weeks
               user.update_attribute(:remember_created_at, expired_at)
-              return { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username, device_num: device_num, avatar: user.avatar.blank? ? "" : user.avatar, expired_at: expired_at.to_i } }
+              return { code: 0, message: "ok", data: { token: user.private_token || "", id: user.id, username: user.username, adcode: user.district_code, device_num: device_num, avatar: user.avatar.blank? ? "" : user.avatar, expired_at: expired_at.to_i } }
             else
               return { code: 107, message: "登录密码不正确" }
             end
