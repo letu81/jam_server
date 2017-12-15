@@ -46,12 +46,12 @@ module API
           end
           params do
             requires :token, type: String, desc: 'User token'
-            requires :province, type: String, desc: 'User province'
-            requires :city, type: String, desc: 'User city'
-            requires :district, type: String, desc: 'User district'
             requires :address, type: String, desc: 'User address'
             requires :latitude, type: String, desc: 'User latitude'
             requires :longitude, type: String, desc: 'User longitude'
+            optional :province, type: String, desc: 'User province'
+            optional :city, type: String, desc: 'User city'
+            optional :district, type: String, desc: 'User district'
             optional :adcode, type: String, desc: 'adcode'
           end
           post '/location/update' do
