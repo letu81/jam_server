@@ -52,15 +52,24 @@ module API
             requires :address, type: String, desc: 'User address'
             requires :latitude, type: String, desc: 'User latitude'
             requires :longitude, type: String, desc: 'User longitude'
+            optional :adcode, type: String, desc: 'adcode'
           end
           post '/location/update' do
             user = current_user
             unless user
               return { code: 401, message: "用户未登录", data: "" }
             end
-            user.update_attributes({:address => params[:address], :latitude => params[:latitude], :longitude => params[:longitude]})
-            if user.address_changed?
-              UpdateDistrictCodeJob.set(queue: "update_districe_code").perform_later(user, params[:province], params[:city], params[:district])
+            if params[:adcode].nil? || params[:adcode].blank?
+              unless params[:address].blank?
+                user.update_attributes({:address => params[:address], :latitude => params[:latitude], :longitude => params[:longitude]})
+                if user.address_changed?
+                  UpdateDistrictCodeJob.set(queue: "update_districe_code").perform_later(user, params[:province], params[:city], params[:district])
+                end
+              end
+            else
+              unless params[:address].blank?
+                user.update_attributes({:address => params[:address], :district_code => params[:adcode], :latitude => params[:latitude], :longitude => params[:longitude]})
+              end
             end
             return { code: 0, message: "ok", data: "" } 
           end
