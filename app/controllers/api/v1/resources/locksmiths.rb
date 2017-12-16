@@ -53,7 +53,7 @@ module API
                     phone: locksmith.phone, qq: locksmith.qq,
                     address: locksmith.address, avatar_path: locksmith.avatar,
                     mobile: locksmith.mobile, certificate_number: locksmith.certificate_number,
-                    company_info: locksmith.company_info, company_service: locksmith.company_service
+                    company_info: locksmith.company_info.gsub(/\s/, ''), company_service: locksmith.company_service.gsub(/\s/, '')
                   }
             return { code: 0, message: "ok", data: data } 
           end
