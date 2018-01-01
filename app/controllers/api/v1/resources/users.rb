@@ -139,11 +139,11 @@ module API
             if ac.blank?
               return Failure.new(104, "验证码无效")
             else
-              if ac.update_attribute(:verified, false)
+              #if ac.update_attribute(:verified, false)
                 return { code: 0, message: "ok", data: {} }
-              else
-                return Failure.new(106, "验证失败")
-              end
+              #else
+              #  return Failure.new(106, "验证失败")
+              #end
             end
           end
 
