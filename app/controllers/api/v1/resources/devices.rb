@@ -30,6 +30,7 @@ module API
                         device_uuid: device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                         port: device.port.blank? ? "" : device.port, 
+                        device_mac: device.device_mac.blank? ? "" : device.device_mac, 
                         switch_lock_end_on: device.switch_lock_end, status: device.status_id}
             end
 	          return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page, ez_data: {access_token: '', expire_time: 0}} 
@@ -56,6 +57,7 @@ module API
                         device_uuid:device.dev_uuid, mac: device.mac, name: device.name, 
                         monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                         port: device.port.blank? ? "" : device.port, 
+                        device_mac: device.device_mac.blank? ? "" : device.device_mac, 
                         switch_lock_end_on: device.switch_lock_end, status: device.status_id}
             end
             return { code: 0, message: "ok", data: datas, total_pages: devices.total_pages, current_page: page } 
@@ -81,6 +83,7 @@ module API
                    brand_name: device.brand_name, kind_name: device.kind_name, 
                    support_phone: device.support_phone.blank? ? "" : device.support_phone,
                    mac: device.mac, status: device.status_id, 
+                   device_mac: device.device_mac.blank? ? "" : device.device_mac, 
                    monitor_sn: device.monitor_num, pwd_setting: device.pwd_info, 
                    port: device.port.blank? ? "" : device.port, status_name: online_str} } 
           end
@@ -183,11 +186,12 @@ module API
           end
           params do
             requires :token, type: String, desc: 'User token'
-            requires :device_mac, type: String, desc: 'Device mac'
+            requires :device_mac, type: String, desc: 'Gateway mac'
             requires :device_id, type: String, desc: 'Device uuid'
             requires :password, type: String, desc: 'Device password'
             optional :company, type: String, desc: 'Device company'
             optional :version, type: String, desc: 'Device version'
+            optional :dm_mac, type: String, desc: 'Device module mac'
           end
           post  '/bind' do
             user = current_user
@@ -195,6 +199,9 @@ module API
                 return { code: 401, message: "用户未登录", data: "" }
             end
             du = DeviceUuid.where(uuid: params[:device_id], password: params[:password]).first
+            if params[:dm_mac] && !params[:dm_mac].blank?
+              du = DeviceUuid.where(uuid: params[:device_id], password: params[:password], device_mac: params[:dm_mac]).first
+            end
             if du && !params[:company].include?("ys7")
               case du.status_id
               when DeviceUuid::STATUSES[:not_use]

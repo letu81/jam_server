@@ -28,7 +28,7 @@ class Device < ActiveRecord::Base
 		.where(:id => device_id, :user_devices => {:user_id => user_id})
 		.select("devices.id, devices.brand_id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
 			devices.pwd_setting, brands.name as brand_name, brands.support_phone, kinds.name as kind_name, 
-			devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_category_id")
+			devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_mac, device_uuids.device_category_id")
 		.first
 	end
 
@@ -37,7 +37,7 @@ class Device < ActiveRecord::Base
 			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
 		.where(:user_devices => {:user_id => user_id})
 		.select("devices.id, devices.brand_id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
-			devices.pwd_setting, devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_category_id")
+			devices.pwd_setting, devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_mac, device_uuids.device_category_id")
 	end
 
 	def self.by_user_and_device_name(user_id, name)
@@ -45,7 +45,7 @@ class Device < ActiveRecord::Base
 			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
 		.where("user_devices.user_id=? and devices.name like ?", user_id, "%#{name}%")
 		.select("devices.id, devices.brand_id, devices.name, devices.mac, devices.status_id, device_uuids.uuid as dev_uuid, 
-			devices.pwd_setting, devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_category_id")
+			devices.pwd_setting, devices.monitor_sn, devices.port, device_uuids.password, device_uuids.device_mac, device_uuids.device_category_id")
 	end
 
 	def self.by_device_mac_pwd(mac, pwd)
