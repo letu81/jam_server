@@ -55,4 +55,12 @@ class Device < ActiveRecord::Base
 		.select("devices.id, user_devices.user_id")
 		.first
 	end
+
+	def self.by_device_module_mac(mac, module_mac)
+		self.joins("INNER JOIN user_devices ON user_devices.device_id = devices.id 
+			        INNER JOIN device_uuids ON device_uuids.id = devices.uuid")
+		.where(:mac => mac, :device_uuids => {:device_mac=> module_mac})
+		.select("devices.id, user_devices.user_id")
+		.first
+	end
 end

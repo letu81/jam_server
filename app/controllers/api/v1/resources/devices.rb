@@ -260,18 +260,23 @@ module API
             requires :device_cmd, type: String, desc: 'Device cmd'
             optional :lock_type, type: Integer, desc: 'Lock type'
             optional :device_num, type: Integer, desc: 'Device Num'
+            optional :module_mac, type: Integer, desc: 'Device module mac'
           end
           post  '/listen' do
-            device = Device.by_device_mac_pwd(params[:device_mac], params[:device_token])
-            return { code: 1, message: "设备不存在", data: "" } unless device
+            if params[:module_mac]
+              @device = Device.by_device_module_mac(params[:device_mac], params[:device_token])
+            else
+              @device = Device.by_device_mac_pwd(params[:device_mac], params[:device_token])
+            end
+            return { code: 1, message: "设备不存在", data: "" } unless @device
             unless params[:device_num].blank?
-              msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd], lock_type: params[:lock_type].to_i, device_num: params[:device_num].to_i)
+              msg = Message.new(user_id: @device.user_id, device_id: @device.id, oper_cmd: params[:device_cmd], lock_type: params[:lock_type].to_i, device_num: params[:device_num].to_i)
               msg.save if msg.valid?
             else
-              msg = Message.new(user_id: device.user_id, device_id: device.id, oper_cmd: params[:device_cmd])
+              msg = Message.new(user_id: @device.user_id, device_id: @device.id, oper_cmd: params[:device_cmd])
               msg.save if msg.valid?
               if params[:device_cmd] == "reset"
-                device.update_attribute(:status_id, Device::STATUSES[:not_register])
+                @device.update_attribute(:status_id, Device::STATUSES[:not_register])
               end
             end
             return { code: 0, message: "", data: "ok" } 
