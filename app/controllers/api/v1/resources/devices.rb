@@ -217,9 +217,11 @@ module API
                       du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
                     end
                     UserDevice.find_or_create_by!(user_id: user.id, device_id: device.id)
+                    return { code: 0, message: "设备添加成功", data: "" }
+                  else
+                    return { code: 1, message: "设备添加失败", data: "" }
                   end
                 end
-                return { code: 0, message: "设备添加成功", data: "" }
               when DeviceUuid::STATUSES[:used]
                 user_device = UserDevice.where(user_id: user.id, device_id: device.id).first
                 if user_device
