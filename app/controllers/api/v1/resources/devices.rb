@@ -198,9 +198,11 @@ module API
             unless user
                 return { code: 401, message: "用户未登录", data: "" }
             end
-            du = DeviceUuid.where(uuid: params[:device_id], password: params[:password]).first
+            du = nil
             if params[:dm_mac] && !params[:dm_mac].blank?
               du = DeviceUuid.where(uuid: params[:device_id], password: params[:password], device_mac: params[:dm_mac]).first
+            else
+              du = DeviceUuid.where(uuid: params[:device_id], password: params[:password]).first
             end
             if du && !params[:company].include?("ys7")
               case du.status_id
@@ -209,7 +211,11 @@ module API
                   kind = du.kind
                   device = Device.new(name: du.device_category.name, brand_id: kind.brand_id, uuid: du.id, mac: params[:device_mac])
                   if device.valid? && device.save
-                    du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
+                    if params[:dm_mac] && !params[:dm_mac].blank?
+                      du.update_attribute(:status_id, DeviceUuid::STATUSES[:registered])
+                    else
+                      du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
+                    end
                     UserDevice.find_or_create_by!(user_id: user.id, device_id: device.id)
                   end
                 end
