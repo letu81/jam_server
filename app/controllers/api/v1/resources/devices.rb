@@ -262,8 +262,8 @@ module API
           end
           params do
             requires :device_mac, type: String, desc: 'Device mac'
-            requires :device_token, type: String, desc: 'Device token'
             requires :device_cmd, type: String, desc: 'Device cmd'
+            optional :device_token, type: String, desc: 'Device token'
             optional :lock_type, type: Integer, desc: 'Lock type'
             optional :device_num, type: Integer, desc: 'Device Num'
             optional :module_mac, type: Integer, desc: 'Device module mac'
