@@ -212,10 +212,9 @@ module API
                   device = Device.new(name: du.device_category.name, brand_id: kind.brand_id, uuid: du.id, mac: params[:device_mac])
                   if device.valid? && device.save
                     if params[:dm_mac] && !params[:dm_mac].blank?
-                      du.update_attribute(:status_id, DeviceUuid::STATUSES[:registered])
-                    else
-                      du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
+                      Device.update_attribute(:status_id, Device::STATUSES[:registered])
                     end
+                    du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
                     UserDevice.find_or_create_by!(user_id: user.id, device_id: device.id)
                     return { code: 0, message: "设备添加成功", data: "" }
                   else
