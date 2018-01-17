@@ -270,7 +270,7 @@ module API
           end
           post  '/listen' do
             if params[:module_mac]
-              @device = Device.by_device_module_mac(params[:device_mac], params[:device_token])
+              @device = Device.by_device_module_mac(params[:device_mac], params[:module_mac])
             else
               @device = Device.by_device_mac_pwd(params[:device_mac], params[:device_token])
             end
