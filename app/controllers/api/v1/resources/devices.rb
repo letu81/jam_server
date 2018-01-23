@@ -212,7 +212,12 @@ module API
                   device = Device.new(name: du.device_category.name, brand_id: kind.brand_id, uuid: du.id, mac: params[:device_mac])
                   if device.valid? && device.save
                     if params[:dm_mac] && !params[:dm_mac].blank?
-                      device.update_attribute(:status_id, Device::STATUSES[:registered])
+                      pdv = Device.where(mac: params[:device_mac]).port_is_not_null.first
+                      if pdv
+                        device.update_attributes({:status_id => Device::STATUSES[:registered], :port => pdv.port})
+                      else
+                        device.update_attribute(:status_id, Device::STATUSES[:registered])
+                      end
                     end
                     du.update_attribute(:status_id, DeviceUuid::STATUSES[:used])
                     UserDevice.find_or_create_by!(user_id: user.id, device_id: device.id)

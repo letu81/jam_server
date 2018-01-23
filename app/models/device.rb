@@ -4,6 +4,8 @@ class Device < ActiveRecord::Base
 	has_one :device_uuid, :foreign_key => 'id'
 	belongs_to :user_device, :foreign_key => 'id'
 
+	scope :port_is_not_null, lambda { where("port is not null") }
+
 	def switch_lock_end
 		if brand_id.blank?
 			0
