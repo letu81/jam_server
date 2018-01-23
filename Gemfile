@@ -76,7 +76,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec-its'
   gem 'shoulda-matchers', require: false
-  gem 'nokogiri', '1.6.8'
+  gem 'nokogiri', '1.8.1'
   gem 'factory_girl_rails', '4.7.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
