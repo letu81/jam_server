@@ -98,6 +98,26 @@ module API
               return { code: 1, message: "用户不存在", data: "" }
             end
           end
+
+          desc '动态密码' do
+            headers API::V1::Defaults.client_auth_headers
+          end
+          params do
+            requires :device_id, type: String, desc: 'Device id'
+          end
+          get '/dynamic/password' do
+            num = 0
+            while num < 100000
+              num = rand(999999)
+            end
+            key = params[:device_id].blank? ? num : params[:device_id]
+            val = Digest::MD5.hexdigest("raymart#{key}")
+            date = Time.new.strftime("%Y-%m-%d-%H")
+            minute = Time.new.strftime("%M").to_i
+            value = Digest::MD5.hexdigest("#{val}#{date}-#{minute/5}")
+            dync_password = value.scan(/\d/).first(6).join('')
+            return { code: 1, message: "", data: { dync_password: dync_password } }
+          end
         end
       end
     end
