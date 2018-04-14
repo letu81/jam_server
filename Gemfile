@@ -11,6 +11,7 @@ gem 'puma'
 gem 'devise', '4.1.1'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'settingslogic', '~> 2.0.9'
+gem 'loofah', '~> 2.2.0'
 
 # api
 gem 'grape', '~> 0.19.2'
