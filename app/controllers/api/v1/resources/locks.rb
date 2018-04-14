@@ -116,7 +116,7 @@ module API
             minute = Time.new.strftime("%M").to_i
             value = Digest::MD5.hexdigest("#{val}#{date}-#{minute/5}")
             dync_password = value.scan(/\d/).first(6).join('')
-            return { code: 1, message: "", data: { dync_password: dync_password } }
+            return { code: 0, message: "ok", data: { dync_password: dync_password } }
           end
         end
       end
